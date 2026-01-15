@@ -5,122 +5,217 @@
   <title>Allgemeines zur Statistik</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-
-main{
-  max-width: 720px;
-  margin: 120px auto 80px auto;
-  line-height: 1.7;
-}
-
     :root{
-  --bg:#050a06;
-  --g1:#00ff66;
-  --g2:#00cc55;
-  --g3:#00ff99;
-}
+      --bg:#050a06;
+      --g1:#00ff66;
+      --g2:#00cc55;
+      --g3:#00ff99;
+    }
 
-body{
-  margin:0;
-  min-height:100vh;
-  background: radial-gradient(1200px 800px at 50% 40%, #07140b 0%, var(--bg) 60%, #000 100%);
-  color: var(--g1);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-display:block;
-}
+    body{
+      margin:0;
+      min-height:100vh;
+      background: radial-gradient(1200px 800px at 50% 40%, #07140b 0%, var(--bg) 60%, #000 100%);
+      color: var(--g1);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      display:block;
+    }
 
-h1{
-  font-weight:600;
-  letter-spacing:0.08em;
-  text-shadow: 0 0 10px rgba(0,255,102,.35), 0 0 24px rgba(0,255,102,.18);
-}
+    main{
+      max-width: 720px;
+      margin: 120px auto 80px auto;
+      line-height: 1.7;
+      padding: 0 18px;
+    }
 
-a{
-  color: var(--g3);
-  text-decoration:none;
-}
+    h1{
+      font-weight:600;
+      letter-spacing:0.08em;
+      text-shadow: 0 0 10px rgba(0,255,102,.35), 0 0 24px rgba(0,255,102,.18);
+      margin-top: 0;
+    }
 
-a:hover{
-  text-shadow: 0 0 10px rgba(0,255,153,.35);
-}
+    a{
+      color: var(--g3);
+      text-decoration:none;
+    }
+    a:hover{
+      text-shadow: 0 0 10px rgba(0,255,153,.35);
+    }
 
-/* Home-Button */
-.home-only{
-  position:fixed;
-  top:20px;
-  left:20px;
-}
+    /* Back to Statistik */
+    .home-only{
+      position:fixed;
+      top:20px;
+      left:20px;
+      z-index: 6;
+    }
+    .home{
+      color: var(--g1);
+      font-size:18px;
+      opacity:.85;
+    }
+    .home:hover{ opacity:1; }
 
-.home{
-  color: var(--g1);
-  font-size:18px;
-  opacity:.85;
-}
-.home:hover{ opacity:1; }
+    /* Wiki link */
+    .wikilink{
+      border-bottom: 1px solid rgba(0,255,153,.25);
+    }
+    .wikilink:hover{
+      border-bottom-color: rgba(0,255,153,.6);
+    }
 
-/* TOC */
-.toc{
-  margin-top:18px;
-  text-align:center;
-  opacity:.9;
-}
+    /* Anker nicht ganz oben kleben lassen */
+    [id]{ scroll-margin-top: 110px; }
 
-.toc-label{
-  font-size:12px;
-  letter-spacing:0.18em;
-  text-transform:uppercase;
-  color: var(--g2);
-  opacity:.8;
-}
+    /* Listen hübsch */
+    ul{
+      margin: 10px 0 12px 18px;
+    }
+    li{
+      margin: 6px 0;
+      opacity: .95;
+    }
+    p{
+      opacity: .9;
+    }
 
-.toc ul{ list-style:none; padding:0; margin:10px 0 0 0; }
-.toc li{ margin:8px 0; }
+    /* Auto-Back Button (Matrix) */
+    #auto-back{
+      position: fixed;
+      top: 72px;
+      left: 20px;
+      z-index: 5;
 
-.toc a{
-  color: var(--g3);
-  font-size:14px;
-  opacity:.9;
-}
-.toc a:hover{
-  opacity:1;
-  text-shadow: 0 0 10px rgba(0,255,153,.35);
-}
+      display: inline-flex;
+      align-items: center;
+      gap: 1px;
+
+      padding: 2px 8px;
+      font-size: 12px;
+      border-radius: 10px;
+
+      border: 1px solid rgba(0,255,102,.22);
+      background: rgba(0,0,0,.18);
+      color: var(--g1);
+      text-decoration: none;
+
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .15s ease;
+    }
+
+    #auto-back.show{
+      opacity: .92;
+      pointer-events: auto;
+    }
+
+    #auto-back:hover{
+      opacity: 1;
+      box-shadow: 0 0 18px rgba(0,255,102,.18);
+    }
+
+    /* Slot-machine-ish: Buchstaben kippen/pulsieren */
+    #auto-back .flip{
+      display: inline-block;
+      transform-origin: 50% 60%;
+      animation: flipPulse 2.6s infinite;
+    }
+
+    #auto-back .flip:nth-child(1){ animation-delay: 0.00s; }
+    #auto-back .flip:nth-child(2){ animation-delay: 0.05s; }
+    #auto-back .flip:nth-child(3){ animation-delay: 0.10s; }
+    #auto-back .flip:nth-child(4){ animation-delay: 0.15s; }
+    #auto-back .flip:nth-child(5){ animation-delay: 0.20s; }
+    #auto-back .flip:nth-child(6){ animation-delay: 0.25s; }
+
+    @keyframes flipPulse{
+      0%   { transform: rotateX(0deg);   opacity: .95; }
+      6%   { transform: rotateX(90deg);  opacity: .10; }
+      12%  { transform: rotateX(0deg);   opacity: .95; }
+      100% { transform: rotateX(0deg);   opacity: .95; }
+    }
   </style>
 </head>
 <body>
   <nav class="home-only">
-  <a href="../statistik.html" class="home">← Statistik</a>
-</nav>
+    <a href="../statistik.html" class="home">← Statistik</a>
+  </nav>
+
+  <!-- Auto "Zurück" (erscheint nur nach Sprung) -->
+  <a id="auto-back" href="#">
+    <span class="flip">Z</span><span class="flip">u</span><span class="flip">r</span><span class="flip">ü</span><span class="flip">c</span><span class="flip">k</span>
+  </a>
 
   <main>
+    <h1>Statistik – Allgemeines</h1>
 
+    <h2>Evidenzbasiertes Handeln</h2>
+    <p>
+      Wichtige Entscheidungen sollen den Stand der verfügbaren
+      wissenschaftlichen Evidenz berücksichtigen und nicht allein
+      aufgrund Erfahrung und subjektiver Einschätzungen getroffen
+      werden.
+    </p>
 
-  <h1>Statistik – Allgemeines</h1>
+    <h2>Wissenschaftliche Gütekriterien</h2>
 
-  <h2>Evidenzbasiertes Handeln</h2>
-  <p>
-    Wichtige Entscheidungen sollen den Stand der verfügbaren
-    wissenschaftlichen Evidenz berücksichtigen und nicht allein
-    aufgrund Erfahrung und subjektiver Einschätzungen getroffen
-    werden.
-  </p>
+    <ul>
+      <li>Reliabilität</li>
+      <li id="int-valid">Internale Validität</li>
+      <p>
+        Können berichtete Effekte eindeutig auf die Untersuchungsbedingungen 
+        zurückgeführt werden? Gibt es Alternativerklärungen?
+        → Laborstudien, Experimente, RCTs
+      </p>
+    </ul>
 
+    <h2>Lore Ipsum</h2>
+    <p><strong>Bold text</strong> and <em>italic text</em> example.</p>
+    <p><strong><em>Bold and italic text</em></strong> example.</p>
+    <p>Inline code example: <code>inline-code()</code></p>
+    <blockquote style="opacity:.85; border-left:2px solid rgba(0,255,102,.4); padding-left:12px; margin-left:0;">
+      „Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.“
+    </blockquote>
 
-  <h2>Wissenschaftliche Gütekriterien</h2>
-  <p>
-    <li>Reliabilität</li>
-
-    <li>Internale Validität</li>
-    Können berichtete Effekte eindeutig auf die Untersuchungsbedingungen 
-    zurückgeführt werden? Gibt es Alternativerklärungen?  
-    -> Laborstudien, Experimente, RCTs
-  </p>
-  
-
-  <h2>Grundbegriffe</h2>
-  <p>
-    Internale Validität ist für externale Validität eine notwendige, 
-    aber keine hinreichende Bedingung.
-  </p>
+    <h2>Grundbegriffe</h2>
+    <p id="src-int-valid">
+      <a href="#int-valid" class="wikilink">Internale Validität</a> ist für externale Validität eine notwendige,
+      aber keine hinreichende Bedingung.
+    </p>
   </main>
+
+  <script>
+    let lastPos = null;
+
+    // merkt sich die Quelle, wenn du auf den Begriff klickst
+    document.addEventListener("click", (e) => {
+      const a = e.target.closest("a.wikilink");
+      if (!a) return;
+      lastPos = "#src-int-valid";
+    });
+
+    function updateBack() {
+      const btn = document.getElementById("auto-back");
+      const hash = window.location.hash;
+
+      if (!hash) {
+        btn.classList.remove("show");
+        return;
+      }
+
+      // Nur zeigen, wenn du zum Ziel gesprungen bist
+      if (hash === "#int-valid") {
+        btn.href = lastPos || "#src-int-valid";
+        btn.classList.add("show");
+      } else {
+        btn.classList.remove("show");
+      }
+    }
+
+    window.addEventListener("hashchange", updateBack);
+    window.addEventListener("DOMContentLoaded", updateBack);
+  </script>
 </body>
 </html>
