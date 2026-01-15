@@ -5,150 +5,145 @@
   <title>ahsome</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-   :root{
-  --bg:#050a06;
-  --g1:#00ff66;
-  --g2:#00cc55;
-  --g3:#00ff99;
-}
+    :root{
+      --bg:#050a06;
+      --g1:#00ff66;
+      --g2:#00cc55;
+      --g3:#00ff99;
+    }
 
-body{
-  <canvas id="rain"></canvas>
-  margin:0;
-  min-height:100vh;
-  background: radial-gradient(1200px 800px at 50% 40%, #07140b 0%, var(--bg) 60%, #000 100%);
-  color: var(--g1);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
+    body{
+      margin:0;
+      min-height:100vh;
+      background: radial-gradient(1200px 800px at 50% 40%, #07140b 0%, var(--bg) 60%, #000 100%);
+      color: var(--g1);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
 
-h1{
-  font-weight:600;
-  letter-spacing:0.08em;
-  text-shadow: 0 0 10px rgba(0,255,102,.35), 0 0 24px rgba(0,255,102,.18);
-}
-
-a{
-  color: var(--g3);
-  text-decoration:none;
-}
-
-a:hover{
-  text-shadow: 0 0 10px rgba(0,255,153,.35);
-}
-
-/* Home-Button */
-.home-only{
-  position:fixed;
-  top:20px;
-  left:20px;
-}
-
-.home{
-  color: var(--g1);
-  font-size:18px;
-  opacity:.85;
-}
-.home:hover{ opacity:1; }
-
-/* TOC */
-.toc{
-  margin-top:18px;
-  text-align:center;
-  opacity:.9;
-}
-
-.toc-label{
-  font-size:12px;
-  letter-spacing:0.18em;
-  text-transform:uppercase;
-  color: var(--g2);
-  opacity:.8;
-}
-
-.toc ul{ list-style:none; padding:0; margin:10px 0 0 0; }
-.toc li{ margin:8px 0; }
-
-.toc a{
-  color: var(--g3);
-  font-size:14px;
-  opacity:.9;
-}
-.toc a:hover{
-  opacity:1;
-  text-shadow: 0 0 10px rgba(0,255,153,.35);
-}
+    /* Rain layer */
     #rain{
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
-  z-index:0;
-  opacity:0.28;
-  pointer-events:none;
-}
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:0;
+      opacity:0.28;
+      pointer-events:none;
+    }
 
-main, nav{
-  position:relative;
-  z-index:1;
-}
+    /* Content above rain */
+    .content{
+      position:relative;
+      z-index:1;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    h1{
+      margin:0;
+      font-weight:600;
+      letter-spacing:0.08em;
+      text-shadow: 0 0 10px rgba(0,255,102,.35), 0 0 24px rgba(0,255,102,.18);
+    }
+
+    a{
+      color: var(--g3);
+      text-decoration:none;
+    }
+    a:hover{
+      text-shadow: 0 0 10px rgba(0,255,153,.35);
+    }
+
+    /* Home-Button */
+    .home-only{
+      position:fixed;
+      top:20px;
+      left:20px;
+      z-index:2;
+    }
+    .home{
+      color: var(--g1);
+      font-size:18px;
+      opacity:.85;
+    }
+    .home:hover{ opacity:1; }
+
+    /* TOC */
+    .toc{
+      list-style:none;
+      padding:0;
+      margin:0;
+      text-align:center;
+    }
+    .toc li{ margin:8px 0; }
+    .toc a{ font-size:14px; opacity:.9; }
+    .toc a:hover{ opacity:1; }
   </style>
 </head>
 <body>
+
+  <!-- 1) Canvas muss in den BODY, nicht ins CSS -->
+  <canvas id="rain"></canvas>
+
   <nav class="home-only">
     <a href="index.html" class="home">Schreibtisch</a>
   </nav>
 
-  <h1>ahsome.
-  <ul class="toc">
-  <li><a href="statistik.html">Statistik</a></li>
-  <li><a href="projects.html">Messtechnik</a></li>
-  <li><a href="contact.html">Elektrotechnik</a></li>
-</ul>
-  </h1>
+  <div class="content">
+    <h1>ahsome.</h1>
+
+    <ul class="toc">
+      <li><a href="statistik.html">Statistik</a></li>
+      <li><a href="projects.html">Messtechnik</a></li>
+      <li><a href="contact.html">Elektrotechnik</a></li>
+    </ul>
+  </div>
+
+  <!-- 2) Script am Ende, nachdem das Canvas existiert -->
   <script>
-  const canvas = document.getElementById("rain");
-  const ctx = canvas.getContext("2d");
+    const canvas = document.getElementById("rain");
+    const ctx = canvas.getContext("2d");
 
-  const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let w, h, cols, drops, fontSize = 16;
+    const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let drops = [];
+    const fontSize = 16;
 
-  function resize(){
-    w = canvas.width = window.innerWidth * devicePixelRatio;
-    h = canvas.height = window.innerHeight * devicePixelRatio;
-    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    function resize(){
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
 
-    cols = Math.floor(window.innerWidth / fontSize);
-    drops = Array(cols).fill(0).map(() => Math.random() * window.innerHeight / fontSize);
-  }
-
-  function draw(){
-    ctx.fillStyle = "rgba(0,0,0,0.08)";
-    ctx.fillRect(0,0,window.innerWidth,window.innerHeight);
-
-    for(let i=0;i<drops.length;i++){
-      const text = chars[Math.floor(Math.random()*chars.length)];
-      const x = i * fontSize;
-      const y = drops[i] * fontSize;
-
-      ctx.fillStyle = (Math.random() < 0.02) ? "#b6ffcc" : "#00ff66";
-      ctx.fillText(text, x, y);
-
-      if(y > window.innerHeight && Math.random() > 0.975) drops[i] = 0;
-      drops[i]++;
+      const cols = Math.floor(window.innerWidth / fontSize);
+      drops = Array(cols).fill(0).map(() => Math.random() * (window.innerHeight / fontSize));
+      ctx.font = fontSize + "px ui-monospace, Menlo, monospace";
     }
-    requestAnimationFrame(draw);
-  }
 
-  resize();
-  ctx.font = fontSize + "px ui-monospace, Menlo, monospace";
-  window.addEventListener("resize", () => {
+    function draw(){
+      ctx.fillStyle = "rgba(0,0,0,0.08)";
+      ctx.fillRect(0,0,window.innerWidth,window.innerHeight);
+
+      for(let i=0;i<drops.length;i++){
+        const text = chars[Math.floor(Math.random()*chars.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+
+        ctx.fillStyle = (Math.random() < 0.02) ? "#b6ffcc" : "#00ff66";
+        ctx.fillText(text, x, y);
+
+        if (y > window.innerHeight && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+      requestAnimationFrame(draw);
+    }
+
     resize();
-    ctx.font = fontSize + "px ui-monospace, Menlo, monospace";
-  });
-  draw();
-</script>
+    window.addEventListener("resize", resize);
+    draw();
+  </script>
 </body>
 </html>
