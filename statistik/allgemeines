@@ -18,9 +18,7 @@ body{
   background: radial-gradient(1200px 800px at 50% 40%, #07140b 0%, var(--bg) 60%, #000 100%);
   color: var(--g1);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+display:block;
 }
 
 h1{
