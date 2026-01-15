@@ -5,6 +5,13 @@
   <title>Allgemeines zur Statistik</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+
+main{
+  max-width: 720px;
+  margin: 120px auto 80px auto;
+  line-height: 1.7;
+}
+
     :root{
   --bg:#050a06;
   --g1:#00ff66;
