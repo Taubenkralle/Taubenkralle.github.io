@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Allgemeines zur Statistik</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { margin:0; background:#0e0e0e; color:#eaeaea; font-family:system-ui,sans-serif; }
+    nav { position:fixed; top:20px; left:20px; }
+    a { color:#eaeaea; text-decoration:none; opacity:.7; }
+    a:hover { opacity:1; }
+    main { min-height:100vh; display:flex; align-items:center; justify-content:center; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../Statistik.html">← Statistik</a>
+  </nav>
+
+  <main>
+    <h1>Statistik – Allgemeines</h1>
+  </main>
+</body>
+</html>
