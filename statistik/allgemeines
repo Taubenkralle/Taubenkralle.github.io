@@ -82,12 +82,11 @@ a:hover{
   </style>
 </head>
 <body>
-  <nav>
-    <a href="../statistik.html">← Statistik</a>
-  </nav>
+  <nav class="home-only">
+  <a href="../statistik.html" class="home">← Statistik</a>
+</nav>
 
   <main>
-    <main>
   <h1>Statistik – Allgemeines</h1>
 
   <h2>Einordnung</h2>
@@ -113,7 +112,6 @@ a:hover{
     Duis aute irure dolor in reprehenderit in voluptate velit esse 
     cillum dolore eu fugiat nulla pariatur.
   </p>
-</main>
   </main>
 </body>
 </html>
