@@ -5,11 +5,80 @@
   <title>Allgemeines zur Statistik</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { margin:0; background:#0e0e0e; color:#eaeaea; font-family:system-ui,sans-serif; }
-    nav { position:fixed; top:20px; left:20px; }
-    a { color:#eaeaea; text-decoration:none; opacity:.7; }
-    a:hover { opacity:1; }
-    main { min-height:100vh; display:flex; align-items:center; justify-content:center; }
+    :root{
+  --bg:#050a06;
+  --g1:#00ff66;
+  --g2:#00cc55;
+  --g3:#00ff99;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background: radial-gradient(1200px 800px at 50% 40%, #07140b 0%, var(--bg) 60%, #000 100%);
+  color: var(--g1);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+h1{
+  font-weight:600;
+  letter-spacing:0.08em;
+  text-shadow: 0 0 10px rgba(0,255,102,.35), 0 0 24px rgba(0,255,102,.18);
+}
+
+a{
+  color: var(--g3);
+  text-decoration:none;
+}
+
+a:hover{
+  text-shadow: 0 0 10px rgba(0,255,153,.35);
+}
+
+/* Home-Button */
+.home-only{
+  position:fixed;
+  top:20px;
+  left:20px;
+}
+
+.home{
+  color: var(--g1);
+  font-size:18px;
+  opacity:.85;
+}
+.home:hover{ opacity:1; }
+
+/* TOC */
+.toc{
+  margin-top:18px;
+  text-align:center;
+  opacity:.9;
+}
+
+.toc-label{
+  font-size:12px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color: var(--g2);
+  opacity:.8;
+}
+
+.toc ul{ list-style:none; padding:0; margin:10px 0 0 0; }
+.toc li{ margin:8px 0; }
+
+.toc a{
+  color: var(--g3);
+  font-size:14px;
+  opacity:.9;
+}
+.toc a:hover{
+  opacity:1;
+  text-shadow: 0 0 10px rgba(0,255,153,.35);
+}
   </style>
 </head>
 <body>
