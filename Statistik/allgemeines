@@ -83,7 +83,7 @@ a:hover{
 </head>
 <body>
   <nav>
-    <a href="../Statistik.html">← Statistik</a>
+    <a href="../statistik.html">← Statistik</a>
   </nav>
 
   <main>
