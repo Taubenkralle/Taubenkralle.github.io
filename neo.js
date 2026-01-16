@@ -36,17 +36,19 @@
     return ms;
   }
 
-  async function typeLine(el, caret, line){
+  async function typeLine(el, caret, line, isAborted){
     caret.remove();
     el.textContent = "";
     let prev = "";
     for (let i = 0; i < line.length; i++){
+      if (isAborted()) return false;
       const ch = line[i];
       el.textContent += ch;
       await sleep(nextDelay(ch, prev));
       prev = ch;
     }
     el.appendChild(caret);
+    return true;
   }
 
   function waitForAdvance(skip){
@@ -77,12 +79,22 @@
       aborted = true;
       overlay.remove();
     };
+    const onEsc = (e) => {
+      if (e.key !== "Escape") return;
+      e.preventDefault();
+      document.removeEventListener("keydown", onEsc);
+      skip();
+    };
+    document.addEventListener("keydown", onEsc);
     for (let i = 0; i < lines.length; i++){
       if (aborted) return;
-      await typeLine(text, caret, lines[i]);
+      const ok = await typeLine(text, caret, lines[i], () => aborted);
+      if (!ok || aborted) return;
       await waitForAdvance(skip);
+      if (aborted) return;
     }
     overlay.remove();
+    document.removeEventListener("keydown", onEsc);
   }
 
   if (document.readyState === "loading"){
