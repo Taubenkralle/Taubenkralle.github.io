@@ -423,7 +423,7 @@ von diesem Effekt betroffen.</p></li>
         return;
       }
 
-      // Nur zeigen, wenn du zum Ziel gesprungen bist
+      // Nur zeigen, wenn zum Ziel gesprungen
       if (hash === "#int-valid") {
         btn.href = lastPos || "#src-int-valid";
         const target = document.querySelector(hash);
@@ -443,47 +443,7 @@ von diesem Effekt betroffen.</p></li>
     window.addEventListener("hashchange", updateBack);
     window.addEventListener("DOMContentLoaded", updateBack);
   </script>
-  <script>
-    const canvas = document.getElementById("rain");
-    const ctx = canvas.getContext("2d");
-
-    const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let drops = [];
-    const fontSize = 16;
-
-    function resize(){
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.floor(window.innerWidth * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
-      ctx.setTransform(dpr,0,0,dpr,0,0);
-
-      const cols = Math.floor(window.innerWidth / fontSize);
-      drops = Array(cols).fill(0).map(() => Math.random() * (window.innerHeight / fontSize));
-      ctx.font = fontSize + "px ui-monospace, Menlo, monospace";
-    }
-
-    function draw(){
-      ctx.fillStyle = "rgba(0,0,0,0.08)";
-      ctx.fillRect(0,0,window.innerWidth,window.innerHeight);
-
-      for(let i=0;i<drops.length;i++){
-        const text = chars[Math.floor(Math.random()*chars.length)];
-        const x = i * fontSize;
-        const y = drops[i] * fontSize;
-
-        ctx.fillStyle = (Math.random() < 0.02) ? "#b6ffcc" : "#00ff66";
-        ctx.fillText(text, x, y);
-
-        if (y > window.innerHeight && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      }
-      requestAnimationFrame(draw);
-    }
-
-    resize();
-    window.addEventListener("resize", resize);
-    draw();
-  </script>
+  <script src="../rain.js"></script>
   <script src="../bookmarks.js"></script>
   <script src="../search.js"></script>
   <script src="../toc.js"></script>
