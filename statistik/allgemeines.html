@@ -100,50 +100,6 @@
       opacity: .9;
     }
 
-    /* Evidence arrow + table */
-    .evidence-layout{
-      display:flex;
-      align-items:center;
-      gap: 18px;
-      margin: 10px 0 18px 0;
-    }
-
-    .evidence-arrow{
-      color: var(--g1);
-      opacity: .92;
-      flex: 0 0 auto;
-    }
-
-    .arrow-label{
-      font-size: 12px;
-      fill: var(--g1);
-      letter-spacing: 0.12em;
-      opacity: .85;
-    }
-
-    .evidence-table{
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 520px;
-    }
-
-    .evidence-table th,
-    .evidence-table td{
-      border: 1px solid rgba(0,255,102,.35);
-      padding: 10px 14px;
-    }
-
-    .evidence-table th{
-      text-align: left;
-      color: var(--g2);
-      font-size: 14px;
-    }
-
-    .evidence-table td{
-      font-size: 13px;
-      opacity: .95;
-    }
-
     /* Auto-Back Button (Matrix) */
     #auto-back{
       position: absolute;
@@ -338,51 +294,38 @@ von diesem Effekt betroffen.</p></li>
 
 <p>Hierarchie der Evidenzen:</p>
 
-<div class="evidence-layout">
-  <svg class="evidence-arrow" width="70" height="320" viewBox="0 0 70 320" aria-hidden="true">
-    <defs>
-      <marker id="arrowhead-int" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-        <polygon points="0 0, 8 4, 0 8" fill="currentColor"></polygon>
-      </marker>
-    </defs>
+<p>
+<table>
+  <tr>
+    <th><strong>Evidenzlevel</strong></th>
+ 
+  </tr>
+  <tr>
+    <td>Systematische Reviews & Meta-Analysen</td>
 
-    <!-- Linie: unten -> oben -->
-    <line x1="35" y1="300" x2="35" y2="20"
-          stroke="currentColor"
-          stroke-width="2"
-          marker-end="url(#arrowhead-int)"></line>
+  </tr>
+  <tr>
+    <td>Randomised Controlled Trials (RCT)/ Expermiente</td>
+  
+  </tr>
+  <tr>
+    <td>Kohortenstudien</td>
 
-    <!-- Label vertikal -->
-    <text x="14" y="180" class="arrow-label"
-          transform="rotate(-90 14 180)">
-      INTERNALE VALIDITÄT ↑
-    </text>
-  </svg>
+  </tr>
+  <tr>
+    <td>Fall-Kontroll-Studien</td>
+    <td>Zelle</td>
 
-  <table class="evidence-table">
-    <tr>
-      <th><strong>Evidenzlevel</strong></th>
-    </tr>
-    <tr>
-      <td>Systematische Reviews &amp; Meta-Analysen</td>
-    </tr>
-    <tr>
-      <td>Randomised Controlled Trials (RCT) / Experimente</td>
-    </tr>
-    <tr>
-      <td>Kohortenstudien</td>
-    </tr>
-    <tr>
-      <td>Fall-Kontroll-Studien</td>
-    </tr>
-    <tr>
-      <td>Fallstudie / -berichte</td>
-    </tr>
-    <tr>
-      <td>Expertenmeinung</td>
-    </tr>
-  </table>
-</div>
+  </tr>
+  <tr>
+    <td>Fallstudie/ -berichte</td>
+
+  </tr>
+  <tr>
+    <td>Expertenmeinung</td>
+
+  </tr>
+</p>
 
     <ul>
       <li>Reliabilität</li>
