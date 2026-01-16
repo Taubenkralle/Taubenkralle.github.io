@@ -8,6 +8,37 @@
   gap: 6px;
 }
 
+.search-actions{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.home-mini{
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(0,255,102,0.3);
+  color: var(--g1, #00ff66);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: inset 0 0 12px rgba(0,255,102,0.08);
+  text-decoration: none;
+}
+
+.home-mini:hover{
+  box-shadow: 0 0 12px rgba(0,255,102,0.25);
+}
+
+.home-icon{
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
 .search-toggle{
   width: 28px;
   height: 28px;
