@@ -102,16 +102,16 @@
 
     /* Auto-Back Button (Matrix) */
     #auto-back{
-      position: fixed;
-      top: 72px;
-      left: 20px;
+      position: absolute;
+      top: 0;
+      left: 0;
       z-index: 5;
 
       display: inline-flex;
       align-items: center;
       gap: 1px;
 
-      padding: 2px 8px;
+      padding: 2px 6px 2px 8px;
       font-size: 12px;
       border-radius: 10px;
 
@@ -135,6 +135,25 @@
       box-shadow: 0 0 18px rgba(0,255,102,.18);
     }
 
+    #auto-back .close{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      margin-left: 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,255,102,.25);
+      color: var(--g2);
+      font-size: 10px;
+      line-height: 1;
+      opacity: .85;
+    }
+    #auto-back .close:hover{
+      opacity: 1;
+      box-shadow: 0 0 8px rgba(0,255,102,.25);
+    }
+
     /* Slot-machine-ish: Buchstaben kippen/pulsieren */
     #auto-back .flip{
       display: inline-block;
@@ -156,6 +175,7 @@
       100% { transform: rotateX(0deg);   opacity: .95; }
     }
   </style>
+  <link rel="stylesheet" href="../bookmarks.css">
 </head>
 <body>
   <nav class="home-only">
@@ -163,8 +183,9 @@
   </nav>
 
   <!-- Auto "Zurück" (erscheint nur nach Sprung) -->
-  <a id="auto-back" href="#">
+  <a id="auto-back" href="#" aria-label="Zurück zur Quelle">
     <span class="flip">Z</span><span class="flip">u</span><span class="flip">r</span><span class="flip">ü</span><span class="flip">c</span><span class="flip">k</span>
+    <span class="close" aria-label="Schließen">x</span>
   </a>
 
   <main>
@@ -218,19 +239,29 @@
 
   <script>
     let lastPos = null;
+    let isDismissed = false;
 
     // merkt sich die Quelle, wenn du auf den Begriff klickst
     document.addEventListener("click", (e) => {
+      const close = e.target.closest("#auto-back .close");
+      if (close) {
+        e.preventDefault();
+        isDismissed = true;
+        document.getElementById("auto-back").classList.remove("show");
+        return;
+      }
+
       const a = e.target.closest("a.wikilink");
       if (!a) return;
       lastPos = "#src-int-valid";
+      isDismissed = false;
     });
 
     function updateBack() {
       const btn = document.getElementById("auto-back");
       const hash = window.location.hash;
 
-      if (!hash) {
+      if (!hash || isDismissed) {
         btn.classList.remove("show");
         return;
       }
@@ -238,6 +269,14 @@
       // Nur zeigen, wenn du zum Ziel gesprungen bist
       if (hash === "#int-valid") {
         btn.href = lastPos || "#src-int-valid";
+        const target = document.querySelector(hash);
+        if (target) {
+          const rect = target.getBoundingClientRect();
+          const top = window.scrollY + rect.top - 28;
+          const left = window.scrollX + rect.left;
+          btn.style.top = `${Math.max(top, 8)}px`;
+          btn.style.left = `${Math.max(left, 8)}px`;
+        }
         btn.classList.add("show");
       } else {
         btn.classList.remove("show");
@@ -247,5 +286,6 @@
     window.addEventListener("hashchange", updateBack);
     window.addEventListener("DOMContentLoaded", updateBack);
   </script>
+  <script src="../bookmarks.js"></script>
 </body>
 </html>
