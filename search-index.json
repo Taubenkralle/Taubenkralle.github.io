@@ -33,13 +33,13 @@
     "title": "ahsome",
     "url": "/index.html",
     "meta": "Page",
-    "keywords": "ahsome schreibtisch x keine treffer. ahsome. statistik elektrotechnik const canvas = document.getelementbyid(\"rain\"); const ctx = canvas.getcontext(\"2d\"); const chars = \"アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789abcdefghijklmnopqrstuvwxyz\"; let drops = []; const fontsize = 16; function resize(){ const dpr = window.devicepixelratio || 1; canvas.width = math.floor(window.innerwidth * dpr); canvas.height = math.floor(window.innerheight * dpr); ctx.settransform(dpr,0,0,dpr,0,0); const cols = math.floor(window.innerwidth / fontsize); drops = array(cols).fill(0).map(() => math.random() * (window.innerheight / fontsize)); ctx.font = fontsize + \"px ui-monospace, menlo, monospace\"; } function draw(){ ctx.fillstyle = \"rgba(0,0,0,0.08)\"; ctx.fillrect(0,0,window.innerwidth,window.innerheight); for(let i=0;i window.innerheight && math.random() > 0.975) drops[i] = 0; drops[i]++; } requestanimationframe(draw); } resize(); window.addeventlistener(\"resize\", resize); draw();"
+    "keywords": "ahsome schreibtisch x keine treffer. git get. statistik elektrotechnik const canvas = document.getelementbyid(\"rain\"); const ctx = canvas.getcontext(\"2d\"); const chars = \"アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789abcdefghijklmnopqrstuvwxyz\"; let drops = []; const fontsize = 16; function resize(){ const dpr = window.devicepixelratio || 1; canvas.width = math.floor(window.innerwidth * dpr); canvas.height = math.floor(window.innerheight * dpr); ctx.settransform(dpr,0,0,dpr,0,0); const cols = math.floor(window.innerwidth / fontsize); drops = array(cols).fill(0).map(() => math.random() * (window.innerheight / fontsize)); ctx.font = fontsize + \"px ui-monospace, menlo, monospace\"; } function draw(){ ctx.fillstyle = \"rgba(0,0,0,0.08)\"; ctx.fillrect(0,0,window.innerwidth,window.innerheight); for(let i=0;i window.innerheight && math.random() > 0.975) drops[i] = 0; drops[i]++; } requestanimationframe(draw); } resize(); window.addeventlistener(\"resize\", resize); draw();"
   },
   {
-    "title": "ahsome.",
-    "url": "/index.html#ahsome",
+    "title": "git get.",
+    "url": "/index.html#git-get",
     "meta": "ahsome",
-    "keywords": "ahsome."
+    "keywords": "git get."
   },
   {
     "title": "Statistik",
