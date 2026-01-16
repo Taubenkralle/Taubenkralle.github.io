@@ -23,11 +23,11 @@
 
 body.crt-on .crt-overlay{
   opacity: 1;
-  animation: crtOn 0.3s ease-out forwards;
+  animation: crtOn 0.9s ease-out forwards;
 }
 
 body.crt-on .crt-overlay::before{
-  animation: crtLineGrow 0.3s ease-out forwards;
+  animation: crtLineGrow 0.9s ease-out forwards;
 }
 
 @keyframes crtOn{
