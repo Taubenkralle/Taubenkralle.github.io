@@ -18,6 +18,10 @@ body.ui-hidden .toc-tab{
   display: none !important;
 }
 
+body.rain-hidden #rain{
+  display: none !important;
+}
+
 main::before,
 .content::before{
   content: "";
