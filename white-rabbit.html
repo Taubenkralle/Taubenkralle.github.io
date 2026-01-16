@@ -91,6 +91,7 @@
       box-shadow: inset 0 0 18px rgba(0,255,102,.08);
       border-radius: 10px;
       overflow: hidden;
+      position: relative;
     }
     .legend-table th,
     .legend-table td{
@@ -121,6 +122,35 @@
     }
     .legend-table tr{
       background-image: linear-gradient(90deg, rgba(0,255,102,.04), rgba(0,0,0,0));
+    }
+    .legend-table tr:hover{
+      box-shadow: 0 0 14px rgba(0,255,102,.22);
+    }
+    .legend-table tr:hover td{
+      animation: wrGlitch 0.26s linear 1;
+    }
+    .legend-table::after{
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 42px;
+      top: -48px;
+      background: linear-gradient(180deg, rgba(0,255,102,0) 0%, rgba(0,255,102,0.18) 50%, rgba(0,255,102,0) 100%);
+      opacity: 0.25;
+      pointer-events: none;
+      animation: wrScan 7s linear infinite;
+    }
+    @keyframes wrGlitch{
+      0%   { transform: translateX(0); text-shadow: none; }
+      20%  { transform: translateX(-0.6px); text-shadow: 0.6px 0 0 rgba(0,255,102,0.35); }
+      40%  { transform: translateX(0.6px); text-shadow: -0.6px 0 0 rgba(0,255,153,0.35); }
+      60%  { transform: translateX(-0.6px); text-shadow: 0.6px 0 0 rgba(0,255,102,0.35); }
+      100% { transform: translateX(0); text-shadow: none; }
+    }
+    @keyframes wrScan{
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(260px); }
     }
   </style>
   <link rel="stylesheet" href="bookmarks.css">
