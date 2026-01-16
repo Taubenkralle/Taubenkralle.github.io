@@ -142,6 +142,16 @@
         e.preventDefault();
         closePanel();
       }
+      if (e.key === "Escape"){
+        closePanel();
+      }
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Escape"){
+        e.preventDefault();
+        closePanel();
+      }
     });
   }
 
