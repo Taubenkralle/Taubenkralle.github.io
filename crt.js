@@ -27,26 +27,9 @@
     }, DURATION_MS);
   }
 
-  function playOffAndNavigate(url){
-    document.body.classList.add("crt-off");
-    window.setTimeout(() => {
-      location.href = url;
-    }, DURATION_MS);
-  }
-
   function init(){
     addOverlay();
     playOn();
-
-    document.addEventListener("click", (e) => {
-      const a = e.target.closest("a");
-      if (!a) return;
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      if (!isInternalLink(a)) return;
-      e.preventDefault();
-      const url = a.href;
-      playOffAndNavigate(url);
-    });
   }
 
   if (document.readyState === "loading"){
