@@ -87,6 +87,10 @@
     const closeBtn = panel.querySelector(".bm-close");
 
     let bookmarks = loadBookmarks();
+    let activeId = localStorage.getItem(`${STORAGE_KEY}.active`) || "";
+    let activeCanvas = null;
+    let activeRaf = null;
+    let activeResize = null;
 
     function render(){
       listEl.innerHTML = "";
@@ -99,6 +103,8 @@
         const jump = document.createElement("button");
         jump.type = "button";
         jump.className = "bm-jump";
+        jump.dataset.id = bm.id;
+        if (bm.id === activeId) jump.classList.add("bm-active");
         jump.innerHTML = `
           <span class="bm-label"></span>
           <span class="bm-meta"></span>
@@ -126,6 +132,7 @@
         listEl.appendChild(li);
 
         jump.addEventListener("click", () => {
+          setActive(bm.id);
           if (bm.page === location.pathname){
             window.scrollTo({ top: bm.y, behavior: "smooth" });
           }else{
@@ -147,6 +154,84 @@
           render();
         });
       });
+      if (activeId) setActive(activeId);
+    }
+
+    function stopMatrix(){
+      if (activeRaf) cancelAnimationFrame(activeRaf);
+      activeRaf = null;
+      if (activeResize) window.removeEventListener("resize", activeResize);
+      activeResize = null;
+      if (activeCanvas){
+        const ctx = activeCanvas.getContext("2d");
+        if (ctx) ctx.clearRect(0, 0, activeCanvas.width, activeCanvas.height);
+        activeCanvas.remove();
+      }
+      activeCanvas = null;
+    }
+
+    function startMatrix(btn){
+      stopMatrix();
+      const canvas = document.createElement("canvas");
+      canvas.className = "bm-matrix";
+      btn.prepend(canvas);
+      activeCanvas = canvas;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const fontSize = 10;
+      let drops = [];
+
+      function resize(){
+        const rect = btn.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+        canvas.style.width = `${rect.width}px`;
+        canvas.style.height = `${rect.height}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const cols = Math.max(1, Math.floor(rect.width / fontSize));
+        drops = Array(cols).fill(0).map(() => Math.random() * (rect.height / fontSize));
+        ctx.font = `${fontSize}px ui-monospace, Menlo, monospace`;
+      }
+
+      function draw(){
+        if (!activeCanvas) return;
+        const rect = btn.getBoundingClientRect();
+        ctx.fillStyle = "rgba(0,0,0,0.18)";
+        ctx.fillRect(0, 0, rect.width, rect.height);
+
+        for (let i = 0; i < drops.length; i++){
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          const x = i * fontSize;
+          const y = drops[i] * fontSize;
+          ctx.fillStyle = (Math.random() < 0.03) ? "#b6ffcc" : "#00ff66";
+          ctx.fillText(text, x, y);
+          if (y > rect.height && Math.random() > 0.975) drops[i] = 0;
+          drops[i]++;
+        }
+        activeRaf = requestAnimationFrame(draw);
+      }
+
+      resize();
+      activeResize = () => resize();
+      window.addEventListener("resize", activeResize);
+      draw();
+    }
+
+    function setActive(id){
+      activeId = id || "";
+      localStorage.setItem(`${STORAGE_KEY}.active`, activeId);
+      const prev = listEl.querySelector(".bm-jump.bm-active");
+      if (prev) prev.classList.remove("bm-active");
+      const next = listEl.querySelector(`.bm-jump[data-id="${CSS.escape(activeId)}"]`);
+      if (next){
+        next.classList.add("bm-active");
+        startMatrix(next);
+      }else{
+        stopMatrix();
+      }
     }
 
     function addBookmark(){
@@ -163,6 +248,7 @@
       bookmarks = [item, ...bookmarks];
       saveBookmarks(bookmarks);
       render();
+      setActive(id);
       panel.classList.add("open");
     }
 
@@ -178,9 +264,12 @@
       panel.classList.toggle("open");
     }
 
-    function jumpToLatest(){
+    function jumpToNext(){
       if (!bookmarks.length) return;
-      const bm = bookmarks[0];
+      const currentIndex = bookmarks.findIndex((b) => b.id === activeId);
+      const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % bookmarks.length;
+      const bm = bookmarks[nextIndex];
+      setActive(bm.id);
       if (bm.page === location.pathname){
         window.scrollTo({ top: bm.y, behavior: "smooth" });
       }else{
@@ -210,7 +299,7 @@
       }
       if (e.key === "a" && !e.ctrlKey && !e.metaKey && !e.altKey){
         e.preventDefault();
-        jumpToLatest();
+        jumpToNext();
       }
       if (e.key === "d" && !e.ctrlKey && !e.metaKey && !e.altKey){
         e.preventDefault();
@@ -234,6 +323,7 @@
         requestAnimationFrame(() => {
           window.scrollTo({ top: match.y });
         });
+        setActive(id);
       }
       params.delete("bm");
       const next = params.toString();
@@ -242,6 +332,7 @@
     }
 
     render();
+    if (activeId) setActive(activeId);
     jumpFromParam();
   }
 

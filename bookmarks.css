@@ -114,6 +114,8 @@
   border-radius: 8px;
   padding: 8px 10px;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
 .bm-jump:hover{
@@ -121,11 +123,29 @@
   animation: bmGlitch 0.24s linear 1;
 }
 
+.bm-jump.bm-active{
+  border-color: rgba(0,255,153,0.6);
+  box-shadow: 0 0 20px rgba(0,255,153,0.25), inset 0 0 18px rgba(0,255,102,0.2);
+}
+
+.bm-matrix{
+  position: absolute;
+  inset: 0;
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.bm-jump.bm-active .bm-matrix{
+  opacity: 0.32;
+}
+
 .bm-label{
   display: block;
   font-size: 13px;
   color: var(--g3, #00ff99);
   text-shadow: 0 0 8px rgba(0,255,153,0.25);
+  position: relative;
+  z-index: 1;
 }
 
 .bm-meta{
@@ -133,6 +153,8 @@
   font-size: 11px;
   opacity: 0.7;
   margin-top: 2px;
+  position: relative;
+  z-index: 1;
 }
 
 .bm-row-actions{
