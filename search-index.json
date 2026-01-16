@@ -1,50 +1,44 @@
 [
   {
-    "title": "Schreibtisch",
+    "title": "Elektrotechnik",
+    "url": "elektrotechnik/elektrotechnik.html",
+    "meta": "Page",
+    "keywords": "elektrotechnik"
+  },
+  {
+    "title": "ahsome",
     "url": "index.html",
-    "meta": "Home",
-    "keywords": "start ueberblick schreibtisch"
+    "meta": "Page",
+    "keywords": "ahsome"
   },
   {
     "title": "Statistik",
     "url": "statistik.html",
-    "meta": "Fachbereich",
-    "keywords": "statistik ueberblick"
+    "meta": "Page",
+    "keywords": "statistik"
   },
   {
-    "title": "Statistik – Allgemeines",
+    "title": "Allgemeines zur Statistik",
     "url": "statistik/allgemeines.html",
-    "meta": "Kapitel",
-    "keywords": "evidenzbasiert guetekriterien grundbegriffe"
+    "meta": "Page",
+    "keywords": "allgemeines zur statistik"
   },
   {
     "title": "Evidenzbasiertes Handeln",
     "url": "statistik/allgemeines.html#evidenzbasiertes-handeln",
-    "meta": "Statistik – Allgemeines",
-    "keywords": "entscheidungen evidenz wissenschaft"
-  },
-  {
-    "title": "Wissenschaftliche Guetekriterien",
-    "url": "statistik/allgemeines.html#wissenschaftliche-guetekriterien",
-    "meta": "Statistik – Allgemeines",
-    "keywords": "reliabilitaet validitaet rct experiment"
-  },
-  {
-    "title": "Internale Validitaet",
-    "url": "statistik/allgemeines.html#int-valid",
-    "meta": "Statistik – Allgemeines",
-    "keywords": "stoervariablen kausalitaet"
+    "meta": "Allgemeines zur Statistik",
+    "keywords": "evidenzbasiertes handeln"
   },
   {
     "title": "Grundbegriffe",
     "url": "statistik/allgemeines.html#grundbegriffe",
-    "meta": "Statistik – Allgemeines",
-    "keywords": "validitaet reliabilitaet"
+    "meta": "Allgemeines zur Statistik",
+    "keywords": "grundbegriffe"
   },
   {
-    "title": "Elektrotechnik",
-    "url": "elektrotechnik/elektrotechnik.html",
-    "meta": "Fachbereich",
-    "keywords": "elektrotechnik platzhalter"
+    "title": "Wissenschaftliche Gütekriterien",
+    "url": "statistik/allgemeines.html#wissenschaftliche-guetekriterien",
+    "meta": "Allgemeines zur Statistik",
+    "keywords": "wissenschaftliche gütekriterien"
   }
 ]
