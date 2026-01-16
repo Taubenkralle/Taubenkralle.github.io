@@ -16,30 +16,29 @@
   height: 2px;
   background: #22ff88;
   box-shadow: 0 0 18px rgba(34,255,136,0.55), 0 0 40px rgba(34,255,136,0.3);
-  transform: scaleX(0.02);
+  transform: scaleX(0.1) scaleY(0.6);
   transform-origin: 50% 50%;
   opacity: 0;
 }
 
 body.crt-on .crt-overlay{
   opacity: 1;
-  animation: crtOn 0.9s ease-out forwards;
+  animation: horizonFade 0.9s ease-out forwards;
 }
 
 body.crt-on .crt-overlay::before{
-  animation: crtLineGrow 0.9s ease-out forwards;
+  animation: horizonGrow 0.9s ease-out forwards;
 }
 
-@keyframes crtOn{
-  0%   { transform: scaleY(0.02); opacity: 1; }
-  60%  { transform: scaleY(0.08); opacity: 1; }
-  100% { transform: scaleY(1); opacity: 0; }
+@keyframes horizonFade{
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
 }
 
-@keyframes crtLineGrow{
-  0%   { transform: scaleX(0.02); opacity: 0.4; }
-  40%  { transform: scaleX(1); opacity: 1; }
-  100% { transform: scaleX(1); opacity: 0; }
+@keyframes horizonGrow{
+  0%   { transform: scaleX(0.1) scaleY(0.6); opacity: 0.4; }
+  35%  { transform: scaleX(1) scaleY(1); opacity: 1; }
+  100% { transform: scaleX(1) scaleY(140); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce){
