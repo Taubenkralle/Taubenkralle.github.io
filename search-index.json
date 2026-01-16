@@ -3,7 +3,7 @@
     "title": "Elektrotechnik",
     "url": "/elektrotechnik/elektrotechnik.html",
     "meta": "Page",
-    "keywords": "elektrotechnik"
+    "keywords": "elektrotechnik ← schreibtisch x keine treffer. elektrotechnik einordnung lorem ipsum dolor sit amet, consectetur adipiscing elit. sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. grundbegriffe ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. beispiel lorem ipsum dolor sit amet consectetur adipiscing elit duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
   },
   {
     "title": "Beispiel",
@@ -33,7 +33,7 @@
     "title": "ahsome",
     "url": "/index.html",
     "meta": "Page",
-    "keywords": "ahsome"
+    "keywords": "ahsome schreibtisch x keine treffer. ahsome. statistik elektrotechnik const canvas = document.getelementbyid(\"rain\"); const ctx = canvas.getcontext(\"2d\"); const chars = \"アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789abcdefghijklmnopqrstuvwxyz\"; let drops = []; const fontsize = 16; function resize(){ const dpr = window.devicepixelratio || 1; canvas.width = math.floor(window.innerwidth * dpr); canvas.height = math.floor(window.innerheight * dpr); ctx.settransform(dpr,0,0,dpr,0,0); const cols = math.floor(window.innerwidth / fontsize); drops = array(cols).fill(0).map(() => math.random() * (window.innerheight / fontsize)); ctx.font = fontsize + \"px ui-monospace, menlo, monospace\"; } function draw(){ ctx.fillstyle = \"rgba(0,0,0,0.08)\"; ctx.fillrect(0,0,window.innerwidth,window.innerheight); for(let i=0;i window.innerheight && math.random() > 0.975) drops[i] = 0; drops[i]++; } requestanimationframe(draw); } resize(); window.addeventlistener(\"resize\", resize); draw();"
   },
   {
     "title": "ahsome.",
@@ -45,7 +45,7 @@
     "title": "Statistik",
     "url": "/statistik.html",
     "meta": "Page",
-    "keywords": "statistik"
+    "keywords": "statistik schreibtisch x keine treffer. statistik allgemeines"
   },
   {
     "title": "Statistik",
@@ -57,7 +57,7 @@
     "title": "Allgemeines zur Statistik",
     "url": "/statistik/allgemeines.html",
     "meta": "Page",
-    "keywords": "allgemeines zur statistik"
+    "keywords": "allgemeines zur statistik ← statistik x keine treffer. z u r ue c k x statistik – allgemeines evidenzbasiertes handeln wichtige entscheidungen sollen den stand der verfuegbaren wissenschaftlichen evidenz beruecksichtigen. sie sollen nicht allein aufgrund erfahrung und subjektiver einschaetzungen getroffen werden. wissenschaftliche guetekriterien internale validitaet freiheit von stoervariablen. reliabilitaet zuverlaessigkeit der messung. reliabilitaet internale validitaet koennen berichtete effekte eindeutig auf die untersuchungsbedingungen zurueckgefuehrt werden? gibt es alternativerklaerungen? → laborstudien, experimente, rcts lore ipsum bold text and italic text example. bold and italic text example. inline code example: inline-code() „lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.“ grundbegriffe internale validitaet ist fuer externale validitaet eine notwendige, aber keine hinreichende bedingung. let lastpos = null; let isdismissed = false; // merkt sich die quelle, wenn du auf den begriff klickst document.addeventlistener(\"click\", (e) => { const close = e.target.closest(\"#auto-back .close\"); if (close) { e.preventdefault(); isdismissed = true; document.getelementbyid(\"auto-back\").classlist.remove(\"show\"); return; } const a = e.target.closest(\"a.wikilink\"); if (!a) return; lastpos = \"#src-int-valid\"; isdismissed = false; }); function updateback() { const btn = document.getelementbyid(\"auto-back\"); const hash = window.location.hash; if (!hash || isdismissed) { btn.classlist.remove(\"show\"); return; } // nur zeigen, wenn du zum ziel gesprungen bist if (hash === \"#int-valid\") { btn.href = lastpos || \"#src-int-valid\"; const target = document.queryselector(hash); if (target) { const rect = target.getboundingclientrect(); const top = window.scrolly + rect.top - 44; const left = window.scrollx + rect.left; btn.style.top = `${math.max(top, 8)}px`; btn.style.left = `${math.max(left, 8)}px`; } btn.classlist.add(\"show\"); } else { btn.classlist.remove(\"show\"); } } window.addeventlistener(\"hashchange\", updateback); window.addeventlistener(\"domcontentloaded\", updateback);"
   },
   {
     "title": "Evidenzbasiertes Handeln",

@@ -32,6 +32,12 @@ function stripTags(html){
   return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
+function extractBodyText(html){
+  const match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  if (!match) return "";
+  return decodeEntities(stripTags(match[1]));
+}
+
 function normalize(text){
   return (text || "")
     .toLowerCase()
@@ -106,11 +112,13 @@ function buildIndex(){
     const rel = toRelative(file);
     const urlBase = `/${rel}`;
     const title = extractTitle(html) || rel;
+    const bodyText = normalize(extractBodyText(html));
+    const pageKeywords = [normalize(title), bodyText].filter(Boolean).join(" ");
     items.push({
       title,
       url: urlBase,
       meta: "Page",
-      keywords: normalize(title)
+      keywords: pageKeywords
     });
 
     const headings = extractHeadings(html);

@@ -72,6 +72,24 @@
       });
     }
 
+    function setActive(id){
+      const prev = listEl.querySelector(".toc-active");
+      if (prev) prev.classList.remove("toc-active");
+      if (!id) return;
+      const next = listEl.querySelector(`a[href="#${CSS.escape(id)}"]`);
+      if (next) next.classList.add("toc-active");
+    }
+
+    function updateActive(){
+      const marker = window.scrollY + 140;
+      let current = "";
+      filtered.forEach((h) => {
+        const top = h.getBoundingClientRect().top + window.scrollY;
+        if (top <= marker) current = h.id;
+      });
+      setActive(current);
+    }
+
     function open(){
       panel.classList.add("open");
     }
@@ -79,6 +97,20 @@
     function close(){
       panel.classList.remove("open");
     }
+
+    document.addEventListener("keydown", (e) => {
+      const active = document.activeElement;
+      const isTyping = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable);
+      if (isTyping) return;
+      if (e.key === "1"){
+        e.preventDefault();
+        open();
+      }
+      if (e.key === "2"){
+        e.preventDefault();
+        close();
+      }
+    });
 
     tab.addEventListener("click", () => {
       panel.classList.toggle("open");
@@ -89,6 +121,9 @@
       if (!link) return;
       panel.classList.remove("open");
     });
+
+    updateActive();
+    window.addEventListener("scroll", updateActive, { passive: true });
   }
 
   if (document.readyState === "loading"){
