@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>ahsome</title>
+  <title>White Rabbit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root{
@@ -18,36 +18,29 @@
       background: radial-gradient(1200px 800px at 50% 40%, #07140b 0%, var(--bg) 60%, #000 100%);
       color: var(--g1);
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      display:block;
     }
 
-    /* Rain layer */
-    #rain{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
-      z-index:0;
-      opacity:0.28;
-      pointer-events:none;
-    }
-
-    /* Content above rain */
-    .content{
-      position:relative;
-      z-index:1;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      gap:14px;
+    main{
+      max-width: 720px;
+      margin: 120px auto 80px auto;
+      line-height: 1.7;
+      padding: 0 18px;
     }
 
     h1{
-      margin:0;
       font-weight:600;
       letter-spacing:0.08em;
       text-shadow: 0 0 10px rgba(0,255,102,.35), 0 0 24px rgba(0,255,102,.18);
+      margin-top: 0;
+    }
+
+    h2{
+      margin-top: 28px;
+      font-size: 16px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--g2);
     }
 
     a{
@@ -72,16 +65,27 @@
     }
     .home:hover{ opacity:1; }
 
-    /* TOC */
-    .toc{
+    .legend{
       list-style:none;
-      padding:0;
-      margin:0;
-      text-align:center;
+      padding: 0;
+      margin: 10px 0 0 0;
     }
-    .toc li{ margin:8px 0; }
-    .toc a{ font-size:14px; opacity:.9; }
-    .toc a:hover{ opacity:1; }
+    .legend li{
+      margin: 8px 0;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(0,255,102,.2);
+      background: rgba(0,0,0,.2);
+      box-shadow: inset 0 0 14px rgba(0,255,102,.06);
+    }
+    .legend code{
+      color: var(--g3);
+      background: rgba(0,255,102,.08);
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(0,255,102,.2);
+      margin-right: 8px;
+    }
   </style>
   <link rel="stylesheet" href="bookmarks.css">
   <link rel="stylesheet" href="search.css">
@@ -89,12 +93,8 @@
   <link rel="stylesheet" href="music.css">
 </head>
 <body>
-
-  <!-- 1) Canvas muss in den BODY, nicht ins CSS -->
-  <canvas id="rain"></canvas>
-
   <nav class="home-only">
-    <a href="index.html" class="home">Schreibtisch</a>
+    <a href="index.html" class="home">← Schreibtisch</a>
   </nav>
 
   <div class="search-shell" data-index="search-index.json">
@@ -122,58 +122,37 @@
     </button>
   </div>
 
-  <div class="content">
-    <h1>git get.</h1>
+  <main>
+    <h1>White Rabbit</h1>
+    <p>Legende der Tastaturkuerzel fuer dein Wiki.</p>
 
-    <ul class="toc">
-      <li><a href="statistik.html">Statistik</a></li>
-      <li><a href="elektrotechnik/elektrotechnik.html">Elektrotechnik</a></li>
-      <li><a href="white-rabbit.html">White Rabbit</a></li>
+    <h2>Lesezeichen</h2>
+    <ul class="legend">
+      <li><code>W</code> Lesezeichen setzen</li>
+      <li><code>A</code> Zum naechsten Lesezeichen springen (zyklisch)</li>
+      <li><code>D</code> Lesezeichen-Leiste oeffnen</li>
+      <li><code>S</code> Lesezeichen-Leiste schliessen</li>
     </ul>
-  </div>
 
-  <!-- 2) Script am Ende, nachdem das Canvas existiert -->
-  <script>
-    const canvas = document.getElementById("rain");
-    const ctx = canvas.getContext("2d");
+    <h2>Suche</h2>
+    <ul class="legend">
+      <li><code>3</code> Suche oeffnen</li>
+      <li><code>/</code> Suche oeffnen (alternativ)</li>
+      <li><code>E</code> Suche schliessen</li>
+    </ul>
 
-    const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let drops = [];
-    const fontSize = 16;
+    <h2>Inhalt</h2>
+    <ul class="legend">
+      <li><code>1</code> Inhaltsverzeichnis oeffnen</li>
+      <li><code>2</code> Inhaltsverzeichnis schliessen</li>
+    </ul>
 
-    function resize(){
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.floor(window.innerWidth * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
-      ctx.setTransform(dpr,0,0,dpr,0,0);
+    <h2>Musik</h2>
+    <ul class="legend">
+      <li><code>4</code> Musik an/aus</li>
+    </ul>
+  </main>
 
-      const cols = Math.floor(window.innerWidth / fontSize);
-      drops = Array(cols).fill(0).map(() => Math.random() * (window.innerHeight / fontSize));
-      ctx.font = fontSize + "px ui-monospace, Menlo, monospace";
-    }
-
-    function draw(){
-      ctx.fillStyle = "rgba(0,0,0,0.08)";
-      ctx.fillRect(0,0,window.innerWidth,window.innerHeight);
-
-      for(let i=0;i<drops.length;i++){
-        const text = chars[Math.floor(Math.random()*chars.length)];
-        const x = i * fontSize;
-        const y = drops[i] * fontSize;
-
-        ctx.fillStyle = (Math.random() < 0.02) ? "#b6ffcc" : "#00ff66";
-        ctx.fillText(text, x, y);
-
-        if (y > window.innerHeight && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      }
-      requestAnimationFrame(draw);
-    }
-
-    resize();
-    window.addEventListener("resize", resize);
-    draw();
-  </script>
   <script src="bookmarks.js"></script>
   <script src="search.js"></script>
   <script src="toc.js"></script>
