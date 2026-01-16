@@ -49,9 +49,15 @@
     el.appendChild(caret);
   }
 
-  function waitForAdvance(){
+  function waitForAdvance(skip){
     return new Promise((resolve) => {
       function onKey(e){
+        if (e.key === "Escape"){
+          e.preventDefault();
+          document.removeEventListener("keydown", onKey);
+          skip();
+          return;
+        }
         if (e.key !== "Enter" && e.key !== " ") return;
         e.preventDefault();
         document.removeEventListener("keydown", onKey);
@@ -66,9 +72,15 @@
     if (!mode) return;
     const lines = mode === "knock" ? WHITE_RABBIT_LINES : DEFAULT_LINES;
     const { overlay, text, caret } = makeOverlay();
+    let aborted = false;
+    const skip = () => {
+      aborted = true;
+      overlay.remove();
+    };
     for (let i = 0; i < lines.length; i++){
+      if (aborted) return;
       await typeLine(text, caret, lines[i]);
-      await waitForAdvance();
+      await waitForAdvance(skip);
     }
     overlay.remove();
   }
