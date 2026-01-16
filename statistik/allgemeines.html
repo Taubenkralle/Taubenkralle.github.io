@@ -214,7 +214,7 @@
     </div>
     <div class="search-panel" hidden>
       <div class="search-bar">
-        <input class="search-input" type="search" placeholder="Suche im Wiki...">
+        <input class="search-input" type="search" placeholder="Suche in der Matrix">
         <button class="search-close" type="button">x</button>
       </div>
       <ul class="search-results"></ul>
@@ -397,7 +397,7 @@ von diesem Effekt betroffen.</p></li>
     let lastPos = null;
     let isDismissed = false;
 
-    // merkt sich die Quelle, wenn du auf den Begriff klickst
+    // merkt sich Quelle+Ziel, wenn du auf einen Wiki-Link klickst
     document.addEventListener("click", (e) => {
       const close = e.target.closest("#auto-back .close");
       if (close) {
@@ -409,7 +409,20 @@ von diesem Effekt betroffen.</p></li>
 
       const a = e.target.closest("a.wikilink");
       if (!a) return;
-      lastPos = "#src-int-valid";
+
+      const target = a.getAttribute("href") || "";
+      if (!target.startsWith("#")) return;
+      const id = target.slice(1);
+
+      const src = a.closest("[id]");
+      if (src && src.id){
+        lastPos = `#${src.id}`;
+      }else{
+        lastPos = "#";
+      }
+
+      sessionStorage.setItem("lastWikiSrc", lastPos);
+      sessionStorage.setItem("lastWikiTarget", `#${id}`);
       isDismissed = false;
     });
 
@@ -422,21 +435,22 @@ von diesem Effekt betroffen.</p></li>
         return;
       }
 
-      // Nur zeigen, wenn zum Ziel gesprungen
-      if (hash === "#int-valid") {
-        btn.href = lastPos || "#src-int-valid";
-        const target = document.querySelector(hash);
-        if (target) {
-          const rect = target.getBoundingClientRect();
-          const top = window.scrollY + rect.top - 44;
-          const left = window.scrollX + rect.left;
-          btn.style.top = `${Math.max(top, 8)}px`;
-          btn.style.left = `${Math.max(left, 8)}px`;
-        }
-        btn.classList.add("show");
-      } else {
+      const expected = sessionStorage.getItem("lastWikiTarget");
+      if (!expected || hash !== expected) {
         btn.classList.remove("show");
+        return;
       }
+
+      btn.href = sessionStorage.getItem("lastWikiSrc") || "#";
+      const target = document.querySelector(hash);
+      if (target) {
+        const rect = target.getBoundingClientRect();
+        const top = window.scrollY + rect.top - 44;
+        const left = window.scrollX + rect.left;
+        btn.style.top = `${Math.max(top, 8)}px`;
+        btn.style.left = `${Math.max(left, 8)}px`;
+      }
+      btn.classList.add("show");
     }
 
     window.addEventListener("hashchange", updateBack);
