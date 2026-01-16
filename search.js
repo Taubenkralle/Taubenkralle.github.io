@@ -138,6 +138,10 @@
         e.preventDefault();
         loadIndex().then(open);
       }
+      if (e.key === "e"){
+        e.preventDefault();
+        closePanel();
+      }
     });
   }
 
