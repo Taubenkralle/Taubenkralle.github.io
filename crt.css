@@ -22,20 +22,20 @@
 
 body.crt-on .crt-overlay{
   opacity: 1;
-  animation: crtOn 0.5s ease-out forwards;
+  animation: crtOn 0.8s ease-out forwards;
 }
 
 body.crt-on .crt-overlay::before{
-  animation: crtLineOn 0.5s ease-out forwards;
+  animation: crtLineOn 0.8s ease-out forwards;
 }
 
 body.crt-off .crt-overlay{
   opacity: 1;
-  animation: crtOff 0.5s ease-in forwards;
+  animation: crtOff 0.8s ease-in forwards;
 }
 
 body.crt-off .crt-overlay::before{
-  animation: crtLineOff 0.5s ease-in forwards;
+  animation: crtLineOff 0.8s ease-in forwards;
 }
 
 @keyframes crtOn{
