@@ -8,7 +8,8 @@
     "Knock, Knock, Neo."
   ];
 
-  const TYPE_MS = 40;
+  const BASE_MS = 32;
+  const JITTER_MS = 28;
 
   function makeOverlay(){
     const overlay = document.createElement("div");
@@ -27,12 +28,23 @@
     return new Promise((r) => setTimeout(r, ms));
   }
 
+  function nextDelay(ch, prev){
+    let ms = BASE_MS + Math.random() * JITTER_MS;
+    if (ch === " ") ms += 18;
+    if (/[.,!?]/.test(ch)) ms += 140;
+    if (prev && /[.,!?]/.test(prev)) ms += 40;
+    return ms;
+  }
+
   async function typeLine(el, caret, line){
     caret.remove();
     el.textContent = "";
+    let prev = "";
     for (let i = 0; i < line.length; i++){
-      el.textContent += line[i];
-      await sleep(TYPE_MS);
+      const ch = line[i];
+      el.textContent += ch;
+      await sleep(nextDelay(ch, prev));
+      prev = ch;
     }
     el.appendChild(caret);
   }
@@ -50,7 +62,8 @@
   }
 
   async function run(){
-    const mode = document.body.dataset.neo || "wake";
+    const mode = document.body.dataset.neo;
+    if (!mode) return;
     const lines = mode === "knock" ? WHITE_RABBIT_LINES : DEFAULT_LINES;
     const { overlay, text, caret } = makeOverlay();
     for (let i = 0; i < lines.length; i++){

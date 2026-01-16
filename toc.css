@@ -110,7 +110,7 @@
 
 .toc-tab{
   position: fixed;
-  left: -28px;
+  left: -18px;
   top: 50%;
   transform: translateY(-50%) rotate(90deg);
   z-index: 996;
@@ -138,6 +138,6 @@
     width: 88vw;
   }
   .toc-tab{
-    left: -34px;
+    left: -24px;
   }
 }
