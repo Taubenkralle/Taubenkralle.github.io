@@ -1,44 +1,104 @@
 [
   {
     "title": "Elektrotechnik",
-    "url": "elektrotechnik/elektrotechnik.html",
+    "url": "/elektrotechnik/elektrotechnik.html",
     "meta": "Page",
     "keywords": "elektrotechnik"
   },
   {
+    "title": "Beispiel",
+    "url": "/elektrotechnik/elektrotechnik.html#beispiel",
+    "meta": "Elektrotechnik",
+    "keywords": "beispiel"
+  },
+  {
+    "title": "Einordnung",
+    "url": "/elektrotechnik/elektrotechnik.html#einordnung",
+    "meta": "Elektrotechnik",
+    "keywords": "einordnung"
+  },
+  {
+    "title": "Elektrotechnik",
+    "url": "/elektrotechnik/elektrotechnik.html#elektrotechnik",
+    "meta": "Elektrotechnik",
+    "keywords": "elektrotechnik"
+  },
+  {
+    "title": "Grundbegriffe",
+    "url": "/elektrotechnik/elektrotechnik.html#grundbegriffe",
+    "meta": "Elektrotechnik",
+    "keywords": "grundbegriffe"
+  },
+  {
     "title": "ahsome",
-    "url": "index.html",
+    "url": "/index.html",
     "meta": "Page",
     "keywords": "ahsome"
   },
   {
+    "title": "ahsome.",
+    "url": "/index.html#ahsome",
+    "meta": "ahsome",
+    "keywords": "ahsome."
+  },
+  {
     "title": "Statistik",
-    "url": "statistik.html",
+    "url": "/statistik.html",
     "meta": "Page",
     "keywords": "statistik"
   },
   {
+    "title": "Statistik",
+    "url": "/statistik.html#statistik",
+    "meta": "Statistik",
+    "keywords": "statistik"
+  },
+  {
     "title": "Allgemeines zur Statistik",
-    "url": "statistik/allgemeines.html",
+    "url": "/statistik/allgemeines.html",
     "meta": "Page",
     "keywords": "allgemeines zur statistik"
   },
   {
     "title": "Evidenzbasiertes Handeln",
-    "url": "statistik/allgemeines.html#evidenzbasiertes-handeln",
+    "url": "/statistik/allgemeines.html#evidenzbasiertes-handeln",
     "meta": "Allgemeines zur Statistik",
     "keywords": "evidenzbasiertes handeln"
   },
   {
     "title": "Grundbegriffe",
-    "url": "statistik/allgemeines.html#grundbegriffe",
+    "url": "/statistik/allgemeines.html#grundbegriffe",
     "meta": "Allgemeines zur Statistik",
     "keywords": "grundbegriffe"
   },
   {
-    "title": "Wissenschaftliche Gütekriterien",
-    "url": "statistik/allgemeines.html#wissenschaftliche-guetekriterien",
+    "title": "Internale Validität",
+    "url": "/statistik/allgemeines.html#int-valid",
     "meta": "Allgemeines zur Statistik",
-    "keywords": "wissenschaftliche gütekriterien"
+    "keywords": "internale validitaet"
+  },
+  {
+    "title": "Lore Ipsum",
+    "url": "/statistik/allgemeines.html#lore-ipsum",
+    "meta": "Allgemeines zur Statistik",
+    "keywords": "lore ipsum"
+  },
+  {
+    "title": "Internale Validität ist für externale Validität eine notwendige, aber keine hinreichende Bedingung.",
+    "url": "/statistik/allgemeines.html#src-int-valid",
+    "meta": "Allgemeines zur Statistik",
+    "keywords": "internale validitaet ist fuer externale validitaet eine notwendige, aber keine hinreichende bedingung."
+  },
+  {
+    "title": "Statistik – Allgemeines",
+    "url": "/statistik/allgemeines.html#statistik-allgemeines",
+    "meta": "Allgemeines zur Statistik",
+    "keywords": "statistik – allgemeines"
+  },
+  {
+    "title": "Wissenschaftliche Gütekriterien",
+    "url": "/statistik/allgemeines.html#wissenschaftliche-guetekriterien",
+    "meta": "Allgemeines zur Statistik",
+    "keywords": "wissenschaftliche guetekriterien"
   }
 ]

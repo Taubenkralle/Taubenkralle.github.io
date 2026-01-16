@@ -1,0 +1,119 @@
+.toc-panel{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  max-width: 80vw;
+  height: 100vh;
+  z-index: 997;
+  background:
+    linear-gradient(180deg, rgba(6,18,10,0.78) 0%, rgba(2,8,4,0.86) 60%),
+    repeating-linear-gradient(0deg, rgba(0,255,102,0.05) 0px, rgba(0,255,102,0.05) 1px, transparent 1px, transparent 3px);
+  border-right: 1px solid rgba(0, 255, 102, 0.35);
+  color: var(--g1, #00ff66);
+  transform: translateX(-100%);
+  transition: transform 0.18s ease;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 10px 0 24px rgba(0, 0, 0, 0.35), inset 0 0 22px rgba(0,255,102,0.08);
+}
+
+.toc-panel.open{
+  transform: translateX(0);
+}
+
+.toc-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 12px 6px 12px;
+  border-bottom: 1px solid rgba(0, 255, 102, 0.15);
+}
+
+.toc-title{
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--g2, #00cc55);
+  text-shadow: 0 0 10px rgba(0,255,102,0.25);
+}
+
+.toc-close{
+  background: transparent;
+  border: 1px solid rgba(0, 255, 102, 0.25);
+  color: var(--g1, #00ff66);
+  border-radius: 6px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.toc-close:hover{
+  box-shadow: 0 0 10px rgba(0,255,102,0.25);
+}
+
+.toc-list{
+  list-style: none;
+  padding: 10px 12px 12px 12px;
+  margin: 0;
+  overflow: auto;
+  flex: 1;
+}
+
+.toc-list li{
+  margin: 6px 0;
+}
+
+.toc-list a{
+  display: block;
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,255,102,0.2);
+  background: rgba(0,0,0,0.2);
+  color: var(--g3, #00ff99);
+  font-size: 12px;
+}
+
+.toc-list a:hover{
+  box-shadow: 0 0 12px rgba(0,255,102,0.2);
+}
+
+.toc-list a[data-level="2"]{ padding-left: 14px; }
+.toc-list a[data-level="3"]{ padding-left: 22px; }
+.toc-list a[data-level="4"]{ padding-left: 30px; }
+
+.toc-empty{
+  padding: 8px 12px 12px 12px;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.toc-tab{
+  position: fixed;
+  left: -28px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  z-index: 996;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 255, 102, 0.35);
+  color: var(--g1, #00ff66);
+  border-radius: 10px 10px 0 0;
+  padding: 6px 10px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.toc-tab:hover{
+  box-shadow: 0 0 14px rgba(0,255,102,0.18);
+}
+
+@media (max-width: 600px){
+  .toc-panel{
+    width: 88vw;
+  }
+  .toc-tab{
+    left: -34px;
+  }
+}

@@ -8,6 +8,35 @@
       .replace(/ß/g, "ss");
   }
 
+  function slugify(text){
+    return normalize(text)
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  function ensureHeadingIds(){
+    const headings = document.querySelectorAll("h1, h2, h3, h4");
+    headings.forEach((h) => {
+      if (!h.id){
+        const slug = slugify(h.textContent || "");
+        if (slug) h.id = slug;
+      }
+    });
+    if (location.hash){
+      const el = document.querySelector(location.hash);
+      if (el) el.scrollIntoView();
+    }
+  }
+
+  function resolveUrl(url){
+    if (!url) return "#";
+    if (url.startsWith("/") && location.origin === "null"){
+      return url.slice(1);
+    }
+    if (url.startsWith("/")) return url;
+    return url;
+  }
+
   function tokenize(query){
     return normalize(query).split(/\s+/).filter(Boolean);
   }
@@ -43,7 +72,7 @@
       list.forEach((item) => {
         const li = document.createElement("li");
         li.innerHTML = `
-          <a href="${item.url}">
+          <a href="${resolveUrl(item.url)}">
             <span class="search-title"></span>
             <span class="search-meta"></span>
           </a>
@@ -115,6 +144,7 @@
   function boot(){
     const shell = document.querySelector(".search-shell");
     if (!shell) return;
+    ensureHeadingIds();
     initSearch(shell);
   }
 
