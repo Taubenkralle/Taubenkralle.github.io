@@ -18,6 +18,19 @@
   box-shadow: -10px 0 24px rgba(0, 0, 0, 0.35), inset 0 0 22px rgba(0,255,102,0.08);
 }
 
+.bm-panel::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 42px;
+  top: -48px;
+  background: linear-gradient(180deg, rgba(0,255,102,0) 0%, rgba(0,255,102,0.18) 50%, rgba(0,255,102,0) 100%);
+  opacity: 0.35;
+  pointer-events: none;
+  animation: bmScan 6.5s linear infinite;
+}
+
 .bm-panel.open{
   transform: translateX(0);
 }
@@ -105,7 +118,7 @@
 
 .bm-jump:hover{
   box-shadow: 0 0 14px rgba(0, 255, 102, 0.18);
-  animation: bmGlitch 0.32s linear 1;
+  animation: bmGlitch 0.24s linear 1;
 }
 
 .bm-label{
@@ -172,10 +185,15 @@
 
 @keyframes bmGlitch{
   0%   { transform: translateX(0); text-shadow: none; }
-  20%  { transform: translateX(-1px); text-shadow: 1px 0 0 rgba(0,255,102,0.35); }
-  40%  { transform: translateX(1px); text-shadow: -1px 0 0 rgba(0,255,153,0.35); }
-  60%  { transform: translateX(-1px); text-shadow: 1px 0 0 rgba(0,255,102,0.35); }
+  20%  { transform: translateX(-0.6px); text-shadow: 0.6px 0 0 rgba(0,255,102,0.35); }
+  40%  { transform: translateX(0.6px); text-shadow: -0.6px 0 0 rgba(0,255,153,0.35); }
+  60%  { transform: translateX(-0.6px); text-shadow: 0.6px 0 0 rgba(0,255,102,0.35); }
   100% { transform: translateX(0); text-shadow: none; }
+}
+
+@keyframes bmScan{
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(100vh); }
 }
 
 @media (max-width: 600px){
