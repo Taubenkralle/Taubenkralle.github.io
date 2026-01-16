@@ -181,8 +181,9 @@
   <link rel="stylesheet" href="../music.css">
   <link rel="stylesheet" href="../matrix-effects.css">
   <link rel="stylesheet" href="../crt.css">
+  <link rel="stylesheet" href="../neo.css">
 </head>
-<body>
+<body data-neo="wake">
   <canvas id="rain"></canvas>
   <nav class="home-only">
     <a href="../statistik.html" class="home">← Statistik</a>
@@ -369,7 +370,13 @@ von diesem Effekt betroffen).</p></li>
 <p><strong>Es gibt zwei Säulen der wissenschaftlichen Methode:</strong></p>
 <p></p>
 <table class="legend-table" style="--key-col: 50%;">
-    ...
+    <thead>
+      <tr><th>Key</th><th>Aktion</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>A</code></td><td>Zum nächsten Abschnitt springen</td></tr>
+      <tr><td><code>B</code></td><td>Lesezeichen setzen</td></tr>
+    </tbody>
 </table>
 
 
@@ -456,5 +463,6 @@ von diesem Effekt betroffen).</p></li>
   <script src="../music.js"></script>
   <script src="../view.js"></script>
   <script src="../crt.js"></script>
+  <script src="../neo.js"></script>
 </body>
 </html>
