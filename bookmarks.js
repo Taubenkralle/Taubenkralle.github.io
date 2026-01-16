@@ -128,7 +128,6 @@
         jump.addEventListener("click", () => {
           if (bm.page === location.pathname){
             window.scrollTo({ top: bm.y, behavior: "smooth" });
-            panel.classList.remove("open");
           }else{
             location.href = `${bm.page}?bm=${encodeURIComponent(bm.id)}`;
           }
