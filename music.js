@@ -48,7 +48,7 @@
     source.buffer = buffer;
     source.loop = true;
     gain = ctx.createGain();
-    gain.gain.value = 0.18;
+    gain.gain.value = 0.176;
     source.connect(gain).connect(ctx.destination);
     source.start(0);
     setPlaying(true);
