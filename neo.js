@@ -53,19 +53,32 @@
 
   function waitForAdvance(skip){
     return new Promise((resolve) => {
+      function cleanup(){
+        document.removeEventListener("keydown", onKey);
+        document.removeEventListener("pointerdown", onPointer);
+        document.removeEventListener("click", onPointer);
+      }
       function onKey(e){
         if (e.key === "Escape"){
           e.preventDefault();
-          document.removeEventListener("keydown", onKey);
+          cleanup();
           skip();
           return;
         }
         if (e.key !== "Enter" && e.key !== " ") return;
         e.preventDefault();
-        document.removeEventListener("keydown", onKey);
+        cleanup();
+        resolve();
+      }
+      function onPointer(e){
+        if (e.isPrimary === false) return;
+        e.preventDefault();
+        cleanup();
         resolve();
       }
       document.addEventListener("keydown", onKey);
+      document.addEventListener("pointerdown", onPointer, { passive: false });
+      document.addEventListener("click", onPointer);
     });
   }
 
