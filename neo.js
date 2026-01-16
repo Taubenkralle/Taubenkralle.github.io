@@ -57,7 +57,6 @@
     let lastTapTime = 0;
     let lastTapX = 0;
     let lastTapY = 0;
-    let lastPointerDown = 0;
     let singleTimer = null;
     let advance = null;
     let destroyed = false;
@@ -69,18 +68,13 @@
       }
     }
 
-    function onPointer(e){
-      if (e.isPrimary === false || destroyed) return;
-      const now = Date.now();
-      if (e.type === "click" && now - lastPointerDown < DOUBLE_TAP_MS + 50) return;
-      if (e.type === "pointerdown") lastPointerDown = now;
-      const x = "clientX" in e ? e.clientX : 0;
-      const y = "clientY" in e ? e.clientY : 0;
+    function handleTap(x, y, now, e){
+      if (destroyed) return;
       const dt = now - lastTapTime;
       const dx = x - lastTapX;
       const dy = y - lastTapY;
       if (dt > 0 && dt < DOUBLE_TAP_MS && (dx * dx + dy * dy) < (DOUBLE_TAP_DIST * DOUBLE_TAP_DIST)){
-        e.preventDefault();
+        if (e && e.preventDefault) e.preventDefault();
         clearTimer();
         if (!isAborted()) skip();
         return;
@@ -88,7 +82,7 @@
       lastTapTime = now;
       lastTapX = x;
       lastTapY = y;
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
       clearTimer();
       if (advance){
         singleTimer = setTimeout(() => {
@@ -97,8 +91,20 @@
       }
     }
 
-    document.addEventListener("pointerdown", onPointer, { passive: false });
-    document.addEventListener("click", onPointer);
+    function onPointer(e){
+      if (e.isPrimary === false || destroyed) return;
+      handleTap(e.clientX, e.clientY, Date.now(), e);
+    }
+
+    function onTouchEnd(e){
+      if (destroyed) return;
+      const t = e.changedTouches && e.changedTouches[0];
+      if (!t) return;
+      handleTap(t.clientX, t.clientY, Date.now(), e);
+    }
+
+    document.addEventListener("pointerup", onPointer, { passive: false });
+    document.addEventListener("touchend", onTouchEnd, { passive: false });
 
     return {
       setAdvance(fn){
@@ -114,8 +120,8 @@
         if (destroyed) return;
         destroyed = true;
         clearTimer();
-        document.removeEventListener("pointerdown", onPointer);
-        document.removeEventListener("click", onPointer);
+        document.removeEventListener("pointerup", onPointer);
+        document.removeEventListener("touchend", onTouchEnd);
       }
     };
   }
