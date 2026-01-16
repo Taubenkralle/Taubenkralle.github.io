@@ -134,7 +134,7 @@
       const active = document.activeElement;
       const isTyping = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable);
       if (isTyping) return;
-      if (e.key === "/"){
+      if (e.key === "/" || e.key === "3"){
         e.preventDefault();
         loadIndex().then(open);
       }

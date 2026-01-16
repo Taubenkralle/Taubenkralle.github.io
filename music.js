@@ -63,7 +63,7 @@
     setPlaying(false);
   }
 
-  btn.addEventListener("click", async () => {
+  async function toggle(){
     if (source){
       stop();
       return;
@@ -71,5 +71,17 @@
     const buf = await loadBuffer();
     if (!buf) return;
     start();
+  }
+
+  btn.addEventListener("click", toggle);
+
+  document.addEventListener("keydown", (e) => {
+    const active = document.activeElement;
+    const isTyping = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable);
+    if (isTyping) return;
+    if (e.key === "4"){
+      e.preventDefault();
+      toggle();
+    }
   });
 })();
