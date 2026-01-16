@@ -178,6 +178,7 @@
   <link rel="stylesheet" href="../bookmarks.css">
   <link rel="stylesheet" href="../search.css">
   <link rel="stylesheet" href="../toc.css">
+  <link rel="stylesheet" href="../music.css">
 </head>
 <body>
   <nav class="home-only">
@@ -200,6 +201,14 @@
     </div>
   </div>
 
+  <div class="music-shell" data-audio="/audio/matrix.wav">
+    <button class="music-button" type="button" aria-label="Musik">
+      <svg class="music-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 3v12.5a3.5 3.5 0 1 1-2-3.16V6.6l-8 1.7v8.2a3.5 3.5 0 1 1-2-3.16V4.5L19 3z"></path>
+      </svg>
+    </button>
+  </div>
+
   <!-- Auto "Zurück" (erscheint nur nach Sprung) -->
   <a id="auto-back" href="#" aria-label="Zurück zur Quelle">
     <span class="flip">Z</span><span class="flip">u</span><span class="flip">r</span><span class="flip">ü</span><span class="flip">c</span><span class="flip">k</span>
@@ -219,13 +228,37 @@
 
     <h2 id="wissenschaftliche-guetekriterien">Wissenschaftliche Gütekriterien</h2>
 
-
+    
+<p> Für Daten (Mess-, Beobachtungsverfahren):</p>
     <dl>
-  <dt>Internale Validität</dt>
-  <dd>Freiheit von Störvariablen.</dd>
+  <dt>Reliabität</dt>
+  <dd>Sind die Daten reproduzierbar? Liegen die Werte bei Messwiederholung
+    nahe beieinander?
+  </dd>
 
-  <dt>Reliabilität</dt>
-  <dd>Zuverlässigkeit der Messung.</dd>
+  <dt id="int-valid">Validität</dt>
+  <dd>Wie gut repräsentieren die erzeugten Werte die zu messende Größe (das 
+    Konstrukt)?
+  </dd>
+
+  <dt>Objektivität</dt>
+  <dd>Sind die Werte von den messenden Personen unabhängig?
+  </dd>
+</dl>
+
+
+<p> Für Effekte (Wirkungsaussagen):</p>
+<dl>
+  <dt>Internale Validität</dt>
+  <dd>Können berichtete Effekte eindeutig auf die Untersuchungsbedingungen 
+    zurückgeführt werden? Gibt es Alternativerklärungen? (Laborstudien, Experimente,
+    RCTs)
+  </dd>
+
+  <dt>Externale Validität</dt>
+  <dd>Können berichtete Effekte über die Untersuchungsbedingungen 
+    verallgemeinert werden (Personen, Zeitpunkte, Situationen)? (Feldstudien)
+  </dd>
 </dl>
 
 
@@ -307,5 +340,6 @@
   <script src="../bookmarks.js"></script>
   <script src="../search.js"></script>
   <script src="../toc.js"></script>
+  <script src="../music.js"></script>
 </body>
 </html>

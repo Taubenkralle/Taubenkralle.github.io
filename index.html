@@ -86,6 +86,7 @@
   <link rel="stylesheet" href="bookmarks.css">
   <link rel="stylesheet" href="search.css">
   <link rel="stylesheet" href="toc.css">
+  <link rel="stylesheet" href="music.css">
 </head>
 <body>
 
@@ -111,6 +112,14 @@
       <ul class="search-results"></ul>
       <div class="search-empty">Keine Treffer.</div>
     </div>
+  </div>
+
+  <div class="music-shell" data-audio="/audio/matrix.wav">
+    <button class="music-button" type="button" aria-label="Musik">
+      <svg class="music-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 3v12.5a3.5 3.5 0 1 1-2-3.16V6.6l-8 1.7v8.2a3.5 3.5 0 1 1-2-3.16V4.5L19 3z"></path>
+      </svg>
+    </button>
   </div>
 
   <div class="content">
@@ -167,5 +176,6 @@
   <script src="bookmarks.js"></script>
   <script src="search.js"></script>
   <script src="toc.js"></script>
+  <script src="music.js"></script>
 </body>
 </html>

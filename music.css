@@ -1,0 +1,45 @@
+.music-shell{
+  position: fixed;
+  top: 98px;
+  left: 20px;
+  z-index: 6;
+}
+
+.music-button{
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(0,255,102,0.3);
+  color: var(--g1, #00ff66);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: inset 0 0 12px rgba(0,255,102,0.08);
+}
+
+.music-button:hover{
+  box-shadow: 0 0 12px rgba(0,255,102,0.25);
+}
+
+.music-button.playing{
+  box-shadow: 0 0 16px rgba(0,255,153,0.35), inset 0 0 12px rgba(0,255,102,0.18);
+  border-color: rgba(0,255,153,0.6);
+}
+
+.music-button.loading{
+  animation: musicPulse 0.8s ease-in-out infinite;
+}
+
+.music-icon{
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+@keyframes musicPulse{
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
