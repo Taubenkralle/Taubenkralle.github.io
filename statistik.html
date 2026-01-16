@@ -81,11 +81,28 @@ a:hover{
 }
   </style>
   <link rel="stylesheet" href="bookmarks.css">
+  <link rel="stylesheet" href="search.css">
 </head>
 <body>
   <nav class="home-only">
     <a href="index.html" class="home">Schreibtisch</a>
   </nav>
+  <div class="search-shell" data-index="search-index.json">
+    <button class="search-toggle" type="button" aria-label="Suche">
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"></circle>
+        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2"></line>
+      </svg>
+    </button>
+    <div class="search-panel" hidden>
+      <div class="search-bar">
+        <input class="search-input" type="search" placeholder="Suche im Wiki...">
+        <button class="search-close" type="button">x</button>
+      </div>
+      <ul class="search-results"></ul>
+      <div class="search-empty">Keine Treffer.</div>
+    </div>
+  </div>
   <main>
     <h1>Statistik</h1>
 
@@ -96,5 +113,6 @@ a:hover{
 </ul>
   </main>
   <script src="bookmarks.js"></script>
+  <script src="search.js"></script>
 </body>
 </html>

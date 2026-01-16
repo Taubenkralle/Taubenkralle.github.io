@@ -1,0 +1,124 @@
+.search-shell{
+  position: fixed;
+  top: 58px;
+  left: 20px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.search-toggle{
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(0,255,102,0.3);
+  color: var(--g1, #00ff66);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: inset 0 0 12px rgba(0,255,102,0.08);
+}
+
+.search-toggle:hover{
+  box-shadow: 0 0 12px rgba(0,255,102,0.25);
+}
+
+.search-icon{
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.search-panel{
+  width: 260px;
+  max-width: 80vw;
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(3,10,6,0.9);
+  border: 1px solid rgba(0,255,102,0.3);
+  box-shadow: 0 0 18px rgba(0,255,102,0.18);
+}
+
+.search-panel[hidden]{
+  display: none;
+}
+
+.search-bar{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.search-input{
+  flex: 1;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(0,255,102,0.25);
+  color: var(--g1, #00ff66);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 12px;
+  outline: none;
+}
+
+.search-input::placeholder{
+  color: rgba(0,255,102,0.5);
+}
+
+.search-close{
+  background: transparent;
+  border: 1px solid rgba(0,255,102,0.25);
+  color: var(--g1, #00ff66);
+  border-radius: 6px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.search-results{
+  list-style: none;
+  padding: 6px 0 0 0;
+  margin: 0;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.search-results li{
+  margin: 6px 0;
+}
+
+.search-results a{
+  display: block;
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,255,102,0.2);
+  background: rgba(0,0,0,0.2);
+  color: var(--g3, #00ff99);
+}
+
+.search-results a:hover{
+  box-shadow: 0 0 12px rgba(0,255,102,0.2);
+}
+
+.search-title{
+  display: block;
+  font-size: 12px;
+  color: var(--g3, #00ff99);
+  text-shadow: 0 0 8px rgba(0,255,153,0.2);
+}
+
+.search-meta{
+  display: block;
+  font-size: 10px;
+  opacity: 0.7;
+  margin-top: 2px;
+  color: var(--g1, #00ff66);
+}
+
+.search-empty{
+  padding: 8px 6px 2px 6px;
+  font-size: 11px;
+  opacity: 0.7;
+}

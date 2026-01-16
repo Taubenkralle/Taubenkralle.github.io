@@ -176,11 +176,28 @@
     }
   </style>
   <link rel="stylesheet" href="../bookmarks.css">
+  <link rel="stylesheet" href="../search.css">
 </head>
 <body>
   <nav class="home-only">
     <a href="../statistik.html" class="home">← Statistik</a>
   </nav>
+  <div class="search-shell" data-index="../search-index.json">
+    <button class="search-toggle" type="button" aria-label="Suche">
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"></circle>
+        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2"></line>
+      </svg>
+    </button>
+    <div class="search-panel" hidden>
+      <div class="search-bar">
+        <input class="search-input" type="search" placeholder="Suche im Wiki...">
+        <button class="search-close" type="button">x</button>
+      </div>
+      <ul class="search-results"></ul>
+      <div class="search-empty">Keine Treffer.</div>
+    </div>
+  </div>
 
   <!-- Auto "Zurück" (erscheint nur nach Sprung) -->
   <a id="auto-back" href="#" aria-label="Zurück zur Quelle">
@@ -191,7 +208,7 @@
   <main>
     <h1>Statistik – Allgemeines</h1>
 
-    <h2>Evidenzbasiertes Handeln</h2>
+    <h2 id="evidenzbasiertes-handeln">Evidenzbasiertes Handeln</h2>
     <p>
       Wichtige Entscheidungen sollen den Stand der verfügbaren
       wissenschaftlichen Evidenz berücksichtigen. Sie sollen nicht allein
@@ -199,7 +216,7 @@
       werden.
     </p>
 
-    <h2>Wissenschaftliche Gütekriterien</h2>
+    <h2 id="wissenschaftliche-guetekriterien">Wissenschaftliche Gütekriterien</h2>
 
 
     <dl>
@@ -230,7 +247,7 @@
       sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.“
     </blockquote>
 
-    <h2>Grundbegriffe</h2>
+    <h2 id="grundbegriffe">Grundbegriffe</h2>
     <p id="src-int-valid">
       <a href="#int-valid" class="wikilink">Internale Validität</a> ist für externale Validität eine notwendige,
       aber keine hinreichende Bedingung.
@@ -287,5 +304,6 @@
     window.addEventListener("DOMContentLoaded", updateBack);
   </script>
   <script src="../bookmarks.js"></script>
+  <script src="../search.js"></script>
 </body>
 </html>
