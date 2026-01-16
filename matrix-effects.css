@@ -10,6 +10,14 @@ body.wide-text main{
   margin-right: 20px;
 }
 
+body.ui-hidden .search-shell,
+body.ui-hidden .music-shell,
+body.ui-hidden .home-only,
+body.ui-hidden .bm-tab,
+body.ui-hidden .toc-tab{
+  display: none !important;
+}
+
 main::before,
 .content::before{
   content: "";
