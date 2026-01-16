@@ -46,7 +46,7 @@ main::before,
 }
 
 main > *,
-.content > *{
+.content > :not(.search-shell):not(.music-shell):not(.home-only){
   position: relative;
   z-index: 1;
 }

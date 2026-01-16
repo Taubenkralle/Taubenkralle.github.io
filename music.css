@@ -1,8 +1,4 @@
 .music-shell{
-  position: fixed;
-  top: 58px;
-  left: 56px;
-  z-index: 6;
   display: inline-flex;
   gap: 8px;
 }
