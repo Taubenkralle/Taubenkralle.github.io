@@ -54,7 +54,7 @@
     panel.className = "bm-panel";
     panel.innerHTML = `
       <div class="bm-header">
-        <div class="bm-title">Bookmarks</div>
+        <div class="bm-title">Lesezeichen</div>
         <button class="bm-close" type="button" aria-label="Close">x</button>
       </div>
       <div class="bm-hint">Add: W | Jump: A | Open: D | Close: S</div>
@@ -70,7 +70,7 @@
     tab.id = "bm-tab";
     tab.className = "bm-tab";
     tab.type = "button";
-    tab.textContent = "BOOKMARKS";
+    tab.textContent = "LESEZEICHEN";
 
     document.body.appendChild(panel);
     document.body.appendChild(tab);
