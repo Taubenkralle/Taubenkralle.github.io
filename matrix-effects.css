@@ -131,7 +131,7 @@ a:hover{
   border-bottom: none;
 }
 .legend-table td:first-child{
-  width: 90px;
+  width: var(--key-col, 90px);
 }
 .legend-table code{
   color: var(--g3);
