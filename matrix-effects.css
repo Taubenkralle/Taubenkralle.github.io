@@ -4,6 +4,12 @@ main,
   position: relative;
 }
 
+body.wide-text main{
+  max-width: none;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
 main::before,
 .content::before{
   content: "";
