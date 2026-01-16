@@ -1,5 +1,5 @@
 (() => {
-  const DURATION_MS = 800;
+  const DURATION_MS = 300;
 
   function isInternalLink(a){
     const href = a.getAttribute("href");
