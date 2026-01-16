@@ -21,6 +21,23 @@
       display:block;
     }
 
+    /* Rain layer */
+    #rain{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:0;
+      opacity:0.28;
+      pointer-events:none;
+    }
+
+    /* Content above rain */
+    .content{
+      position:relative;
+      z-index:1;
+    }
+
     main{
       max-width: 720px;
       margin: 120px auto 80px auto;
@@ -65,26 +82,45 @@
     }
     .home:hover{ opacity:1; }
 
-    .legend{
-      list-style:none;
-      padding: 0;
-      margin: 10px 0 0 0;
-    }
-    .legend li{
-      margin: 8px 0;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid rgba(0,255,102,.2);
+    .legend-table{
+      width:100%;
+      border-collapse: collapse;
+      margin-top: 10px;
       background: rgba(0,0,0,.2);
-      box-shadow: inset 0 0 14px rgba(0,255,102,.06);
+      border: 1px solid rgba(0,255,102,.22);
+      box-shadow: inset 0 0 18px rgba(0,255,102,.08);
+      border-radius: 10px;
+      overflow: hidden;
     }
-    .legend code{
+    .legend-table th,
+    .legend-table td{
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(0,255,102,.18);
+      text-align: left;
+      font-size: 13px;
+    }
+    .legend-table th{
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--g2);
+      background: rgba(0,0,0,.35);
+    }
+    .legend-table tr:last-child td{
+      border-bottom: none;
+    }
+    .legend-table td:first-child{
+      width: 90px;
+    }
+    .legend-table code{
       color: var(--g3);
       background: rgba(0,255,102,.08);
       padding: 2px 6px;
       border-radius: 6px;
       border: 1px solid rgba(0,255,102,.2);
-      margin-right: 8px;
+    }
+    .legend-table tr{
+      background-image: linear-gradient(90deg, rgba(0,255,102,.04), rgba(0,0,0,0));
     }
   </style>
   <link rel="stylesheet" href="bookmarks.css">
@@ -93,10 +129,13 @@
   <link rel="stylesheet" href="music.css">
 </head>
 <body>
+  <canvas id="rain"></canvas>
+
   <nav class="home-only">
     <a href="index.html" class="home">← Schreibtisch</a>
   </nav>
 
+  <div class="content">
   <div class="search-shell" data-index="search-index.json">
     <button class="search-toggle" type="button" aria-label="Suche">
       <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -127,31 +166,94 @@
     <p>Legende der Tastaturkuerzel fuer dein Wiki.</p>
 
     <h2>Lesezeichen</h2>
-    <ul class="legend">
-      <li><code>W</code> Lesezeichen setzen</li>
-      <li><code>A</code> Zum naechsten Lesezeichen springen (zyklisch)</li>
-      <li><code>D</code> Lesezeichen-Leiste oeffnen</li>
-      <li><code>S</code> Lesezeichen-Leiste schliessen</li>
-    </ul>
+    <table class="legend-table">
+      <thead>
+        <tr><th>Key</th><th>Aktion</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>W</code></td><td>Lesezeichen setzen</td></tr>
+        <tr><td><code>A</code></td><td>Zum naechsten Lesezeichen springen (zyklisch)</td></tr>
+        <tr><td><code>D</code></td><td>Lesezeichen-Leiste oeffnen</td></tr>
+        <tr><td><code>S</code></td><td>Lesezeichen-Leiste schliessen</td></tr>
+      </tbody>
+    </table>
 
     <h2>Suche</h2>
-    <ul class="legend">
-      <li><code>3</code> Suche oeffnen</li>
-      <li><code>/</code> Suche oeffnen (alternativ)</li>
-      <li><code>E</code> Suche schliessen</li>
-    </ul>
+    <table class="legend-table">
+      <thead>
+        <tr><th>Key</th><th>Aktion</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>3</code></td><td>Suche oeffnen</td></tr>
+        <tr><td><code>/</code></td><td>Suche oeffnen (alternativ)</td></tr>
+        <tr><td><code>E</code></td><td>Suche schliessen</td></tr>
+      </tbody>
+    </table>
 
     <h2>Inhalt</h2>
-    <ul class="legend">
-      <li><code>1</code> Inhaltsverzeichnis oeffnen</li>
-      <li><code>2</code> Inhaltsverzeichnis schliessen</li>
-    </ul>
+    <table class="legend-table">
+      <thead>
+        <tr><th>Key</th><th>Aktion</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>1</code></td><td>Inhaltsverzeichnis oeffnen</td></tr>
+        <tr><td><code>2</code></td><td>Inhaltsverzeichnis schliessen</td></tr>
+      </tbody>
+    </table>
 
     <h2>Musik</h2>
-    <ul class="legend">
-      <li><code>4</code> Musik an/aus</li>
-    </ul>
+    <table class="legend-table">
+      <thead>
+        <tr><th>Key</th><th>Aktion</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>4</code></td><td>Musik an/aus</td></tr>
+      </tbody>
+    </table>
   </main>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("rain");
+    const ctx = canvas.getContext("2d");
+
+    const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let drops = [];
+    const fontSize = 16;
+
+    function resize(){
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+
+      const cols = Math.floor(window.innerWidth / fontSize);
+      drops = Array(cols).fill(0).map(() => Math.random() * (window.innerHeight / fontSize));
+      ctx.font = fontSize + "px ui-monospace, Menlo, monospace";
+    }
+
+    function draw(){
+      ctx.fillStyle = "rgba(0,0,0,0.08)";
+      ctx.fillRect(0,0,window.innerWidth,window.innerHeight);
+
+      for(let i=0;i<drops.length;i++){
+        const text = chars[Math.floor(Math.random()*chars.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+
+        ctx.fillStyle = (Math.random() < 0.02) ? "#b6ffcc" : "#00ff66";
+        ctx.fillText(text, x, y);
+
+        if (y > window.innerHeight && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+      requestAnimationFrame(draw);
+    }
+
+    resize();
+    window.addEventListener("resize", resize);
+    draw();
+  </script>
 
   <script src="bookmarks.js"></script>
   <script src="search.js"></script>
