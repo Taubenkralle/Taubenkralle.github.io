@@ -13,18 +13,20 @@
   canvas.height = BASE_HEIGHT;
 
   const SAVE_KEY = "matrix.training.save";
+  const AUTO_RESUME_KEY = "matrix.training.autoResume";
 
   const towerTypes = {
     pulse: { label: "Pulse", cost: 70, range: 95, damage: 10, cooldown: 0.55, color: "#00ff99" },
     snare: { label: "Snare", cost: 90, range: 80, damage: 6, cooldown: 0.85, slow: 0.5, slowTime: 1.2, color: "#00cc55" },
-    arc: { label: "Arc", cost: 120, range: 120, damage: 18, cooldown: 1.15, color: "#66ffcc" }
+    arc: { label: "Arc", cost: 120, range: 120, damage: 18, cooldown: 1.15, chain: 2, chainRange: 70, chainFalloff: 0.65, color: "#66ffcc" }
   };
 
   const enemyTypes = {
     basic: { label: "Basic", hp: 40, speed: 55, reward: 10, color: "#00ff66" },
     fast: { label: "Fast", hp: 26, speed: 85, reward: 9, color: "#66ff99" },
-    tank: { label: "Tank", hp: 90, speed: 38, reward: 16, color: "#00cc55" },
-    boss: { label: "Boss", hp: 260, speed: 30, reward: 40, color: "#b6ffea" }
+    tank: { label: "Tank", hp: 90, speed: 38, reward: 16, color: "#00cc55", armor: 0.2 },
+    shield: { label: "Shield", hp: 60, speed: 46, reward: 13, color: "#33ffcc", armor: 0.35 },
+    boss: { label: "Boss", hp: 260, speed: 30, reward: 40, color: "#b6ffea", armor: 0.25 }
   };
 
   const upgradeMultipliers = [
@@ -74,7 +76,8 @@
     selected: document.querySelector("[data-selected]"),
     export: document.getElementById("training-export"),
     import: document.getElementById("training-import"),
-    reset: document.getElementById("training-reset")
+    reset: document.getElementById("training-reset"),
+    autoResume: document.getElementById("training-autoresume")
   };
 
   const costSpans = document.querySelectorAll("[data-cost]");
@@ -140,6 +143,14 @@
     if (ui.pause) ui.pause.textContent = game.paused ? "Resume" : "Pause";
   }
 
+  function flashStatus(text){
+    if (!ui.status) return;
+    ui.status.textContent = text;
+    ui.status.classList.remove("flash");
+    void ui.status.offsetWidth;
+    ui.status.classList.add("flash");
+  }
+
   function updateSelection(){
     if (!ui.selected) return;
     if (selectedTower){
@@ -172,7 +183,9 @@
     const tankCount = Math.max(0, Math.floor((wave - 1) / 3));
     for (let i = 0; i < basicCount; i++) queue.push("basic");
     for (let i = 0; i < fastCount; i++) queue.push("fast");
+    const shieldCount = Math.max(0, Math.floor((wave - 2) / 2));
     for (let i = 0; i < tankCount; i++) queue.push("tank");
+    for (let i = 0; i < shieldCount; i++) queue.push("shield");
     if (wave % 5 === 0) queue.push("boss");
     return queue.sort(() => Math.random() - 0.5);
   }
@@ -263,6 +276,23 @@
     return best;
   }
 
+  function applyDamage(enemy, damage){
+    const armor = enemyTypes[enemy.type]?.armor || 0;
+    const final = damage * (1 - armor);
+    enemy.hp -= final;
+  }
+
+  function addShot(x1, y1, x2, y2, color){
+    game.shots.push({ x1, y1, x2, y2, ttl: 0.12, color });
+  }
+
+  function killEnemy(enemy){
+    const idx = game.enemies.indexOf(enemy);
+    if (idx < 0) return;
+    game.enemies.splice(idx, 1);
+    game.money += enemyTypes[enemy.type].reward;
+  }
+
   function updateTowers(dt){
     for (const tower of game.towers){
       tower.cooldown -= dt;
@@ -271,18 +301,37 @@
       const target = findTarget(tower, stats);
       if (!target) continue;
       tower.cooldown = stats.cooldown;
-      target.hp -= stats.damage;
+      applyDamage(target, stats.damage);
       if (stats.slow){
         target.slowTimer = stats.slowTime;
         target.slowFactor = stats.slow;
       }
-      game.shots.push({ x1: tower.x, y1: tower.y, x2: target.x, y2: target.y, ttl: 0.12, color: towerTypes[tower.type].color });
-      if (target.hp <= 0){
-        const reward = enemyTypes[target.type].reward;
-        game.money += reward;
-        const idx = game.enemies.indexOf(target);
-        if (idx >= 0) game.enemies.splice(idx, 1);
+      const shotColor = towerTypes[tower.type].color;
+      addShot(tower.x, tower.y, target.x, target.y, shotColor);
+      const hitList = new Set([target]);
+      if (stats.chain){
+        let chained = 0;
+        const chainRangeSq = stats.chainRange * stats.chainRange;
+        const candidates = game.enemies.filter((e) => e !== target);
+        candidates.sort((a, b) => {
+          const da = (a.x - target.x) ** 2 + (a.y - target.y) ** 2;
+          const db = (b.x - target.x) ** 2 + (b.y - target.y) ** 2;
+          return da - db;
+        });
+        for (const enemy of candidates){
+          if (chained >= stats.chain) break;
+          const dx = enemy.x - target.x;
+          const dy = enemy.y - target.y;
+          if ((dx * dx + dy * dy) > chainRangeSq) continue;
+          applyDamage(enemy, stats.damage * stats.chainFalloff);
+          addShot(target.x, target.y, enemy.x, enemy.y, shotColor);
+          hitList.add(enemy);
+          chained += 1;
+        }
       }
+      hitList.forEach((enemy) => {
+        if (enemy.hp <= 0) killEnemy(enemy);
+      });
     }
   }
 
@@ -371,7 +420,7 @@
       ctx.font = "10px monospace";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      const label = enemy.type === "boss" ? "B" : enemy.type === "tank" ? "T" : enemy.type === "fast" ? "F" : "D";
+      const label = enemy.type === "boss" ? "B" : enemy.type === "tank" ? "T" : enemy.type === "fast" ? "F" : enemy.type === "shield" ? "S" : "D";
       ctx.fillText(label, enemy.x, enemy.y);
     }
   }
@@ -607,12 +656,13 @@
 
   function quickSave(){
     saveGame();
-    updateHud("Quick Save");
+    flashStatus("Quick Save");
   }
 
   function quickLoad(){
     const ok = loadGame();
-    updateHud(ok ? "Quick Load" : "Kein Save");
+    if (ok) applyAutoResume();
+    flashStatus(ok ? "Quick Load" : "Kein Save");
   }
 
   canvas.addEventListener("mousemove", (evt) => {
@@ -677,6 +727,26 @@
     });
   }
 
+  function isAutoResume(){
+    return localStorage.getItem(AUTO_RESUME_KEY) !== "0";
+  }
+
+  function applyAutoResume(){
+    if (!isAutoResume()) return;
+    if (game.waveActive || game.enemies.length){
+      game.paused = false;
+      flashStatus("Auto Resume");
+    }
+  }
+
+  if (ui.autoResume){
+    ui.autoResume.checked = isAutoResume();
+    ui.autoResume.addEventListener("change", () => {
+      localStorage.setItem(AUTO_RESUME_KEY, ui.autoResume.checked ? "1" : "0");
+      flashStatus(ui.autoResume.checked ? "Auto Resume an" : "Auto Resume aus");
+    });
+  }
+
   document.addEventListener("keydown", (e) => {
     const active = document.activeElement;
     const isTyping = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable);
@@ -702,7 +772,10 @@
   }
 
   loadGame();
-  updateHud("Bereit");
+  applyAutoResume();
+  if (!game.waveActive && !game.enemies.length){
+    updateHud("Bereit");
+  }
   updateSelection();
   requestAnimationFrame(loop);
 
