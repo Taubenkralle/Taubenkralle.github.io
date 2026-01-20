@@ -263,6 +263,7 @@
     mapId: maps[0].id,
     kills: 0,
     summaryLock: false,
+    lastSummaryWave: 0,
     logicAccumulator: 0
   };
 
@@ -663,10 +664,10 @@
   function startWave(){
     if (game.waveActive) return;
     game.wave += 1;
+    game.summaryLock = false;
     const queue = buildWaveQueue(game.wave);
     game.spawner = { queue, index: 0, timer: 0 };
     game.waveActive = true;
-    game.summaryLock = false;
     sfx.play("ui");
     updateHud(`Welle ${game.wave}`);
   }
@@ -1226,6 +1227,7 @@
     game.lives = data.lives ?? 20;
     game.wave = data.wave ?? 0;
     game.kills = data.kills ?? 0;
+    game.lastSummaryWave = data.lastSummaryWave ?? data.wave ?? 0;
     game.towers = Array.isArray(data.towers) ? data.towers.map((t) => ({
       type: t.type,
       gridX: t.gridX,
@@ -1266,6 +1268,7 @@
       }
     }
     game.summaryLock = true;
+    if (ui.summary) ui.summary.hidden = true;
     selectedTower = null;
     updateSelection();
     updateHud(game.waveActive ? `Welle ${game.wave}` : "Bereit");
@@ -1501,8 +1504,9 @@
   }
 
   function showWaveSummary(){
-    if (game.summaryLock) return;
+    if (game.summaryLock || game.lastSummaryWave === game.wave) return;
     game.summaryLock = true;
+    game.lastSummaryWave = game.wave;
     updateHighscore();
     recordScore();
     const bonus = recordDailyScore() || 0;
@@ -1516,7 +1520,10 @@
   }
 
   function closeWaveSummary(){
-    if (ui.summary) ui.summary.hidden = true;
+    if (ui.summary){
+      ui.summary.hidden = true;
+      ui.summary.setAttribute("hidden", "");
+    }
   }
 
   function animateSummary(){
@@ -1611,6 +1618,8 @@
     ui.summaryClose.addEventListener("click", closeWaveSummary);
   }
   if (ui.summary){
+    ui.summary.hidden = true;
+    ui.summary.setAttribute("hidden", "");
     ui.summary.addEventListener("click", (e) => {
       if (e.target === ui.summary) closeWaveSummary();
     });
