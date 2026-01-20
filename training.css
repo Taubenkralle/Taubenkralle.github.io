@@ -240,7 +240,12 @@
   place-items:center;
   background: rgba(2,8,4,0.72);
   backdrop-filter: blur(4px);
-  z-index:5;
+  z-index:7;
+  pointer-events:auto;
+}
+
+.training-summary[hidden]{
+  display:none;
 }
 
 .training-summary-card{
