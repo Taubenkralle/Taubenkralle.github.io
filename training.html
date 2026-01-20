@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>ahsome</title>
+  <title>Training</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root{
@@ -18,6 +18,7 @@
       background: radial-gradient(1200px 800px at 50% 40%, #07140b 0%, var(--bg) 60%, #000 100%);
       color: var(--g1);
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      display:block;
     }
 
     /* Rain layer */
@@ -35,19 +36,20 @@
     .content{
       position:relative;
       z-index:1;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      gap:14px;
+    }
+
+    main{
+      max-width: 960px;
+      margin: 120px auto 80px auto;
+      line-height: 1.7;
+      padding: 0 18px;
     }
 
     h1{
-      margin:0;
       font-weight:600;
       letter-spacing:0.08em;
       text-shadow: 0 0 10px rgba(0,255,102,.35), 0 0 24px rgba(0,255,102,.18);
+      margin-top: 0;
     }
 
     a{
@@ -71,17 +73,6 @@
       opacity:.85;
     }
     .home:hover{ opacity:1; }
-
-    /* TOC */
-    .toc{
-      list-style:none;
-      padding:0;
-      margin:0;
-      text-align:center;
-    }
-    .toc li{ margin:8px 0; }
-    .toc a{ font-size:14px; opacity:.9; }
-    .toc a:hover{ opacity:1; }
   </style>
   <link rel="stylesheet" href="bookmarks.css">
   <link rel="stylesheet" href="search.css">
@@ -90,16 +81,16 @@
   <link rel="stylesheet" href="matrix-effects.css">
   <link rel="stylesheet" href="crt.css">
   <link rel="stylesheet" href="neo.css">
+  <link rel="stylesheet" href="training.css">
 </head>
-<body data-rain-fixed="1" data-neo="wake">
-
-  <!-- 1) Canvas muss in den BODY, nicht ins CSS -->
+<body class="training-page">
   <canvas id="rain"></canvas>
 
   <nav class="home-only">
-    <a href="index.html" class="home">Schreibtisch</a>
+    <a href="index.html" class="home">← Schreibtisch</a>
   </nav>
 
+  <div class="content">
   <div class="search-shell" data-index="search-index.json">
     <div class="search-actions">
       <a class="home-mini" href="index.html" aria-label="Home">
@@ -136,19 +127,63 @@
     </div>
   </div>
 
-  <div class="content">
-    <h1>git get.</h1>
+  <main>
+    <h1>Training</h1>
+    <p>Matrix-Defense im gleichen Layout. Auto-Save laeuft im Hintergrund und kann als JSON exportiert/importiert werden.</p>
 
-    <ul class="toc">
-      <li><a href="statistik.html">Statistik</a></li>
-      <li><a href="elektrotechnik/elektrotechnik.html">Elektrotechnik</a></li>
-      <li><a href="training.html">Training</a></li>
-      <li><a href="white-rabbit.html">White Rabbit</a></li>
-    </ul>
+    <section class="training-shell">
+      <div class="training-bar">
+        <div class="training-stat">Credits <span data-stat="credits">0</span></div>
+        <div class="training-stat">Welle <span data-stat="wave">0</span></div>
+        <div class="training-stat">Integritaet <span data-stat="lives">0</span></div>
+        <button class="training-btn" id="training-start" type="button">Start Wave</button>
+        <button class="training-btn ghost" id="training-pause" type="button">Pause</button>
+        <span class="training-status" data-stat="status">Bereit</span>
+      </div>
+
+      <div class="training-board">
+        <canvas id="training-canvas" aria-label="Training Spiel"></canvas>
+      </div>
+
+      <div class="training-actions">
+        <div class="training-group">
+          <div class="training-title">Tower</div>
+          <div class="tower-list">
+            <button class="tower-btn" data-tower="pulse" type="button">Pulse <span data-cost="pulse"></span></button>
+            <button class="tower-btn" data-tower="snare" type="button">Snare <span data-cost="snare"></span></button>
+            <button class="tower-btn" data-tower="arc" type="button">Arc <span data-cost="arc"></span></button>
+          </div>
+        </div>
+        <div class="training-group">
+          <div class="training-title">Auswahl</div>
+          <div class="training-selected" data-selected>Kein Tower</div>
+          <div class="training-row">
+            <button class="training-btn" id="training-upgrade" type="button" disabled>Upgrade</button>
+            <button class="training-btn ghost" id="training-sell" type="button" disabled>Sell</button>
+          </div>
+        </div>
+        <div class="training-group">
+          <div class="training-title">Savegame</div>
+          <div class="training-row">
+            <button class="training-btn ghost" id="training-export" type="button">Export</button>
+            <label class="training-btn ghost training-import">
+              Import
+              <input id="training-import" type="file" accept="application/json">
+            </label>
+          </div>
+          <div class="training-row">
+            <button class="training-btn ghost" id="training-reset" type="button">Reset Save</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="training-tip">Shortcut: Taste <code>9</code> oeffnet Training von jeder Seite.</p>
+  </main>
   </div>
 
-  <!-- 2) Script am Ende, nachdem das Canvas existiert -->
   <script src="rain.js"></script>
+
   <script src="bookmarks.js"></script>
   <script src="search.js"></script>
   <script src="toc.js"></script>
@@ -156,5 +191,6 @@
   <script src="view.js"></script>
   <script src="crt.js"></script>
   <script src="neo.js"></script>
+  <script src="training.js"></script>
 </body>
 </html>

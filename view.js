@@ -36,6 +36,15 @@
     }
   }
 
+  function getTrainingUrl(){
+    const homeLink = document.querySelector("a.home-mini, a.home");
+    if (homeLink){
+      const homeUrl = new URL(homeLink.getAttribute("href"), window.location.href);
+      return new URL("training.html", homeUrl).toString();
+    }
+    return "training.html";
+  }
+
   function init(){
     if (localStorage.getItem(KEY) === "1"){
       setWide(true);
@@ -72,6 +81,10 @@
       if (e.key === "8" && !document.body.dataset.rainFixed){
         e.preventDefault();
         setRainHidden(!document.body.classList.contains("rain-hidden"));
+      }
+      if (e.key === "9"){
+        e.preventDefault();
+        window.location.href = getTrainingUrl();
       }
     });
   }
