@@ -23,6 +23,7 @@
   const SLOT_KEY = "matrix.training.slot";
   const DAILY_KEY = "matrix.training.daily";
   const DAILY_DATE_KEY = "matrix.training.dailyDate";
+  const DAILY_SCORES_KEY = "matrix.training.dailyScores";
   const SLOT_COUNT = 3;
 
   const sfx = {
@@ -180,8 +181,10 @@
     summaryBonus: document.querySelector("[data-summary='bonus']"),
     campaignHigh: document.querySelector("[data-campaign='high']"),
     scores: document.getElementById("training-scores"),
+    dailyScores: document.getElementById("training-daily-scores"),
     slotSelect: document.getElementById("training-slot"),
     slotLoad: document.getElementById("training-slot-load"),
+    slotPreview: document.getElementById("training-slot-preview"),
     daily: document.getElementById("training-daily"),
     export: document.getElementById("training-export"),
     import: document.getElementById("training-import"),
@@ -275,6 +278,7 @@
   let highScore = parseInt(localStorage.getItem(HIGHSCORE_KEY) || "0", 10) || 0;
   let summaryState = { kills: 0, bonus: 0 };
   let scores = loadScores();
+  let dailyScores = loadDailyScores();
   let dailyMode = localStorage.getItem(DAILY_KEY) === "1";
   let dailySeed = localStorage.getItem(DAILY_DATE_KEY) || "";
 
@@ -321,6 +325,7 @@
       ui.slotSelect.appendChild(opt);
     }
     ui.slotSelect.value = getSlotId();
+    updateSlotPreview();
   }
 
   function ensureLegacyMigration(){
@@ -332,6 +337,24 @@
     }
   }
 
+  function updateSlotPreview(){
+    if (!ui.slotPreview) return;
+    const key = slotKey(getSlotId());
+    const raw = localStorage.getItem(key);
+    if (!raw){
+      ui.slotPreview.textContent = "Slot leer";
+      return;
+    }
+    try{
+      const data = JSON.parse(raw);
+      const wave = data.wave ?? 0;
+      const mapId = data.mapId || "-";
+      ui.slotPreview.textContent = `Welle ${wave} | Map ${mapId}`;
+    }catch{
+      ui.slotPreview.textContent = "Slot defekt";
+    }
+  }
+
   function loadScores(){
     try{
       const raw = localStorage.getItem(HIGHSCORES_KEY);
@@ -340,6 +363,20 @@
     }catch{
       return [];
     }
+  }
+
+  function loadDailyScores(){
+    try{
+      const raw = localStorage.getItem(DAILY_SCORES_KEY);
+      const data = raw ? JSON.parse(raw) : {};
+      return typeof data === "object" && data ? data : {};
+    }catch{
+      return {};
+    }
+  }
+
+  function saveDailyScores(){
+    localStorage.setItem(DAILY_SCORES_KEY, JSON.stringify(dailyScores));
   }
 
   function saveScores(){
@@ -365,6 +402,28 @@
       li.appendChild(left);
       li.appendChild(right);
       ui.scores.appendChild(li);
+    });
+  }
+
+  function updateDailyScoresUI(){
+    if (!ui.dailyScores) return;
+    ui.dailyScores.innerHTML = "";
+    const list = dailyScores[dailySeed] || [];
+    if (!list.length){
+      const li = document.createElement("li");
+      li.textContent = "keine runs";
+      ui.dailyScores.appendChild(li);
+      return;
+    }
+    list.slice(0, 5).forEach((entry, idx) => {
+      const li = document.createElement("li");
+      const left = document.createElement("span");
+      const right = document.createElement("span");
+      left.textContent = `#${idx + 1} W${entry.wave}`;
+      right.textContent = `${entry.kills}K`;
+      li.appendChild(left);
+      li.appendChild(right);
+      ui.dailyScores.appendChild(li);
     });
   }
 
@@ -617,6 +676,9 @@
       bossSpawnTimer: type === "boss" ? 3.8 : 0
     };
     game.enemies.push(enemy);
+    if (type === "boss"){
+      triggerGlitch();
+    }
   }
 
   function spawnEnemy(type){
@@ -1297,6 +1359,7 @@
     ui.slotSelect.addEventListener("change", () => {
       setSlotId(ui.slotSelect.value);
       flashStatus(`Slot ${ui.slotSelect.value}`);
+      updateSlotPreview();
     });
   }
   if (ui.slotLoad){
@@ -1304,6 +1367,7 @@
       const ok = loadGame();
       if (ok) applyAutoResume();
       flashStatus(ok ? `Slot ${getSlotId()} geladen` : "Slot leer");
+      updateSlotPreview();
     });
   }
 
@@ -1318,6 +1382,7 @@
     }
     resetGame();
     flashStatus(on ? "Daily Mode" : "Daily aus");
+    updateDailyScoresUI();
   }
 
   if (ui.daily){
@@ -1368,6 +1433,7 @@
     sfx.play("ui");
     updateHighscore();
     recordScore();
+    recordDailyScore();
   }
 
   function closeWaveSummary(){
@@ -1415,6 +1481,16 @@
     scores = scores.slice(0, 5);
     saveScores();
     updateScoresUI();
+  }
+
+  function recordDailyScore(){
+    if (!dailyMode) return;
+    const list = dailyScores[dailySeed] || [];
+    list.push({ wave: game.wave, kills: game.kills, time: Date.now() });
+    list.sort((a, b) => b.wave - a.wave || b.kills - a.kills || a.time - b.time);
+    dailyScores[dailySeed] = list.slice(0, 5);
+    saveDailyScores();
+    updateDailyScoresUI();
   }
 
   if (ui.summaryClose){
@@ -1595,6 +1671,7 @@
   loadMixer();
   bindMixer();
   updateScoresUI();
+  updateDailyScoresUI();
   if (!game.waveActive && !game.enemies.length){
     updateHud("Bereit");
   }

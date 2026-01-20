@@ -216,6 +216,17 @@
   accent-color:#00ff99;
 }
 
+.training-slot-preview{
+  margin-top:8px;
+  padding:8px 10px;
+  border:1px dashed rgba(0,255,153,0.35);
+  border-radius:6px;
+  font-size:12px;
+  color:#b8ffd8;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+}
+
 .training-branch{
   display:grid;
   gap:8px;
