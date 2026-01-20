@@ -18,11 +18,14 @@
   const CAMPAIGN_KEY = "matrix.training.campaign";
   const SOUND_KEY = "matrix.training.sound";
   const HIGHSCORE_KEY = "matrix.training.highscore";
+  const HIGHSCORES_KEY = "matrix.training.highscores";
+  const MIXER_KEY = "matrix.training.mixer";
 
   const sfx = {
     ctx: null,
     last: {},
     muted: false,
+    volumes: { ui: 1, hit: 1, boss: 1, type: 1 },
     init(){
       if (this.ctx) return;
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -31,6 +34,8 @@
     },
     play(name){
       if (this.muted) return;
+      const volume = this.volumes[name] ?? 1;
+      if (volume <= 0) return;
       this.init();
       if (!this.ctx) return;
       if (this.ctx.state === "suspended") this.ctx.resume();
@@ -48,7 +53,7 @@
       const gain = this.ctx.createGain();
       osc.type = config.type;
       osc.frequency.value = config.freq;
-      gain.gain.value = config.vol;
+      gain.gain.value = config.vol * volume;
       gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + config.dur);
       osc.connect(gain).connect(this.ctx.destination);
       osc.start();
@@ -170,6 +175,7 @@
     summaryKills: document.querySelector("[data-summary='kills']"),
     summaryBonus: document.querySelector("[data-summary='bonus']"),
     campaignHigh: document.querySelector("[data-campaign='high']"),
+    scores: document.getElementById("training-scores"),
     export: document.getElementById("training-export"),
     import: document.getElementById("training-import"),
     reset: document.getElementById("training-reset"),
@@ -261,6 +267,7 @@
   const campaign = loadCampaign();
   let highScore = parseInt(localStorage.getItem(HIGHSCORE_KEY) || "0", 10) || 0;
   let summaryState = { kills: 0, bonus: 0 };
+  let scores = loadScores();
 
   function saveCampaign(){
     localStorage.setItem(CAMPAIGN_KEY, JSON.stringify({ stage: campaign.stage }));
@@ -281,6 +288,42 @@
     if (ui.campaignHigh){
       ui.campaignHigh.textContent = `Highscore: ${highScore}`;
     }
+  }
+
+  function loadScores(){
+    try{
+      const raw = localStorage.getItem(HIGHSCORES_KEY);
+      const data = raw ? JSON.parse(raw) : [];
+      return Array.isArray(data) ? data : [];
+    }catch{
+      return [];
+    }
+  }
+
+  function saveScores(){
+    localStorage.setItem(HIGHSCORES_KEY, JSON.stringify(scores.slice(0, 5)));
+  }
+
+  function updateScoresUI(){
+    if (!ui.scores) return;
+    ui.scores.innerHTML = "";
+    const items = scores.slice(0, 5);
+    if (!items.length){
+      const li = document.createElement("li");
+      li.textContent = "keine runs";
+      ui.scores.appendChild(li);
+      return;
+    }
+    items.forEach((entry, idx) => {
+      const li = document.createElement("li");
+      const left = document.createElement("span");
+      const right = document.createElement("span");
+      left.textContent = `#${idx + 1} W${entry.wave}`;
+      right.textContent = `${entry.kills}K`;
+      li.appendChild(left);
+      li.appendChild(right);
+      ui.scores.appendChild(li);
+    });
   }
 
   function resetGame(){
@@ -1170,18 +1213,57 @@
       kills: game.kills,
       bonus: 0
     };
-    if (ui.summaryWave) ui.summaryWave.textContent = `Welle ${game.wave}`;
-    if (ui.summaryCredits) ui.summaryCredits.textContent = `Credits: ${game.money}`;
-    if (ui.summaryLives) ui.summaryLives.textContent = `Integritaet: ${game.lives}`;
-    if (ui.summaryKills) ui.summaryKills.textContent = `Kills: ${summaryState.kills}`;
-    if (ui.summaryBonus) ui.summaryBonus.textContent = `Bonus: ${summaryState.bonus}`;
+    animateSummary();
     if (ui.summary) ui.summary.hidden = false;
     sfx.play("ui");
     updateHighscore();
+    recordScore();
   }
 
   function closeWaveSummary(){
     if (ui.summary) ui.summary.hidden = true;
+  }
+
+  function animateSummary(){
+    const from = { wave: 0, credits: 0, lives: 0, kills: 0, bonus: 0 };
+    const to = {
+      wave: game.wave,
+      credits: game.money,
+      lives: game.lives,
+      kills: summaryState.kills,
+      bonus: summaryState.bonus
+    };
+    const start = performance.now();
+    const duration = 600;
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const ease = 1 - Math.pow(1 - t, 3);
+      const wave = Math.round(from.wave + (to.wave - from.wave) * ease);
+      const credits = Math.round(from.credits + (to.credits - from.credits) * ease);
+      const lives = Math.round(from.lives + (to.lives - from.lives) * ease);
+      const kills = Math.round(from.kills + (to.kills - from.kills) * ease);
+      const bonus = Math.round(from.bonus + (to.bonus - from.bonus) * ease);
+      if (ui.summaryWave) ui.summaryWave.textContent = `Welle ${wave}`;
+      if (ui.summaryCredits) ui.summaryCredits.textContent = `Credits: ${credits}`;
+      if (ui.summaryLives) ui.summaryLives.textContent = `Integritaet: ${lives}`;
+      if (ui.summaryKills) ui.summaryKills.textContent = `Kills: ${kills}`;
+      if (ui.summaryBonus) ui.summaryBonus.textContent = `Bonus: ${bonus}`;
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  function recordScore(){
+    const entry = {
+      wave: game.wave,
+      kills: game.kills,
+      time: Date.now()
+    };
+    scores.push(entry);
+    scores.sort((a, b) => b.wave - a.wave || b.kills - a.kills || a.time - b.time);
+    scores = scores.slice(0, 5);
+    saveScores();
+    updateScoresUI();
   }
 
   if (ui.summaryClose){
@@ -1314,6 +1396,35 @@
     });
   }
 
+  function loadMixer(){
+    try{
+      const raw = localStorage.getItem(MIXER_KEY);
+      const data = raw ? JSON.parse(raw) : null;
+      if (data && typeof data === "object"){
+        sfx.volumes = { ...sfx.volumes, ...data };
+      }
+    }catch{
+      return;
+    }
+  }
+
+  function saveMixer(){
+    localStorage.setItem(MIXER_KEY, JSON.stringify(sfx.volumes));
+  }
+
+  function bindMixer(){
+    const sliders = document.querySelectorAll("[data-sfx]");
+    sliders.forEach((input) => {
+      const key = input.dataset.sfx;
+      const value = Math.round((sfx.volumes[key] ?? 1) * 100);
+      input.value = value.toString();
+      input.addEventListener("input", () => {
+        sfx.volumes[key] = Number(input.value) / 100;
+        saveMixer();
+      });
+    });
+  }
+
   let lastTime = null;
   let frameTime = 0;
   function loop(time){
@@ -1330,6 +1441,9 @@
   applyAutoResume();
   updateCampaignUI();
   lockMaps();
+  loadMixer();
+  bindMixer();
+  updateScoresUI();
   if (!game.waveActive && !game.enemies.length){
     updateHud("Bereit");
   }

@@ -178,6 +178,44 @@
   transition: width 0.4s ease;
 }
 
+.training-scores{
+  margin:0;
+  padding-left:18px;
+  font-size:12px;
+  color:#b8ffd8;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  display:grid;
+  gap:6px;
+}
+
+.training-scores li{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.training-mixer{
+  display:grid;
+  gap:8px;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:#b8ffd8;
+}
+
+.training-mixer label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.training-mixer input[type="range"]{
+  width:140px;
+  accent-color:#00ff99;
+}
+
 .training-branch{
   display:grid;
   gap:8px;

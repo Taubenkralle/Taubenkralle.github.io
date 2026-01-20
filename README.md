@@ -18,3 +18,4 @@ Hier entsteht mein Wiki mit meinem Uni-Stoff. Zurzeit schreibe ich das Skript St
 - Upgrade-Tree pro Tower, neue SFX (UI/Typewriter/Hit) und Boss-Glitch-Effekt.
 - Sound-Toggle im HUD, Campaign-Rewards und visuelle Tower-Skins pro Pfad.
 - Highscore-Tracking, Wave-Summary-Overlay und Branch-Icons fuer Tower-Pfade.
+- Count-up Summary, Top-5 Highscore-Liste und Audio-Mixer fuer SFX.
