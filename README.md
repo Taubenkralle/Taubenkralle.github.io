@@ -17,3 +17,4 @@ Hier entsteht mein Wiki mit meinem Uni-Stoff. Zurzeit schreibe ich das Skript St
 - Tooltips fuer Tower/Gegner, Mini-Campaign mit Unlocks und Matrix-Style Anleitung.
 - Upgrade-Tree pro Tower, neue SFX (UI/Typewriter/Hit) und Boss-Glitch-Effekt.
 - Sound-Toggle im HUD, Campaign-Rewards und visuelle Tower-Skins pro Pfad.
+- Highscore-Tracking, Wave-Summary-Overlay und Branch-Icons fuer Tower-Pfade.

@@ -17,6 +17,7 @@
   const MAP_KEY = "matrix.training.map";
   const CAMPAIGN_KEY = "matrix.training.campaign";
   const SOUND_KEY = "matrix.training.sound";
+  const HIGHSCORE_KEY = "matrix.training.highscore";
 
   const sfx = {
     ctx: null,
@@ -63,16 +64,16 @@
 
   const towerBranches = {
     pulse: [
-      { id: "inferno", name: "Inferno", desc: "Burn++", color: "#ffb347", level2: { burnDps: 4, burnTime: 1.2 }, level3: { damage: 1.15 } },
-      { id: "focus", name: "Focus", desc: "Range+Damage", color: "#8fd1ff", level2: { range: 1.2, damage: 1.15 }, level3: { range: 1.1, damage: 1.2 } }
+      { id: "inferno", name: "Inferno", icon: "I", desc: "Burn++", color: "#ffb347", level2: { burnDps: 4, burnTime: 1.2 }, level3: { damage: 1.15 } },
+      { id: "focus", name: "Focus", icon: "F", desc: "Range+Damage", color: "#8fd1ff", level2: { range: 1.2, damage: 1.15 }, level3: { range: 1.1, damage: 1.2 } }
     ],
     snare: [
-      { id: "glue", name: "Glue", desc: "Slow++", color: "#7fffc2", level2: { slow: 0.35, slowTime: 1.6, range: 1.1 }, level3: { range: 1.15 } },
-      { id: "decay", name: "Decay", desc: "DoT", color: "#d0ff86", level2: { burnDps: 4, burnTime: 2.2, damage: 1.2 }, level3: { damage: 1.25 } }
+      { id: "glue", name: "Glue", icon: "G", desc: "Slow++", color: "#7fffc2", level2: { slow: 0.35, slowTime: 1.6, range: 1.1 }, level3: { range: 1.15 } },
+      { id: "decay", name: "Decay", icon: "D", desc: "DoT", color: "#d0ff86", level2: { burnDps: 4, burnTime: 2.2, damage: 1.2 }, level3: { damage: 1.25 } }
     ],
     arc: [
-      { id: "relay", name: "Relay", desc: "More Chains", color: "#7fb0ff", level2: { chain: 2, chainRange: 25 }, level3: { chain: 1, chainFalloff: 0.8 } },
-      { id: "surge", name: "Surge", desc: "EMP++", color: "#ff7fbf", level2: { empTime: 0.25, damage: 1.15 }, level3: { damage: 1.25 } }
+      { id: "relay", name: "Relay", icon: "R", desc: "More Chains", color: "#7fb0ff", level2: { chain: 2, chainRange: 25 }, level3: { chain: 1, chainFalloff: 0.8 } },
+      { id: "surge", name: "Surge", icon: "S", desc: "EMP++", color: "#ff7fbf", level2: { empTime: 0.25, damage: 1.15 }, level3: { damage: 1.25 } }
     ]
   };
 
@@ -161,6 +162,14 @@
     helpModal: document.getElementById("training-help-modal"),
     helpClose: document.getElementById("training-help-close"),
     glitch: document.getElementById("training-glitch"),
+    summary: document.getElementById("training-summary"),
+    summaryClose: document.getElementById("training-summary-close"),
+    summaryWave: document.querySelector("[data-summary='wave']"),
+    summaryCredits: document.querySelector("[data-summary='credits']"),
+    summaryLives: document.querySelector("[data-summary='lives']"),
+    summaryKills: document.querySelector("[data-summary='kills']"),
+    summaryBonus: document.querySelector("[data-summary='bonus']"),
+    campaignHigh: document.querySelector("[data-campaign='high']"),
     export: document.getElementById("training-export"),
     import: document.getElementById("training-import"),
     reset: document.getElementById("training-reset"),
@@ -228,7 +237,8 @@
     waveActive: false,
     spawner: null,
     paused: false,
-    mapId: maps[0].id
+    mapId: maps[0].id,
+    kills: 0
   };
 
   const campaignStages = [
@@ -249,6 +259,8 @@
   }
 
   const campaign = loadCampaign();
+  let highScore = parseInt(localStorage.getItem(HIGHSCORE_KEY) || "0", 10) || 0;
+  let summaryState = { kills: 0, bonus: 0 };
 
   function saveCampaign(){
     localStorage.setItem(CAMPAIGN_KEY, JSON.stringify({ stage: campaign.stage }));
@@ -265,6 +277,9 @@
     if (ui.campaignProgress){
       const progress = Math.min(1, game.wave / stage.targetWave);
       ui.campaignProgress.style.width = `${Math.round(progress * 100)}%`;
+    }
+    if (ui.campaignHigh){
+      ui.campaignHigh.textContent = `Highscore: ${highScore}`;
     }
   }
 
@@ -417,7 +432,7 @@
     if (!tower || !tower.path) return null;
     const branches = towerBranches[tower.type] || [];
     const branch = branches.find((b) => b.id === tower.path);
-    return branch ? { color: branch.color, name: branch.name } : null;
+    return branch ? { color: branch.color, name: branch.name, icon: branch.icon || branch.name[0] } : null;
   }
 
   function updateBranchUI(){
@@ -588,6 +603,7 @@
     if (idx < 0) return;
     game.enemies.splice(idx, 1);
     game.money += enemyTypes[enemy.type].reward;
+    game.kills += 1;
     sfx.play("hit");
   }
 
@@ -655,6 +671,7 @@
       if (!game.spawner && game.enemies.length === 0){
         game.waveActive = false;
         updateHud("Welle beendet");
+        showWaveSummary();
         handleCampaignProgress();
       }
     }
@@ -717,7 +734,7 @@
       ctx.font = "12px monospace";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      const label = branch ? branch.name[0] : tower.level.toString();
+      const label = branch ? branch.icon : tower.level.toString();
       ctx.fillText(label, tower.x, tower.y);
     }
   }
@@ -884,11 +901,12 @@
 
   function serializeGame(){
     return {
-      version: 4,
+      version: 5,
       money: game.money,
       lives: game.lives,
       wave: game.wave,
       mapId: game.mapId,
+      kills: game.kills,
       towers: game.towers.map((t) => ({
         type: t.type,
         gridX: t.gridX,
@@ -921,12 +939,13 @@
   }
 
   function applySave(data){
-    if (!data || (data.version !== 1 && data.version !== 2 && data.version !== 3 && data.version !== 4)) return false;
+    if (!data || (data.version !== 1 && data.version !== 2 && data.version !== 3 && data.version !== 4 && data.version !== 5)) return false;
     const mapId = data.mapId || localStorage.getItem(MAP_KEY) || maps[0].id;
     setMap(mapId, { silent: true });
     game.money = data.money ?? 140;
     game.lives = data.lives ?? 20;
     game.wave = data.wave ?? 0;
+    game.kills = data.kills ?? 0;
     game.towers = Array.isArray(data.towers) ? data.towers.map((t) => ({
       type: t.type,
       gridX: t.gridX,
@@ -1146,6 +1165,42 @@
     }
   }
 
+  function showWaveSummary(){
+    summaryState = {
+      kills: game.kills,
+      bonus: 0
+    };
+    if (ui.summaryWave) ui.summaryWave.textContent = `Welle ${game.wave}`;
+    if (ui.summaryCredits) ui.summaryCredits.textContent = `Credits: ${game.money}`;
+    if (ui.summaryLives) ui.summaryLives.textContent = `Integritaet: ${game.lives}`;
+    if (ui.summaryKills) ui.summaryKills.textContent = `Kills: ${summaryState.kills}`;
+    if (ui.summaryBonus) ui.summaryBonus.textContent = `Bonus: ${summaryState.bonus}`;
+    if (ui.summary) ui.summary.hidden = false;
+    sfx.play("ui");
+    updateHighscore();
+  }
+
+  function closeWaveSummary(){
+    if (ui.summary) ui.summary.hidden = true;
+  }
+
+  if (ui.summaryClose){
+    ui.summaryClose.addEventListener("click", closeWaveSummary);
+  }
+  if (ui.summary){
+    ui.summary.addEventListener("click", (e) => {
+      if (e.target === ui.summary) closeWaveSummary();
+    });
+  }
+
+  function updateHighscore(){
+    if (game.wave > highScore){
+      highScore = game.wave;
+      localStorage.setItem(HIGHSCORE_KEY, String(highScore));
+      updateCampaignUI();
+    }
+  }
+
   function openHelp(){
     if (!ui.helpModal) return;
     ui.helpModal.hidden = false;
@@ -1192,6 +1247,10 @@
     if (ui.helpModal && !ui.helpModal.hidden){
       e.preventDefault();
       closeHelp();
+    }
+    if (ui.summary && !ui.summary.hidden){
+      e.preventDefault();
+      closeWaveSummary();
     }
   });
 

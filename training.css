@@ -157,6 +157,11 @@
   color:#b8ffd8;
 }
 
+.training-campaign-high{
+  font-size:11px;
+  color:#7fffc2;
+}
+
 .training-campaign-bar{
   height:6px;
   border-radius:6px;
@@ -179,6 +184,44 @@
   margin-bottom:10px;
 }
 
+.training-summary{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background: rgba(2,8,4,0.72);
+  backdrop-filter: blur(4px);
+  z-index:5;
+}
+
+.training-summary-card{
+  width:min(420px, 90vw);
+  padding:20px;
+  border-radius:12px;
+  background: radial-gradient(320px 200px at 20% 10%, rgba(0,255,153,0.15), transparent 60%), #03140a;
+  border:1px solid rgba(0,255,153,0.35);
+  box-shadow: 0 0 24px rgba(0,255,153,0.2);
+  animation: trainingReveal 0.4s ease;
+  text-align:left;
+}
+
+.training-summary-card h2{
+  margin:0 0 12px 0;
+  font-size:18px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:#baffdd;
+}
+
+.training-summary-body{
+  display:grid;
+  gap:8px;
+  margin-bottom:16px;
+  font-size:13px;
+  color:#b8ffd8;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
 .training-branch-title{
   font-size:12px;
   letter-spacing:0.08em;
