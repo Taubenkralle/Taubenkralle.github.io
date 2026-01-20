@@ -192,6 +192,13 @@
         <div class="training-group">
           <div class="training-title">Auswahl</div>
           <div class="training-selected" data-selected>Kein Tower</div>
+          <div class="training-branch" id="training-branch" hidden>
+            <div class="training-branch-title">Pfad waehlen</div>
+            <div class="training-row">
+              <button class="training-btn" id="training-branch-a" type="button"></button>
+              <button class="training-btn" id="training-branch-b" type="button"></button>
+            </div>
+          </div>
           <div class="training-row">
             <button class="training-btn" id="training-upgrade" type="button" disabled>Upgrade</button>
             <button class="training-btn ghost" id="training-sell" type="button" disabled>Sell</button>
@@ -230,6 +237,7 @@
       <div class="training-help-body">
         <div class="type-line" data-typewriter>Link established...</div>
         <p>Baue Tower neben dem Pfad, stoppe Datenstroeme, schuetze den Core.</p>
+        <p>Campaign: Erreiche die Zielwelle pro Stage, um neue Maps freizuschalten.</p>
         <h3>Basics</h3>
         <ul>
           <li>Start Wave startet die naechste Welle.</li>
@@ -241,6 +249,7 @@
           <li>Pulse: guter Allrounder, setzt Burn (DoT).</li>
           <li>Snare: verlangsamt Gegner.</li>
           <li>Arc: Ketten-Schaden + kurzer EMP (Stun).</li>
+          <li>Ab Level 1 Pfad waehlen: jeder Tower hat zwei Spezialisierungen.</li>
         </ul>
         <h3>Gegner</h3>
         <ul>
@@ -258,6 +267,7 @@
       <div class="training-help-glow"></div>
     </div>
   </div>
+  <div class="training-glitch" id="training-glitch" aria-hidden="true"></div>
 
   <script src="rain.js"></script>
 

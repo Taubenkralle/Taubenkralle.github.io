@@ -17,10 +17,60 @@
   const MAP_KEY = "matrix.training.map";
   const CAMPAIGN_KEY = "matrix.training.campaign";
 
+  const sfx = {
+    ctx: null,
+    last: {},
+    init(){
+      if (this.ctx) return;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      this.ctx = new AudioCtx();
+    },
+    play(name){
+      this.init();
+      if (!this.ctx) return;
+      if (this.ctx.state === "suspended") this.ctx.resume();
+      const now = performance.now();
+      const cooldown = { hit: 90, type: 40, ui: 120, boss: 180 }[name] || 100;
+      if (this.last[name] && now - this.last[name] < cooldown) return;
+      this.last[name] = now;
+      const config = {
+        ui: { freq: 520, dur: 0.08, type: "triangle", vol: 0.05 },
+        type: { freq: 740, dur: 0.03, type: "square", vol: 0.03 },
+        hit: { freq: 180, dur: 0.05, type: "square", vol: 0.04 },
+        boss: { freq: 120, dur: 0.35, type: "sawtooth", vol: 0.06 }
+      }[name] || { freq: 440, dur: 0.06, type: "sine", vol: 0.04 };
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = config.type;
+      osc.frequency.value = config.freq;
+      gain.gain.value = config.vol;
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + config.dur);
+      osc.connect(gain).connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + config.dur);
+    }
+  };
+
   const towerTypes = {
     pulse: { label: "Pulse", cost: 70, range: 95, damage: 10, cooldown: 0.55, burnDps: 6, burnTime: 2.2, color: "#00ff99" },
     snare: { label: "Snare", cost: 90, range: 80, damage: 6, cooldown: 0.85, slow: 0.5, slowTime: 1.2, color: "#00cc55" },
     arc: { label: "Arc", cost: 120, range: 120, damage: 18, cooldown: 1.15, chain: 2, chainRange: 70, chainFalloff: 0.65, empTime: 0.35, color: "#66ffcc" }
+  };
+
+  const towerBranches = {
+    pulse: [
+      { id: "inferno", name: "Inferno", desc: "Burn++", level2: { burnDps: 4, burnTime: 1.2 }, level3: { damage: 1.15 } },
+      { id: "focus", name: "Focus", desc: "Range+Damage", level2: { range: 1.2, damage: 1.15 }, level3: { range: 1.1, damage: 1.2 } }
+    ],
+    snare: [
+      { id: "glue", name: "Glue", desc: "Slow++", level2: { slow: 0.35, slowTime: 1.6, range: 1.1 }, level3: { range: 1.15 } },
+      { id: "decay", name: "Decay", desc: "DoT", level2: { burnDps: 4, burnTime: 2.2, damage: 1.2 }, level3: { damage: 1.25 } }
+    ],
+    arc: [
+      { id: "relay", name: "Relay", desc: "More Chains", level2: { chain: 2, chainRange: 25 }, level3: { chain: 1, chainFalloff: 0.8 } },
+      { id: "surge", name: "Surge", desc: "EMP++", level2: { empTime: 0.25, damage: 1.15 }, level3: { damage: 1.25 } }
+    ]
   };
 
   const enemyTypes = {
@@ -100,9 +150,13 @@
     campaignStage: document.querySelector("[data-campaign='stage']"),
     campaignTarget: document.querySelector("[data-campaign='target']"),
     campaignProgress: document.querySelector("[data-campaign='progress']"),
+    branchBox: document.getElementById("training-branch"),
+    branchA: document.getElementById("training-branch-a"),
+    branchB: document.getElementById("training-branch-b"),
     help: document.getElementById("training-help"),
     helpModal: document.getElementById("training-help-modal"),
     helpClose: document.getElementById("training-help-close"),
+    glitch: document.getElementById("training-glitch"),
     export: document.getElementById("training-export"),
     import: document.getElementById("training-import"),
     reset: document.getElementById("training-reset"),
@@ -225,7 +279,7 @@
   function getTowerStats(tower){
     const base = towerTypes[tower.type];
     const mult = upgradeMultipliers[tower.level] || upgradeMultipliers[0];
-    return {
+    const stats = {
       range: base.range * mult.range,
       damage: base.damage * mult.damage,
       cooldown: base.cooldown * mult.cooldown,
@@ -236,12 +290,22 @@
       chain: base.chain,
       chainRange: base.chainRange,
       chainFalloff: base.chainFalloff,
-      empTime: base.empTime
+      empTime: base.empTime,
+      armorPierce: 0
     };
+    if (tower.path){
+      const branches = towerBranches[tower.type] || [];
+      const branch = branches.find((b) => b.id === tower.path);
+      if (branch){
+        if (tower.level >= 2) applyStatMods(stats, branch.level2);
+        if (tower.level >= 3) applyStatMods(stats, branch.level3);
+      }
+    }
+    return stats;
   }
 
   function nextUpgradeCost(tower){
-    if (tower.level >= 2) return null;
+    if (tower.level >= 3) return null;
     const base = towerTypes[tower.type].cost;
     return Math.floor(base * (tower.level + 1) * 0.8);
   }
@@ -262,6 +326,30 @@
     ui.status.classList.remove("flash");
     void ui.status.offsetWidth;
     ui.status.classList.add("flash");
+  }
+
+  function triggerGlitch(){
+    if (!ui.glitch) return;
+    ui.glitch.classList.remove("active");
+    void ui.glitch.offsetWidth;
+    ui.glitch.classList.add("active");
+    sfx.play("boss");
+  }
+
+  function applyStatMods(stats, mods){
+    if (!mods) return;
+    if (mods.range) stats.range *= mods.range;
+    if (mods.damage) stats.damage *= mods.damage;
+    if (mods.cooldown) stats.cooldown *= mods.cooldown;
+    if (mods.slow) stats.slow = mods.slow;
+    if (mods.slowTime) stats.slowTime *= mods.slowTime;
+    if (mods.burnDps) stats.burnDps = (stats.burnDps || 0) + mods.burnDps;
+    if (mods.burnTime) stats.burnTime = (stats.burnTime || 0) * mods.burnTime;
+    if (mods.chain) stats.chain = (stats.chain || 0) + mods.chain;
+    if (mods.chainRange) stats.chainRange = (stats.chainRange || 0) + mods.chainRange;
+    if (mods.chainFalloff) stats.chainFalloff = Math.max(stats.chainFalloff || 0, mods.chainFalloff);
+    if (mods.empTime) stats.empTime = (stats.empTime || 0) + mods.empTime;
+    if (mods.armorPierce) stats.armorPierce += mods.armorPierce;
   }
 
   function buildWaveStats(wave){
@@ -296,8 +384,10 @@
     if (!ui.selected) return;
     if (selectedTower){
       const cost = nextUpgradeCost(selectedTower);
-      ui.selected.textContent = `${towerTypes[selectedTower.type].label} L${selectedTower.level}`;
-      ui.upgrade.disabled = !cost || game.money < cost;
+      const branchLabel = getBranchLabel(selectedTower);
+      const branchText = branchLabel ? ` ${branchLabel}` : "";
+      ui.selected.textContent = `${towerTypes[selectedTower.type].label} L${selectedTower.level}${branchText}`;
+      ui.upgrade.disabled = !cost || game.money < cost || (!selectedTower.path && selectedTower.level === 1);
       ui.sell.disabled = false;
       if (cost) ui.upgrade.textContent = `Upgrade (${cost})`;
     }else{
@@ -306,6 +396,37 @@
       ui.sell.disabled = true;
       ui.upgrade.textContent = "Upgrade";
     }
+    updateBranchUI();
+  }
+
+  function getBranchLabel(tower){
+    if (!tower.path) return "";
+    const branches = towerBranches[tower.type] || [];
+    const branch = branches.find((b) => b.id === tower.path);
+    return branch ? `[${branch.name}]` : "";
+  }
+
+  function updateBranchUI(){
+    if (!ui.branchBox || !ui.branchA || !ui.branchB) return;
+    if (!selectedTower || selectedTower.level !== 1 || selectedTower.path){
+      ui.branchBox.hidden = true;
+      return;
+    }
+    const branches = towerBranches[selectedTower.type] || [];
+    if (branches.length < 2){
+      ui.branchBox.hidden = true;
+      return;
+    }
+    const cost = nextUpgradeCost(selectedTower) || 0;
+    ui.branchBox.hidden = false;
+    ui.branchA.textContent = `${branches[0].name} (${cost})`;
+    ui.branchA.dataset.branch = branches[0].id;
+    ui.branchA.dataset.tip = branches[0].desc;
+    ui.branchB.textContent = `${branches[1].name} (${cost})`;
+    ui.branchB.dataset.branch = branches[1].id;
+    ui.branchB.dataset.tip = branches[1].desc;
+    ui.branchA.disabled = game.money < cost;
+    ui.branchB.disabled = game.money < cost;
   }
 
   function startWave(){
@@ -314,6 +435,7 @@
     const queue = buildWaveQueue(game.wave);
     game.spawner = { queue, index: 0, timer: 0 };
     game.waveActive = true;
+    sfx.play("ui");
     updateHud(`Welle ${game.wave}`);
   }
 
@@ -345,6 +467,9 @@
       stunTimer: 0
     };
     game.enemies.push(enemy);
+    if (type === "boss"){
+      triggerGlitch();
+    }
   }
 
   function updateSpawner(dt){
@@ -374,8 +499,7 @@
         enemy.hp = Math.min(enemy.maxHp, enemy.hp + regen * dt);
       }
       if (enemy.hp <= 0){
-        game.enemies.splice(i, 1);
-        game.money += enemyTypes[enemy.type].reward;
+        killEnemy(enemy);
         continue;
       }
       if (enemy.slowTimer > 0){
@@ -434,8 +558,9 @@
     return best;
   }
 
-  function applyDamage(enemy, damage){
-    const armor = enemyTypes[enemy.type]?.armor || 0;
+  function applyDamage(enemy, damage, armorPierce = 0){
+    const baseArmor = enemyTypes[enemy.type]?.armor || 0;
+    const armor = Math.max(0, baseArmor - armorPierce);
     const final = damage * (1 - armor);
     enemy.hp -= final;
   }
@@ -449,6 +574,7 @@
     if (idx < 0) return;
     game.enemies.splice(idx, 1);
     game.money += enemyTypes[enemy.type].reward;
+    sfx.play("hit");
   }
 
   function updateTowers(dt){
@@ -459,7 +585,7 @@
       const target = findTarget(tower, stats);
       if (!target) continue;
       tower.cooldown = stats.cooldown;
-      applyDamage(target, stats.damage);
+      applyDamage(target, stats.damage, stats.armorPierce);
       if (stats.slow){
         target.slowTimer = stats.slowTime;
         target.slowFactor = stats.slow;
@@ -488,7 +614,7 @@
           const dx = enemy.x - target.x;
           const dy = enemy.y - target.y;
           if ((dx * dx + dy * dy) > chainRangeSq) continue;
-          applyDamage(enemy, stats.damage * stats.chainFalloff);
+          applyDamage(enemy, stats.damage * stats.chainFalloff, stats.armorPierce);
           addShot(target.x, target.y, enemy.x, enemy.y, shotColor);
           hitList.add(enemy);
           chained += 1;
@@ -674,8 +800,10 @@
       x: gridX * CELL + CELL / 2,
       y: gridY * CELL + CELL / 2,
       level: 1,
-      cooldown: 0
+      cooldown: 0,
+      path: null
     });
+    sfx.play("ui");
     updateSelection();
     return true;
   }
@@ -689,8 +817,21 @@
     if (!selectedTower) return;
     const cost = nextUpgradeCost(selectedTower);
     if (!cost || game.money < cost) return;
+    if (!selectedTower.path && selectedTower.level === 1) return;
     game.money -= cost;
     selectedTower.level += 1;
+    sfx.play("ui");
+    updateSelection();
+  }
+
+  function chooseBranch(branchId){
+    if (!selectedTower || selectedTower.path || selectedTower.level !== 1) return;
+    const cost = nextUpgradeCost(selectedTower);
+    if (!cost || game.money < cost) return;
+    selectedTower.path = branchId;
+    selectedTower.level += 1;
+    game.money -= cost;
+    sfx.play("ui");
     updateSelection();
   }
 
@@ -720,7 +861,7 @@
 
   function serializeGame(){
     return {
-      version: 3,
+      version: 4,
       money: game.money,
       lives: game.lives,
       wave: game.wave,
@@ -730,7 +871,8 @@
         gridX: t.gridX,
         gridY: t.gridY,
         level: t.level,
-        cooldown: t.cooldown
+        cooldown: t.cooldown,
+        path: t.path || null
       })),
       enemies: game.enemies.map((e) => ({
         type: e.type,
@@ -756,7 +898,7 @@
   }
 
   function applySave(data){
-    if (!data || (data.version !== 1 && data.version !== 2 && data.version !== 3)) return false;
+    if (!data || (data.version !== 1 && data.version !== 2 && data.version !== 3 && data.version !== 4)) return false;
     const mapId = data.mapId || localStorage.getItem(MAP_KEY) || maps[0].id;
     setMap(mapId, { silent: true });
     game.money = data.money ?? 140;
@@ -769,7 +911,8 @@
       x: t.gridX * CELL + CELL / 2,
       y: t.gridY * CELL + CELL / 2,
       level: t.level ?? 1,
-      cooldown: t.cooldown ?? 0
+      cooldown: t.cooldown ?? 0,
+      path: t.path ?? null
     })) : [];
     game.enemies = Array.isArray(data.enemies) ? data.enemies.map((e) => ({
       type: e.type,
@@ -910,6 +1053,16 @@
   if (ui.sell){
     ui.sell.addEventListener("click", sellSelected);
   }
+  if (ui.branchA){
+    ui.branchA.addEventListener("click", () => {
+      chooseBranch(ui.branchA.dataset.branch);
+    });
+  }
+  if (ui.branchB){
+    ui.branchB.addEventListener("click", () => {
+      chooseBranch(ui.branchB.dataset.branch);
+    });
+  }
   if (ui.export){
     ui.export.addEventListener("click", exportSave);
   }
@@ -936,6 +1089,7 @@
       }
       if (nextMap === game.mapId) return;
       setMap(nextMap, { reset: true });
+      sfx.play("ui");
     });
   }
 
@@ -966,6 +1120,7 @@
     if (!ui.helpModal) return;
     ui.helpModal.hidden = false;
     runTypewriter();
+    sfx.play("ui");
   }
 
   function closeHelp(){
@@ -995,6 +1150,7 @@
     const step = () => {
       if (i > full.length) return;
       line.textContent = full.slice(0, i);
+      if (i % 2 === 0) sfx.play("type");
       i += 1;
       setTimeout(step, 35);
     };
@@ -1042,6 +1198,11 @@
       quickLoad();
     }
   });
+
+  document.addEventListener("pointerdown", () => {
+    sfx.init();
+    if (sfx.ctx && sfx.ctx.state === "suspended") sfx.ctx.resume();
+  }, { once: true });
 
   let lastTime = null;
   let frameTime = 0;

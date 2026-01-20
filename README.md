@@ -15,3 +15,4 @@ Hier entsteht mein Wiki mit meinem Uni-Stoff. Zurzeit schreibe ich das Skript St
 - Wave-Preview-Panel, Map-Wechsel (2 Karten) und neue Gegner/Status-Effekte (Burn/EMP/Regen).
 - Training jetzt mit 3 Maps, Wave-Preview, Anleitung-Overlay und visuellen Status-Effekten.
 - Tooltips fuer Tower/Gegner, Mini-Campaign mit Unlocks und Matrix-Style Anleitung.
+- Upgrade-Tree pro Tower, neue SFX (UI/Typewriter/Hit) und Boss-Glitch-Effekt.
