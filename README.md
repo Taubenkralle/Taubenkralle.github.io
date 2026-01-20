@@ -13,3 +13,4 @@ Hier entsteht mein Wiki mit meinem Uni-Stoff. Zurzeit schreibe ich das Skript St
 - Beim Seitenwechsel laedt der Save, Spiel laeuft nicht weiter im Hintergrund.
 - Auto-Resume-Option fuer Training nach Seitenwechsel.
 - Wave-Preview-Panel, Map-Wechsel (2 Karten) und neue Gegner/Status-Effekte (Burn/EMP/Regen).
+- Training jetzt mit 3 Maps, Wave-Preview, Anleitung-Overlay und visuellen Status-Effekten.

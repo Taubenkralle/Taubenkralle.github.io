@@ -171,13 +171,43 @@
     "title": "Training",
     "url": "/training.html",
     "meta": "Page",
-    "keywords": "training ← schreibtisch x keine treffer. training matrix-defense im gleichen layout. auto-save laeuft im hintergrund und kann als json exportiert/importiert werden. credits 0 welle 0 integritaet 0 start wave pause bereit tower pulse snare arc wave preview warten... map apply wechsel nur ausserhalb einer welle. auswahl kein tower upgrade sell savegame export import reset save auto resume nach seitenwechsel shortcuts: 9 oeffnet training von jeder seite, shift+s quick save, shift+l quick load."
+    "keywords": "training ← schreibtisch x keine treffer. training matrix-defense im gleichen layout. auto-save laeuft im hintergrund und kann als json exportiert/importiert werden. credits 0 welle 0 integritaet 0 start wave pause anleitung bereit tower pulse snare arc wave preview warten... map apply wechsel nur ausserhalb einer welle. auswahl kein tower upgrade sell savegame export import reset save auto resume nach seitenwechsel shortcuts: 9 oeffnet training von jeder seite, shift+s quick save, shift+l quick load. training // anleitung close baue tower neben dem pfad, stoppe datenstroeme, schuetze den core. basics start wave startet die naechste welle. credits = geld, integritaet = leben. upgrade verbessert reichweite, schaden, tempo. tower pulse: guter allrounder, setzt burn (dot). snare: verlangsamt gegner. arc: ketten-schaden + kurzer emp (stun). gegner shield/tank haben ruestung, nehmen weniger schaden. swarm ist schnell und zerbrechlich. regen heilt sich langsam selbst. shortcuts 9 training oeffnen shift+s quick save shift+l quick load"
+  },
+  {
+    "title": "Basics",
+    "url": "/training.html#basics",
+    "meta": "Training",
+    "keywords": "basics"
+  },
+  {
+    "title": "Gegner",
+    "url": "/training.html#gegner",
+    "meta": "Training",
+    "keywords": "gegner"
+  },
+  {
+    "title": "Shortcuts",
+    "url": "/training.html#shortcuts",
+    "meta": "Training",
+    "keywords": "shortcuts"
+  },
+  {
+    "title": "Tower",
+    "url": "/training.html#tower",
+    "meta": "Training",
+    "keywords": "tower"
   },
   {
     "title": "Training",
     "url": "/training.html#training",
     "meta": "Training",
     "keywords": "training"
+  },
+  {
+    "title": "Training // Anleitung",
+    "url": "/training.html#training-anleitung",
+    "meta": "Training",
+    "keywords": "training // anleitung"
   },
   {
     "title": "White Rabbit",

@@ -62,6 +62,20 @@
         [7.5, 5.5],
         [11.5, 5.5]
       ]
+    },
+    {
+      id: "loop",
+      name: "Loop Trace",
+      points: [
+        [0.5, 1.5],
+        [5.5, 1.5],
+        [5.5, 5.5],
+        [2.5, 5.5],
+        [2.5, 3.5],
+        [9.5, 3.5],
+        [9.5, 6.5],
+        [11.5, 6.5]
+      ]
     }
   ];
 
@@ -82,6 +96,9 @@
     preview: document.querySelector("[data-preview]"),
     mapSelect: document.getElementById("training-map"),
     mapApply: document.getElementById("training-map-apply"),
+    help: document.getElementById("training-help"),
+    helpModal: document.getElementById("training-help-modal"),
+    helpClose: document.getElementById("training-help-close"),
     export: document.getElementById("training-export"),
     import: document.getElementById("training-import"),
     reset: document.getElementById("training-reset"),
@@ -210,11 +227,11 @@
 
   function buildWaveStats(wave){
     const stats = {
-      basic: 6 + wave * 2,
+      basic: Math.round(6 + wave * 1.8),
       fast: Math.max(0, wave - 1),
+      swarm: Math.max(0, Math.floor(wave / 2)),
       tank: Math.max(0, Math.floor((wave - 1) / 3)),
       shield: Math.max(0, Math.floor((wave - 2) / 2)),
-      swarm: Math.max(0, wave - 2),
       regen: Math.max(0, Math.floor((wave - 3) / 3)),
       boss: wave % 5 === 0 ? 1 : 0
     };
@@ -302,7 +319,8 @@
     const type = game.spawner.queue[game.spawner.index];
     spawnEnemy(type);
     game.spawner.index += 1;
-    game.spawner.timer = 0.6;
+    const base = 0.7 - Math.min(0.35, game.wave * 0.02);
+    game.spawner.timer = Math.max(0.32, base);
   }
 
   function updateEnemies(dt){
@@ -522,6 +540,21 @@
       ctx.beginPath();
       ctx.arc(enemy.x, enemy.y, 10, 0, Math.PI * 2);
       ctx.fill();
+      if (enemy.burnTimer > 0){
+        ctx.strokeStyle = "rgba(255,200,100,0.7)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(enemy.x, enemy.y, 12, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      if (enemy.stunTimer > 0){
+        const pulse = 0.5 + 0.5 * Math.sin(frameTime / 120);
+        ctx.strokeStyle = `rgba(120,255,255,${0.35 + pulse * 0.35})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(enemy.x, enemy.y, 14, 0, Math.PI * 2);
+        ctx.stroke();
+      }
       ctx.strokeStyle = "rgba(0,0,0,0.35)";
       ctx.stroke();
       ctx.fillStyle = "#03140a";
@@ -647,7 +680,7 @@
 
   function serializeGame(){
     return {
-      version: 2,
+      version: 3,
       money: game.money,
       lives: game.lives,
       wave: game.wave,
@@ -683,7 +716,7 @@
   }
 
   function applySave(data){
-    if (!data || (data.version !== 1 && data.version !== 2)) return false;
+    if (!data || (data.version !== 1 && data.version !== 2 && data.version !== 3)) return false;
     const mapId = data.mapId || localStorage.getItem(MAP_KEY) || maps[0].id;
     setMap(mapId, { silent: true });
     game.money = data.money ?? 140;
@@ -866,6 +899,36 @@
     });
   }
 
+  function openHelp(){
+    if (!ui.helpModal) return;
+    ui.helpModal.hidden = false;
+  }
+
+  function closeHelp(){
+    if (!ui.helpModal) return;
+    ui.helpModal.hidden = true;
+  }
+
+  if (ui.help){
+    ui.help.addEventListener("click", openHelp);
+  }
+  if (ui.helpClose){
+    ui.helpClose.addEventListener("click", closeHelp);
+  }
+  if (ui.helpModal){
+    ui.helpModal.addEventListener("click", (e) => {
+      if (e.target === ui.helpModal) closeHelp();
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (ui.helpModal && !ui.helpModal.hidden){
+      e.preventDefault();
+      closeHelp();
+    }
+  });
+
   function isAutoResume(){
     return localStorage.getItem(AUTO_RESUME_KEY) !== "0";
   }
@@ -901,10 +964,12 @@
   });
 
   let lastTime = null;
+  let frameTime = 0;
   function loop(time){
     if (!lastTime) lastTime = time;
     const dt = Math.min(0.05, (time - lastTime) / 1000);
     lastTime = time;
+    frameTime = time;
     updateGame(dt);
     draw();
     requestAnimationFrame(loop);

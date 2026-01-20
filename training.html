@@ -138,6 +138,7 @@
         <div class="training-stat">Integritaet <span data-stat="lives">0</span></div>
         <button class="training-btn" id="training-start" type="button">Start Wave</button>
         <button class="training-btn ghost" id="training-pause" type="button">Pause</button>
+        <button class="training-btn ghost" id="training-help" type="button">Anleitung</button>
         <span class="training-status" data-stat="status">Bereit</span>
       </div>
 
@@ -196,6 +197,43 @@
 
     <p class="training-tip">Shortcuts: <code>9</code> oeffnet Training von jeder Seite, <code>Shift+S</code> Quick Save, <code>Shift+L</code> Quick Load.</p>
   </main>
+  </div>
+
+  <div class="training-help" id="training-help-modal" hidden>
+    <div class="training-help-card">
+      <div class="training-help-header">
+        <h2>Training // Anleitung</h2>
+        <button class="training-btn ghost" id="training-help-close" type="button">Close</button>
+      </div>
+      <div class="training-help-body">
+        <p>Baue Tower neben dem Pfad, stoppe Datenstroeme, schuetze den Core.</p>
+        <h3>Basics</h3>
+        <ul>
+          <li>Start Wave startet die naechste Welle.</li>
+          <li>Credits = Geld, Integritaet = Leben.</li>
+          <li>Upgrade verbessert Reichweite, Schaden, Tempo.</li>
+        </ul>
+        <h3>Tower</h3>
+        <ul>
+          <li>Pulse: guter Allrounder, setzt Burn (DoT).</li>
+          <li>Snare: verlangsamt Gegner.</li>
+          <li>Arc: Ketten-Schaden + kurzer EMP (Stun).</li>
+        </ul>
+        <h3>Gegner</h3>
+        <ul>
+          <li>Shield/Tank haben Ruestung, nehmen weniger Schaden.</li>
+          <li>Swarm ist schnell und zerbrechlich.</li>
+          <li>Regen heilt sich langsam selbst.</li>
+        </ul>
+        <h3>Shortcuts</h3>
+        <ul>
+          <li><code>9</code> Training oeffnen</li>
+          <li><code>Shift+S</code> Quick Save</li>
+          <li><code>Shift+L</code> Quick Load</li>
+        </ul>
+      </div>
+      <div class="training-help-glow"></div>
+    </div>
   </div>
 
   <script src="rain.js"></script>
