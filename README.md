@@ -9,4 +9,5 @@ Hier entsteht mein Wiki mit meinem Uni-Stoff. Zurzeit schreibe ich das Skript St
 - Laeuft im gleichen Layout wie die anderen Seiten.
 - Mini Tower Defense mit 3 Towern, Wellen, Credits, Upgrades, Boss-Wellen.
 - Savegame: Auto-Save in `localStorage` plus Export/Import als JSON.
-- Shortcut `9` startet Training von jeder Seite; beim Seitenwechsel laedt der Save, Spiel laeuft nicht weiter im Hintergrund.
+- Shortcut `9` startet Training von jeder Seite; `Shift+S` Quick Save und `Shift+L` Quick Load.
+- Beim Seitenwechsel laedt der Save, Spiel laeuft nicht weiter im Hintergrund.

@@ -605,6 +605,16 @@
     reader.readAsText(file);
   }
 
+  function quickSave(){
+    saveGame();
+    updateHud("Quick Save");
+  }
+
+  function quickLoad(){
+    const ok = loadGame();
+    updateHud(ok ? "Quick Load" : "Kein Save");
+  }
+
   canvas.addEventListener("mousemove", (evt) => {
     const pos = pointerToGrid(evt);
     hoverTile = pos ? { x: pos.gridX, y: pos.gridY } : null;
@@ -666,6 +676,20 @@
       resetGame();
     });
   }
+
+  document.addEventListener("keydown", (e) => {
+    const active = document.activeElement;
+    const isTyping = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable);
+    if (isTyping) return;
+    if (e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey && (e.key === "S" || e.key === "s")){
+      e.preventDefault();
+      quickSave();
+    }
+    if (e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey && (e.key === "L" || e.key === "l")){
+      e.preventDefault();
+      quickLoad();
+    }
+  });
 
   let lastTime = null;
   function loop(time){
