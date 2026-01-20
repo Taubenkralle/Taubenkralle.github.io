@@ -21,3 +21,4 @@ Hier entsteht mein Wiki mit meinem Uni-Stoff. Zurzeit schreibe ich das Skript St
 - Count-up Summary, Top-5 Highscore-Liste und Audio-Mixer fuer SFX.
 - Save-Slots (Autosave pro Slot), Daily-Run Seed und Boss-Swarm-Attacke.
 - Slot-Preview, Daily-Top5 und Boss-Varianten mit Adds.
+- Slot-Preview mit Datum/Credits, Daily-Streak und Boss-Shield-Aura.

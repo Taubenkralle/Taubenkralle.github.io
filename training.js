@@ -24,6 +24,8 @@
   const DAILY_KEY = "matrix.training.daily";
   const DAILY_DATE_KEY = "matrix.training.dailyDate";
   const DAILY_SCORES_KEY = "matrix.training.dailyScores";
+  const DAILY_STREAK_KEY = "matrix.training.dailyStreak";
+  const DAILY_LAST_KEY = "matrix.training.dailyLastRun";
   const SLOT_COUNT = 3;
 
   const sfx = {
@@ -185,6 +187,7 @@
     slotSelect: document.getElementById("training-slot"),
     slotLoad: document.getElementById("training-slot-load"),
     slotPreview: document.getElementById("training-slot-preview"),
+    streak: document.getElementById("training-streak"),
     daily: document.getElementById("training-daily"),
     export: document.getElementById("training-export"),
     import: document.getElementById("training-import"),
@@ -281,6 +284,8 @@
   let dailyScores = loadDailyScores();
   let dailyMode = localStorage.getItem(DAILY_KEY) === "1";
   let dailySeed = localStorage.getItem(DAILY_DATE_KEY) || "";
+  let dailyStreak = parseInt(localStorage.getItem(DAILY_STREAK_KEY) || "0", 10) || 0;
+  let dailyLast = localStorage.getItem(DAILY_LAST_KEY) || "";
 
   function saveCampaign(){
     localStorage.setItem(CAMPAIGN_KEY, JSON.stringify({ stage: campaign.stage }));
@@ -300,6 +305,9 @@
     }
     if (ui.campaignHigh){
       ui.campaignHigh.textContent = `Highscore: ${highScore}`;
+    }
+    if (ui.streak){
+      ui.streak.textContent = `Daily Streak: ${dailyStreak}`;
     }
   }
 
@@ -349,7 +357,9 @@
       const data = JSON.parse(raw);
       const wave = data.wave ?? 0;
       const mapId = data.mapId || "-";
-      ui.slotPreview.textContent = `Welle ${wave} | Map ${mapId}`;
+      const credits = data.money ?? 0;
+      const savedAt = data.savedAt ? new Date(data.savedAt).toLocaleDateString("de-DE") : "-";
+      ui.slotPreview.textContent = `Welle ${wave} | Map ${mapId} | C ${credits} | ${savedAt}`;
     }catch{
       ui.slotPreview.textContent = "Slot defekt";
     }
@@ -673,7 +683,9 @@
       burnTimer: 0,
       burnDps: 0,
       stunTimer: 0,
-      bossSpawnTimer: type === "boss" ? 3.8 : 0
+      bossSpawnTimer: type === "boss" ? 3.8 : 0,
+      bossShieldTimer: type === "boss" ? 6 : 0,
+      shieldTimer: 0
     };
     game.enemies.push(enemy);
     if (type === "boss"){
@@ -698,7 +710,9 @@
       burnTimer: 0,
       burnDps: 0,
       stunTimer: 0,
-      bossSpawnTimer: type === "boss" ? 3.8 : 0
+      bossSpawnTimer: type === "boss" ? 3.8 : 0,
+      bossShieldTimer: type === "boss" ? 6 : 0,
+      shieldTimer: 0
     };
     game.enemies.push(enemy);
     if (type === "boss"){
@@ -742,6 +756,14 @@
           enemy.bossSpawnTimer = 4.2;
           spawnEnemyAt("swarm", enemy.x, enemy.y, enemy.pathIndex);
         }
+        enemy.bossShieldTimer -= dt;
+        if (enemy.bossShieldTimer <= 0){
+          enemy.bossShieldTimer = 7.5;
+          applyBossShield(enemy);
+        }
+      }
+      if (enemy.shieldTimer > 0){
+        enemy.shieldTimer -= dt;
       }
       if (enemy.slowTimer > 0){
         enemy.slowTimer -= dt;
@@ -802,7 +824,8 @@
   function applyDamage(enemy, damage, armorPierce = 0){
     const baseArmor = enemyTypes[enemy.type]?.armor || 0;
     const armor = Math.max(0, baseArmor - armorPierce);
-    const final = damage * (1 - armor);
+    const shield = enemy.shieldTimer > 0 ? 0.35 : 0;
+    const final = damage * (1 - armor) * (1 - shield);
     enemy.hp -= final;
   }
 
@@ -958,6 +981,13 @@
       ctx.beginPath();
       ctx.arc(enemy.x, enemy.y, 10, 0, Math.PI * 2);
       ctx.fill();
+      if (enemy.shieldTimer > 0){
+        ctx.strokeStyle = "rgba(120,200,255,0.7)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(enemy.x, enemy.y, 16, 0, Math.PI * 2);
+        ctx.stroke();
+      }
       if (enemy.burnTimer > 0){
         ctx.strokeStyle = "rgba(255,200,100,0.7)";
         ctx.lineWidth = 2;
@@ -1113,12 +1143,13 @@
 
   function serializeGame(){
     return {
-      version: 5,
+      version: 6,
       money: game.money,
       lives: game.lives,
       wave: game.wave,
       mapId: game.mapId,
       kills: game.kills,
+      savedAt: Date.now(),
       towers: game.towers.map((t) => ({
         type: t.type,
         gridX: t.gridX,
@@ -1151,7 +1182,7 @@
   }
 
   function applySave(data){
-    if (!data || (data.version !== 1 && data.version !== 2 && data.version !== 3 && data.version !== 4 && data.version !== 5)) return false;
+    if (!data || (data.version !== 1 && data.version !== 2 && data.version !== 3 && data.version !== 4 && data.version !== 5 && data.version !== 6)) return false;
     const mapId = data.mapId || localStorage.getItem(MAP_KEY) || maps[0].id;
     setMap(mapId, { silent: true });
     game.money = data.money ?? 140;
@@ -1201,6 +1232,7 @@
       const payload = serializeGame();
       const key = slotKey(getSlotId());
       localStorage.setItem(key, JSON.stringify(payload));
+      updateSlotPreview();
     }catch (err){
       console.warn("save failed", err);
     }
@@ -1491,6 +1523,28 @@
     dailyScores[dailySeed] = list.slice(0, 5);
     saveDailyScores();
     updateDailyScoresUI();
+    updateDailyStreak();
+  }
+
+  function updateDailyStreak(){
+    const today = getDailySeed();
+    if (dailyLast === today) return;
+    if (!dailyLast){
+      dailyStreak = 1;
+    }else{
+      const last = new Date(dailyLast);
+      const current = new Date(today);
+      const diffDays = Math.round((current - last) / 86400000);
+      dailyStreak = diffDays === 1 ? dailyStreak + 1 : 1;
+    }
+    dailyLast = today;
+    localStorage.setItem(DAILY_STREAK_KEY, String(dailyStreak));
+    localStorage.setItem(DAILY_LAST_KEY, dailyLast);
+    updateCampaignUI();
+  }
+
+  function applyBossShield(enemy){
+    enemy.shieldTimer = 2.2;
   }
 
   if (ui.summaryClose){
