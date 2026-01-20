@@ -12,3 +12,4 @@ Hier entsteht mein Wiki mit meinem Uni-Stoff. Zurzeit schreibe ich das Skript St
 - Shortcut `9` startet Training von jeder Seite; `Shift+S` Quick Save und `Shift+L` Quick Load.
 - Beim Seitenwechsel laedt der Save, Spiel laeuft nicht weiter im Hintergrund.
 - Auto-Resume-Option fuer Training nach Seitenwechsel.
+- Wave-Preview-Panel, Map-Wechsel (2 Karten) und neue Gegner/Status-Effekte (Burn/EMP/Regen).

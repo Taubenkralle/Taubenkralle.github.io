@@ -14,11 +14,12 @@
 
   const SAVE_KEY = "matrix.training.save";
   const AUTO_RESUME_KEY = "matrix.training.autoResume";
+  const MAP_KEY = "matrix.training.map";
 
   const towerTypes = {
-    pulse: { label: "Pulse", cost: 70, range: 95, damage: 10, cooldown: 0.55, color: "#00ff99" },
+    pulse: { label: "Pulse", cost: 70, range: 95, damage: 10, cooldown: 0.55, burnDps: 6, burnTime: 2.2, color: "#00ff99" },
     snare: { label: "Snare", cost: 90, range: 80, damage: 6, cooldown: 0.85, slow: 0.5, slowTime: 1.2, color: "#00cc55" },
-    arc: { label: "Arc", cost: 120, range: 120, damage: 18, cooldown: 1.15, chain: 2, chainRange: 70, chainFalloff: 0.65, color: "#66ffcc" }
+    arc: { label: "Arc", cost: 120, range: 120, damage: 18, cooldown: 1.15, chain: 2, chainRange: 70, chainFalloff: 0.65, empTime: 0.35, color: "#66ffcc" }
   };
 
   const enemyTypes = {
@@ -26,6 +27,8 @@
     fast: { label: "Fast", hp: 26, speed: 85, reward: 9, color: "#66ff99" },
     tank: { label: "Tank", hp: 90, speed: 38, reward: 16, color: "#00cc55", armor: 0.2 },
     shield: { label: "Shield", hp: 60, speed: 46, reward: 13, color: "#33ffcc", armor: 0.35 },
+    swarm: { label: "Swarm", hp: 18, speed: 95, reward: 6, color: "#00ffcc" },
+    regen: { label: "Regen", hp: 70, speed: 42, reward: 14, color: "#5bffb3", regen: 6 },
     boss: { label: "Boss", hp: 260, speed: 30, reward: 40, color: "#b6ffea", armor: 0.25 }
   };
 
@@ -35,34 +38,36 @@
     { range: 1.45, damage: 1.8, cooldown: 0.72 }
   ];
 
-  const pathPoints = [
-    { x: CELL * 0.5, y: CELL * 3.5 },
-    { x: CELL * 4.5, y: CELL * 3.5 },
-    { x: CELL * 4.5, y: CELL * 1.5 },
-    { x: CELL * 9.5, y: CELL * 1.5 },
-    { x: CELL * 9.5, y: CELL * 6.5 },
-    { x: CELL * 11.5, y: CELL * 6.5 }
+  const maps = [
+    {
+      id: "core",
+      name: "Core Run",
+      points: [
+        [0.5, 3.5],
+        [4.5, 3.5],
+        [4.5, 1.5],
+        [9.5, 1.5],
+        [9.5, 6.5],
+        [11.5, 6.5]
+      ]
+    },
+    {
+      id: "splice",
+      name: "Splice Grid",
+      points: [
+        [0.5, 6.5],
+        [3.5, 6.5],
+        [3.5, 2.5],
+        [7.5, 2.5],
+        [7.5, 5.5],
+        [11.5, 5.5]
+      ]
+    }
   ];
 
-  const pathTiles = new Set();
-  for (let i = 0; i < pathPoints.length - 1; i++){
-    const a = pathPoints[i];
-    const b = pathPoints[i + 1];
-    const ax = Math.round(a.x / CELL - 0.5);
-    const ay = Math.round(a.y / CELL - 0.5);
-    const bx = Math.round(b.x / CELL - 0.5);
-    const by = Math.round(b.y / CELL - 0.5);
-    const dx = Math.sign(bx - ax);
-    const dy = Math.sign(by - ay);
-    let x = ax;
-    let y = ay;
-    pathTiles.add(`${x},${y}`);
-    while (x !== bx || y !== by){
-      x += dx;
-      y += dy;
-      pathTiles.add(`${x},${y}`);
-    }
-  }
+  let currentMap = null;
+  let pathPoints = [];
+  let pathTiles = new Set();
 
   const ui = {
     credits: document.querySelector("[data-stat='credits']"),
@@ -74,6 +79,9 @@
     upgrade: document.getElementById("training-upgrade"),
     sell: document.getElementById("training-sell"),
     selected: document.querySelector("[data-selected]"),
+    preview: document.querySelector("[data-preview]"),
+    mapSelect: document.getElementById("training-map"),
+    mapApply: document.getElementById("training-map-apply"),
     export: document.getElementById("training-export"),
     import: document.getElementById("training-import"),
     reset: document.getElementById("training-reset"),
@@ -85,6 +93,47 @@
     const key = span.dataset.cost;
     if (towerTypes[key]) span.textContent = towerTypes[key].cost;
   });
+
+  function buildPath(map){
+    const points = map.points.map(([gx, gy]) => ({ x: gx * CELL, y: gy * CELL }));
+    const tiles = new Set();
+    for (let i = 0; i < points.length - 1; i++){
+      const a = points[i];
+      const b = points[i + 1];
+      const ax = Math.round(a.x / CELL - 0.5);
+      const ay = Math.round(a.y / CELL - 0.5);
+      const bx = Math.round(b.x / CELL - 0.5);
+      const by = Math.round(b.y / CELL - 0.5);
+      const dx = Math.sign(bx - ax);
+      const dy = Math.sign(by - ay);
+      let x = ax;
+      let y = ay;
+      tiles.add(`${x},${y}`);
+      while (x !== bx || y !== by){
+        x += dx;
+        y += dy;
+        tiles.add(`${x},${y}`);
+      }
+    }
+    return { points, tiles };
+  }
+
+  function setMap(mapId, options = {}){
+    const map = maps.find((m) => m.id === mapId) || maps[0];
+    const built = buildPath(map);
+    currentMap = map;
+    pathPoints = built.points;
+    pathTiles = built.tiles;
+    game.mapId = map.id;
+    if (ui.mapSelect) ui.mapSelect.value = map.id;
+    localStorage.setItem(MAP_KEY, map.id);
+    if (options.reset){
+      resetGame();
+      flashStatus("Map Reset");
+    }else if (!options.silent){
+      flashStatus("Map geladen");
+    }
+  }
 
   let selectedType = "pulse";
   let selectedTower = null;
@@ -99,7 +148,8 @@
     shots: [],
     waveActive: false,
     spawner: null,
-    paused: false
+    paused: false,
+    mapId: maps[0].id
   };
 
   function resetGame(){
@@ -125,7 +175,13 @@
       damage: base.damage * mult.damage,
       cooldown: base.cooldown * mult.cooldown,
       slow: base.slow,
-      slowTime: base.slowTime
+      slowTime: base.slowTime,
+      burnDps: base.burnDps,
+      burnTime: base.burnTime,
+      chain: base.chain,
+      chainRange: base.chainRange,
+      chainFalloff: base.chainFalloff,
+      empTime: base.empTime
     };
   }
 
@@ -141,6 +197,7 @@
     if (ui.lives) ui.lives.textContent = game.lives.toString();
     if (ui.status && statusText) ui.status.textContent = statusText;
     if (ui.pause) ui.pause.textContent = game.paused ? "Resume" : "Pause";
+    updatePreview();
   }
 
   function flashStatus(text){
@@ -149,6 +206,34 @@
     ui.status.classList.remove("flash");
     void ui.status.offsetWidth;
     ui.status.classList.add("flash");
+  }
+
+  function buildWaveStats(wave){
+    const stats = {
+      basic: 6 + wave * 2,
+      fast: Math.max(0, wave - 1),
+      tank: Math.max(0, Math.floor((wave - 1) / 3)),
+      shield: Math.max(0, Math.floor((wave - 2) / 2)),
+      swarm: Math.max(0, wave - 2),
+      regen: Math.max(0, Math.floor((wave - 3) / 3)),
+      boss: wave % 5 === 0 ? 1 : 0
+    };
+    return stats;
+  }
+
+  function updatePreview(){
+    if (!ui.preview) return;
+    const waveNum = game.waveActive ? game.wave : game.wave + 1;
+    const stats = buildWaveStats(waveNum);
+    const parts = [];
+    Object.keys(stats).forEach((key) => {
+      const count = stats[key];
+      if (!count) return;
+      const label = enemyTypes[key]?.label || key;
+      parts.push(`${count} ${label}`);
+    });
+    const prefix = game.waveActive ? `Welle ${game.wave}` : `Next ${waveNum}`;
+    ui.preview.textContent = parts.length ? `${prefix}: ${parts.join(" | ")}` : `${prefix}: ruhig`;
   }
 
   function updateSelection(){
@@ -178,15 +263,10 @@
 
   function buildWaveQueue(wave){
     const queue = [];
-    const basicCount = 6 + wave * 2;
-    const fastCount = Math.max(0, wave - 1);
-    const tankCount = Math.max(0, Math.floor((wave - 1) / 3));
-    for (let i = 0; i < basicCount; i++) queue.push("basic");
-    for (let i = 0; i < fastCount; i++) queue.push("fast");
-    const shieldCount = Math.max(0, Math.floor((wave - 2) / 2));
-    for (let i = 0; i < tankCount; i++) queue.push("tank");
-    for (let i = 0; i < shieldCount; i++) queue.push("shield");
-    if (wave % 5 === 0) queue.push("boss");
+    const stats = buildWaveStats(wave);
+    Object.keys(stats).forEach((type) => {
+      for (let i = 0; i < stats[type]; i++) queue.push(type);
+    });
     return queue.sort(() => Math.random() - 0.5);
   }
 
@@ -198,11 +278,15 @@
       x: start.x,
       y: start.y,
       hp: base.hp,
+      maxHp: base.hp,
       speed: base.speed,
       reward: base.reward,
       pathIndex: 1,
       slowTimer: 0,
-      slowFactor: 1
+      slowFactor: 1,
+      burnTimer: 0,
+      burnDps: 0,
+      stunTimer: 0
     };
     game.enemies.push(enemy);
   }
@@ -224,9 +308,26 @@
   function updateEnemies(dt){
     for (let i = game.enemies.length - 1; i >= 0; i--){
       const enemy = game.enemies[i];
+      if (enemy.burnTimer > 0){
+        enemy.burnTimer -= dt;
+        applyDamage(enemy, enemy.burnDps * dt);
+      }
+      const regen = enemyTypes[enemy.type]?.regen || 0;
+      if (regen > 0){
+        enemy.hp = Math.min(enemy.maxHp, enemy.hp + regen * dt);
+      }
+      if (enemy.hp <= 0){
+        game.enemies.splice(i, 1);
+        game.money += enemyTypes[enemy.type].reward;
+        continue;
+      }
       if (enemy.slowTimer > 0){
         enemy.slowTimer -= dt;
         enemy.slowFactor = enemy.slowTimer > 0 ? enemy.slowFactor : 1;
+      }
+      if (enemy.stunTimer > 0){
+        enemy.stunTimer -= dt;
+        continue;
       }
       const speed = enemy.speed * enemy.slowFactor;
       let remaining = speed * dt;
@@ -305,6 +406,13 @@
       if (stats.slow){
         target.slowTimer = stats.slowTime;
         target.slowFactor = stats.slow;
+      }
+      if (stats.burnDps && stats.burnTime){
+        target.burnDps = stats.burnDps;
+        target.burnTimer = Math.max(target.burnTimer, stats.burnTime);
+      }
+      if (stats.empTime){
+        target.stunTimer = Math.max(target.stunTimer, stats.empTime);
       }
       const shotColor = towerTypes[tower.type].color;
       addShot(tower.x, tower.y, target.x, target.y, shotColor);
@@ -420,7 +528,7 @@
       ctx.font = "10px monospace";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      const label = enemy.type === "boss" ? "B" : enemy.type === "tank" ? "T" : enemy.type === "fast" ? "F" : enemy.type === "shield" ? "S" : "D";
+      const label = enemy.type === "boss" ? "B" : enemy.type === "tank" ? "T" : enemy.type === "fast" ? "F" : enemy.type === "shield" ? "S" : enemy.type === "swarm" ? "W" : enemy.type === "regen" ? "R" : "D";
       ctx.fillText(label, enemy.x, enemy.y);
     }
   }
@@ -539,10 +647,11 @@
 
   function serializeGame(){
     return {
-      version: 1,
+      version: 2,
       money: game.money,
       lives: game.lives,
       wave: game.wave,
+      mapId: game.mapId,
       towers: game.towers.map((t) => ({
         type: t.type,
         gridX: t.gridX,
@@ -555,9 +664,13 @@
         x: e.x,
         y: e.y,
         hp: e.hp,
+        maxHp: e.maxHp,
         pathIndex: e.pathIndex,
         slowTimer: e.slowTimer,
-        slowFactor: e.slowFactor
+        slowFactor: e.slowFactor,
+        burnTimer: e.burnTimer,
+        burnDps: e.burnDps,
+        stunTimer: e.stunTimer
       })),
       waveActive: game.waveActive,
       spawner: game.spawner ? {
@@ -570,7 +683,9 @@
   }
 
   function applySave(data){
-    if (!data || data.version !== 1) return false;
+    if (!data || (data.version !== 1 && data.version !== 2)) return false;
+    const mapId = data.mapId || localStorage.getItem(MAP_KEY) || maps[0].id;
+    setMap(mapId, { silent: true });
     game.money = data.money ?? 140;
     game.lives = data.lives ?? 20;
     game.wave = data.wave ?? 0;
@@ -588,11 +703,15 @@
       x: e.x,
       y: e.y,
       hp: e.hp,
+      maxHp: e.maxHp ?? enemyTypes[e.type]?.hp ?? 40,
       speed: enemyTypes[e.type]?.speed ?? 50,
       reward: enemyTypes[e.type]?.reward ?? 8,
       pathIndex: e.pathIndex ?? 1,
       slowTimer: e.slowTimer ?? 0,
-      slowFactor: e.slowFactor ?? 1
+      slowFactor: e.slowFactor ?? 1,
+      burnTimer: e.burnTimer ?? 0,
+      burnDps: e.burnDps ?? 0,
+      stunTimer: e.stunTimer ?? 0
     })) : [];
     game.waveActive = !!data.waveActive;
     game.spawner = data.spawner ? {
@@ -695,6 +814,14 @@
     if (btn.dataset.tower === selectedType) btn.classList.add("active");
   });
 
+  if (ui.mapSelect){
+    ui.mapSelect.innerHTML = maps.map((map) => `<option value="${map.id}">${map.name}</option>`).join("");
+    const storedMap = localStorage.getItem(MAP_KEY) || maps[0].id;
+    setMap(storedMap, { silent: true });
+  }else{
+    setMap(maps[0].id, { silent: true });
+  }
+
   if (ui.start){
     ui.start.addEventListener("click", startWave);
   }
@@ -724,6 +851,18 @@
     ui.reset.addEventListener("click", () => {
       localStorage.removeItem(SAVE_KEY);
       resetGame();
+    });
+  }
+
+  if (ui.mapApply && ui.mapSelect){
+    ui.mapApply.addEventListener("click", () => {
+      const nextMap = ui.mapSelect.value;
+      if (game.waveActive || game.enemies.length){
+        flashStatus("Map gesperrt");
+        return;
+      }
+      if (nextMap === game.mapId) return;
+      setMap(nextMap, { reset: true });
     });
   }
 
