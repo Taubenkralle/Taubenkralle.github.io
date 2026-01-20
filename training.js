@@ -15,6 +15,7 @@
   const SAVE_KEY = "matrix.training.save";
   const AUTO_RESUME_KEY = "matrix.training.autoResume";
   const MAP_KEY = "matrix.training.map";
+  const CAMPAIGN_KEY = "matrix.training.campaign";
 
   const towerTypes = {
     pulse: { label: "Pulse", cost: 70, range: 95, damage: 10, cooldown: 0.55, burnDps: 6, burnTime: 2.2, color: "#00ff99" },
@@ -96,6 +97,9 @@
     preview: document.querySelector("[data-preview]"),
     mapSelect: document.getElementById("training-map"),
     mapApply: document.getElementById("training-map-apply"),
+    campaignStage: document.querySelector("[data-campaign='stage']"),
+    campaignTarget: document.querySelector("[data-campaign='target']"),
+    campaignProgress: document.querySelector("[data-campaign='progress']"),
     help: document.getElementById("training-help"),
     helpModal: document.getElementById("training-help-modal"),
     helpClose: document.getElementById("training-help-close"),
@@ -169,6 +173,40 @@
     mapId: maps[0].id
   };
 
+  const campaignStages = [
+    { mapId: "core", targetWave: 3 },
+    { mapId: "splice", targetWave: 4 },
+    { mapId: "loop", targetWave: 5 }
+  ];
+
+  function loadCampaign(){
+    try{
+      const raw = localStorage.getItem(CAMPAIGN_KEY);
+      if (!raw) return { stage: 0 };
+      const data = JSON.parse(raw);
+      return { stage: Math.max(0, Math.min(campaignStages.length - 1, data.stage || 0)) };
+    }catch{
+      return { stage: 0 };
+    }
+  }
+
+  const campaign = loadCampaign();
+
+  function saveCampaign(){
+    localStorage.setItem(CAMPAIGN_KEY, JSON.stringify({ stage: campaign.stage }));
+  }
+
+  function updateCampaignUI(){
+    if (!campaignStages.length) return;
+    const stage = campaignStages[campaign.stage];
+    if (ui.campaignStage) ui.campaignStage.textContent = `Stage ${campaign.stage + 1}`;
+    if (ui.campaignTarget) ui.campaignTarget.textContent = `Ziel: Welle ${stage.targetWave}`;
+    if (ui.campaignProgress){
+      const progress = Math.min(1, game.wave / stage.targetWave);
+      ui.campaignProgress.style.width = `${Math.round(progress * 100)}%`;
+    }
+  }
+
   function resetGame(){
     game.money = 140;
     game.lives = 20;
@@ -215,6 +253,7 @@
     if (ui.status && statusText) ui.status.textContent = statusText;
     if (ui.pause) ui.pause.textContent = game.paused ? "Resume" : "Pause";
     updatePreview();
+    updateCampaignUI();
   }
 
   function flashStatus(text){
@@ -476,6 +515,7 @@
       if (!game.spawner && game.enemies.length === 0){
         game.waveActive = false;
         updateHud("Welle beendet");
+        handleCampaignProgress();
       }
     }
     updateEnemies(dt);
@@ -899,9 +939,33 @@
     });
   }
 
+  function lockMaps(){
+    if (!ui.mapSelect) return;
+    const unlocked = campaign.stage + 1;
+    const allowed = campaignStages.slice(0, unlocked).map((s) => s.mapId);
+    Array.from(ui.mapSelect.options).forEach((opt) => {
+      opt.disabled = !allowed.includes(opt.value);
+    });
+  }
+
+  function handleCampaignProgress(){
+    const stage = campaignStages[campaign.stage];
+    if (!stage) return;
+    if (game.wave >= stage.targetWave && campaign.stage < campaignStages.length - 1){
+      campaign.stage += 1;
+      saveCampaign();
+      lockMaps();
+      updateCampaignUI();
+      flashStatus("Stage freigeschaltet");
+    }else{
+      updateCampaignUI();
+    }
+  }
+
   function openHelp(){
     if (!ui.helpModal) return;
     ui.helpModal.hidden = false;
+    runTypewriter();
   }
 
   function closeHelp(){
@@ -919,6 +983,22 @@
     ui.helpModal.addEventListener("click", (e) => {
       if (e.target === ui.helpModal) closeHelp();
     });
+  }
+
+  function runTypewriter(){
+    const line = ui.helpModal ? ui.helpModal.querySelector("[data-typewriter]") : null;
+    if (!line) return;
+    const full = line.dataset.fulltext || line.textContent;
+    line.dataset.fulltext = full;
+    line.textContent = "";
+    let i = 0;
+    const step = () => {
+      if (i > full.length) return;
+      line.textContent = full.slice(0, i);
+      i += 1;
+      setTimeout(step, 35);
+    };
+    step();
   }
 
   document.addEventListener("keydown", (e) => {
@@ -977,6 +1057,8 @@
 
   loadGame();
   applyAutoResume();
+  updateCampaignUI();
+  lockMaps();
   if (!game.waveActive && !game.enemies.length){
     updateHud("Bereit");
   }

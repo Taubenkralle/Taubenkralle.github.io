@@ -150,14 +150,36 @@
         <div class="training-group">
           <div class="training-title">Tower</div>
           <div class="tower-list">
-            <button class="tower-btn" data-tower="pulse" type="button">Pulse <span data-cost="pulse"></span></button>
-            <button class="tower-btn" data-tower="snare" type="button">Snare <span data-cost="snare"></span></button>
-            <button class="tower-btn" data-tower="arc" type="button">Arc <span data-cost="arc"></span></button>
+            <button class="tower-btn" data-tower="pulse" type="button" data-tip="Burn DoT, stabiler Schaden">Pulse <span data-cost="pulse"></span></button>
+            <button class="tower-btn" data-tower="snare" type="button" data-tip="Verlangsamt Gegner">Snare <span data-cost="snare"></span></button>
+            <button class="tower-btn" data-tower="arc" type="button" data-tip="Chain + EMP Stun">Arc <span data-cost="arc"></span></button>
           </div>
         </div>
         <div class="training-group">
           <div class="training-title">Wave Preview</div>
           <div class="training-preview" data-preview>Warten...</div>
+        </div>
+        <div class="training-group">
+          <div class="training-title">Enemy Intel</div>
+          <div class="training-intel">
+            <span class="intel-chip" data-tip="Standard-Drohne">D</span>
+            <span class="intel-chip" data-tip="Schnell, wenig HP">F</span>
+            <span class="intel-chip" data-tip="Tank mit Ruestung">T</span>
+            <span class="intel-chip" data-tip="Shield, hohe Ruestung">S</span>
+            <span class="intel-chip" data-tip="Swarm, sehr schnell">W</span>
+            <span class="intel-chip" data-tip="Regen, heilt sich">R</span>
+            <span class="intel-chip" data-tip="Boss, hoher Druck">B</span>
+          </div>
+        </div>
+        <div class="training-group">
+          <div class="training-title">Campaign</div>
+          <div class="training-campaign">
+            <div data-campaign="stage">Stage 1</div>
+            <div data-campaign="target">Ziel: Welle 3</div>
+            <div class="training-campaign-bar">
+              <span data-campaign="progress"></span>
+            </div>
+          </div>
         </div>
         <div class="training-group">
           <div class="training-title">Map</div>
@@ -206,6 +228,7 @@
         <button class="training-btn ghost" id="training-help-close" type="button">Close</button>
       </div>
       <div class="training-help-body">
+        <div class="type-line" data-typewriter>Link established...</div>
         <p>Baue Tower neben dem Pfad, stoppe Datenstroeme, schuetze den Core.</p>
         <h3>Basics</h3>
         <ul>

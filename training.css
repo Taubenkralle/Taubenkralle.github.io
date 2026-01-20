@@ -93,6 +93,83 @@
   box-shadow: 0 0 12px rgba(0,255,102,0.25);
 }
 
+.tower-btn[data-tip],
+.intel-chip[data-tip]{
+  position:relative;
+}
+
+.tower-btn[data-tip]::after,
+.intel-chip[data-tip]::after{
+  content: attr(data-tip);
+  position:absolute;
+  left:50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  background: rgba(2,14,8,0.95);
+  color:#b8ffd8;
+  padding:6px 8px;
+  border-radius:6px;
+  border:1px solid rgba(0,255,153,0.35);
+  font-size:11px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.tower-btn[data-tip]:hover::after,
+.intel-chip[data-tip]:hover::after{
+  opacity:1;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.training-intel{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.intel-chip{
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border-radius:6px;
+  border:1px solid rgba(0,255,153,0.4);
+  color:#9affc9;
+  background: rgba(0,10,6,0.6);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+
+.training-campaign{
+  display:grid;
+  gap:8px;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:#b8ffd8;
+}
+
+.training-campaign-bar{
+  height:6px;
+  border-radius:6px;
+  background: rgba(0,255,153,0.12);
+  overflow:hidden;
+  border:1px solid rgba(0,255,153,0.3);
+}
+
+.training-campaign-bar span{
+  display:block;
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg, rgba(0,255,153,0.7), rgba(0,255,102,0.9));
+  transition: width 0.4s ease;
+}
+
 .training-btn.ghost,
 .tower-btn.ghost,
 .training-import{
@@ -216,6 +293,35 @@
   border:1px solid rgba(0,255,153,0.35);
   box-shadow: 0 0 30px rgba(0,255,153,0.2);
   animation: trainingReveal 0.5s ease;
+}
+
+.training-help-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:14px;
+  background: repeating-linear-gradient(180deg, rgba(0,0,0,0.0) 0px, rgba(0,0,0,0.0) 2px, rgba(0,0,0,0.25) 3px);
+  opacity:0.35;
+  pointer-events:none;
+}
+
+.training-help .type-line{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  color:#9affc9;
+  font-size:12px;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+}
+
+.training-help .type-line::after{
+  content:"▌";
+  margin-left:4px;
+  animation: caretBlink 1s steps(2) infinite;
+}
+
+@keyframes caretBlink{
+  0%,100%{ opacity:0; }
+  50%{ opacity:1; }
 }
 
 .training-help-header{
