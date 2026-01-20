@@ -258,7 +258,8 @@
     spawner: null,
     paused: false,
     mapId: maps[0].id,
-    kills: 0
+    kills: 0,
+    summaryLock: false
   };
 
   const campaignStages = [
@@ -661,6 +662,7 @@
     const queue = buildWaveQueue(game.wave);
     game.spawner = { queue, index: 0, timer: 0 };
     game.waveActive = true;
+    game.summaryLock = false;
     sfx.play("ui");
     updateHud(`Welle ${game.wave}`);
   }
@@ -921,7 +923,7 @@
       if (!game.spawner && game.enemies.length === 0){
         game.waveActive = false;
         updateHud("Welle beendet");
-        showWaveSummary();
+        if (!game.summaryLock) showWaveSummary();
         handleCampaignProgress();
       }
     }
@@ -1246,6 +1248,10 @@
       timer: data.spawner.timer ?? 0
     } : null;
     game.paused = !!data.paused;
+    if (game.waveActive && !game.spawner && game.enemies.length === 0){
+      game.waveActive = false;
+    }
+    game.summaryLock = !game.waveActive;
     selectedTower = null;
     updateSelection();
     updateHud(game.waveActive ? `Welle ${game.wave}` : "Bereit");
