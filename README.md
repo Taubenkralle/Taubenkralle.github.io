@@ -23,3 +23,4 @@ Hier entsteht mein Wiki mit meinem Uni-Stoff. Zurzeit schreibe ich das Skript St
 - Slot-Preview, Daily-Top5 und Boss-Varianten mit Adds.
 - Slot-Preview mit Datum/Credits, Daily-Streak und Boss-Shield-Aura.
 - Slot-Preview mit Lives/Kills, Daily-Streak-Bonus und Shield-Warnung vorm Boss-Schild.
+- Performance-Limits: Gegner-Cap `MAX_ENEMIES=120`, Shot-Cap `MAX_SHOTS=240`, Logik-Tick `LOGIC_DT=1/30s` in `training.js`.
