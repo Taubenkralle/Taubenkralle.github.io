@@ -923,7 +923,7 @@
       if (!game.spawner && game.enemies.length === 0){
         game.waveActive = false;
         updateHud("Welle beendet");
-        if (!game.summaryLock) showWaveSummary();
+        showWaveSummary();
         handleCampaignProgress();
       }
     }
@@ -1248,10 +1248,14 @@
       timer: data.spawner.timer ?? 0
     } : null;
     game.paused = !!data.paused;
-    if (game.waveActive && !game.spawner && game.enemies.length === 0){
-      game.waveActive = false;
+    if (game.waveActive){
+      const emptyQueue = !game.spawner || !game.spawner.queue || game.spawner.queue.length === 0;
+      if (emptyQueue && game.enemies.length === 0){
+        game.waveActive = false;
+        game.spawner = null;
+      }
     }
-    game.summaryLock = !game.waveActive;
+    game.summaryLock = true;
     selectedTower = null;
     updateSelection();
     updateHud(game.waveActive ? `Welle ${game.wave}` : "Bereit");
@@ -1487,6 +1491,8 @@
   }
 
   function showWaveSummary(){
+    if (game.summaryLock) return;
+    game.summaryLock = true;
     updateHighscore();
     recordScore();
     const bonus = recordDailyScore() || 0;
