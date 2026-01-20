@@ -22,3 +22,4 @@ Hier entsteht mein Wiki mit meinem Uni-Stoff. Zurzeit schreibe ich das Skript St
 - Save-Slots (Autosave pro Slot), Daily-Run Seed und Boss-Swarm-Attacke.
 - Slot-Preview, Daily-Top5 und Boss-Varianten mit Adds.
 - Slot-Preview mit Datum/Credits, Daily-Streak und Boss-Shield-Aura.
+- Slot-Preview mit Lives/Kills, Daily-Streak-Bonus und Shield-Warnung vorm Boss-Schild.

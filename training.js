@@ -27,6 +27,7 @@
   const DAILY_STREAK_KEY = "matrix.training.dailyStreak";
   const DAILY_LAST_KEY = "matrix.training.dailyLastRun";
   const SLOT_COUNT = 3;
+  const STREAK_BONUS = 25;
 
   const sfx = {
     ctx: null,
@@ -286,6 +287,10 @@
   let dailySeed = localStorage.getItem(DAILY_DATE_KEY) || "";
   let dailyStreak = parseInt(localStorage.getItem(DAILY_STREAK_KEY) || "0", 10) || 0;
   let dailyLast = localStorage.getItem(DAILY_LAST_KEY) || "";
+  if (!dailySeed){
+    dailySeed = getDailySeed();
+    localStorage.setItem(DAILY_DATE_KEY, dailySeed);
+  }
 
   function saveCampaign(){
     localStorage.setItem(CAMPAIGN_KEY, JSON.stringify({ stage: campaign.stage }));
@@ -358,8 +363,10 @@
       const wave = data.wave ?? 0;
       const mapId = data.mapId || "-";
       const credits = data.money ?? 0;
+      const lives = data.lives ?? 0;
+      const kills = data.kills ?? 0;
       const savedAt = data.savedAt ? new Date(data.savedAt).toLocaleDateString("de-DE") : "-";
-      ui.slotPreview.textContent = `Welle ${wave} | Map ${mapId} | C ${credits} | ${savedAt}`;
+      ui.slotPreview.textContent = `Welle ${wave} | Map ${mapId} | C ${credits} | L ${lives} | K ${kills} | ${savedAt}`;
     }catch{
       ui.slotPreview.textContent = "Slot defekt";
     }
@@ -685,7 +692,8 @@
       stunTimer: 0,
       bossSpawnTimer: type === "boss" ? 3.8 : 0,
       bossShieldTimer: type === "boss" ? 6 : 0,
-      shieldTimer: 0
+      shieldTimer: 0,
+      shieldWarn: 0
     };
     game.enemies.push(enemy);
     if (type === "boss"){
@@ -712,7 +720,8 @@
       stunTimer: 0,
       bossSpawnTimer: type === "boss" ? 3.8 : 0,
       bossShieldTimer: type === "boss" ? 6 : 0,
-      shieldTimer: 0
+      shieldTimer: 0,
+      shieldWarn: 0
     };
     game.enemies.push(enemy);
     if (type === "boss"){
@@ -761,9 +770,15 @@
           enemy.bossShieldTimer = 7.5;
           applyBossShield(enemy);
         }
+        if (enemy.shieldTimer <= 0 && enemy.bossShieldTimer <= 1.1 && enemy.shieldWarn <= 0){
+          enemy.shieldWarn = 0.8;
+        }
       }
       if (enemy.shieldTimer > 0){
         enemy.shieldTimer -= dt;
+      }
+      if (enemy.shieldWarn > 0){
+        enemy.shieldWarn -= dt;
       }
       if (enemy.slowTimer > 0){
         enemy.slowTimer -= dt;
@@ -981,6 +996,16 @@
       ctx.beginPath();
       ctx.arc(enemy.x, enemy.y, 10, 0, Math.PI * 2);
       ctx.fill();
+      if (enemy.shieldWarn > 0 && enemy.shieldTimer <= 0){
+        const pulse = 0.5 + 0.5 * Math.sin(frameTime / 80);
+        ctx.strokeStyle = `rgba(120,200,255,${0.2 + pulse * 0.5})`;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.arc(enemy.x, enemy.y, 18, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
       if (enemy.shieldTimer > 0){
         ctx.strokeStyle = "rgba(120,200,255,0.7)";
         ctx.lineWidth = 2;
@@ -1456,16 +1481,16 @@
   }
 
   function showWaveSummary(){
+    updateHighscore();
+    recordScore();
+    const bonus = recordDailyScore() || 0;
     summaryState = {
       kills: game.kills,
-      bonus: 0
+      bonus
     };
     animateSummary();
     if (ui.summary) ui.summary.hidden = false;
     sfx.play("ui");
-    updateHighscore();
-    recordScore();
-    recordDailyScore();
   }
 
   function closeWaveSummary(){
@@ -1516,35 +1541,48 @@
   }
 
   function recordDailyScore(){
-    if (!dailyMode) return;
+    if (!dailyMode) return 0;
     const list = dailyScores[dailySeed] || [];
     list.push({ wave: game.wave, kills: game.kills, time: Date.now() });
     list.sort((a, b) => b.wave - a.wave || b.kills - a.kills || a.time - b.time);
     dailyScores[dailySeed] = list.slice(0, 5);
     saveDailyScores();
     updateDailyScoresUI();
-    updateDailyStreak();
+    return updateDailyStreak();
   }
 
   function updateDailyStreak(){
     const today = getDailySeed();
     if (dailyLast === today) return;
+    let bonus = 0;
     if (!dailyLast){
       dailyStreak = 1;
+      bonus = STREAK_BONUS;
     }else{
       const last = new Date(dailyLast);
       const current = new Date(today);
       const diffDays = Math.round((current - last) / 86400000);
-      dailyStreak = diffDays === 1 ? dailyStreak + 1 : 1;
+      if (diffDays === 1){
+        dailyStreak += 1;
+        bonus = STREAK_BONUS;
+      }else{
+        dailyStreak = 1;
+        bonus = STREAK_BONUS;
+      }
     }
     dailyLast = today;
     localStorage.setItem(DAILY_STREAK_KEY, String(dailyStreak));
     localStorage.setItem(DAILY_LAST_KEY, dailyLast);
     updateCampaignUI();
+    if (bonus){
+      game.money += bonus;
+    }
+    return bonus;
   }
 
   function applyBossShield(enemy){
     enemy.shieldTimer = 2.2;
+    enemy.shieldWarn = 0;
   }
 
   if (ui.summaryClose){
