@@ -19,3 +19,4 @@ Hier entsteht mein Wiki mit meinem Uni-Stoff. Zurzeit schreibe ich das Skript St
 - Sound-Toggle im HUD, Campaign-Rewards und visuelle Tower-Skins pro Pfad.
 - Highscore-Tracking, Wave-Summary-Overlay und Branch-Icons fuer Tower-Pfade.
 - Count-up Summary, Top-5 Highscore-Liste und Audio-Mixer fuer SFX.
+- Save-Slots (Autosave pro Slot), Daily-Run Seed und Boss-Swarm-Attacke.

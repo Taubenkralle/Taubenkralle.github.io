@@ -20,6 +20,10 @@
   const HIGHSCORE_KEY = "matrix.training.highscore";
   const HIGHSCORES_KEY = "matrix.training.highscores";
   const MIXER_KEY = "matrix.training.mixer";
+  const SLOT_KEY = "matrix.training.slot";
+  const DAILY_KEY = "matrix.training.daily";
+  const DAILY_DATE_KEY = "matrix.training.dailyDate";
+  const SLOT_COUNT = 3;
 
   const sfx = {
     ctx: null,
@@ -176,6 +180,9 @@
     summaryBonus: document.querySelector("[data-summary='bonus']"),
     campaignHigh: document.querySelector("[data-campaign='high']"),
     scores: document.getElementById("training-scores"),
+    slotSelect: document.getElementById("training-slot"),
+    slotLoad: document.getElementById("training-slot-load"),
+    daily: document.getElementById("training-daily"),
     export: document.getElementById("training-export"),
     import: document.getElementById("training-import"),
     reset: document.getElementById("training-reset"),
@@ -268,6 +275,8 @@
   let highScore = parseInt(localStorage.getItem(HIGHSCORE_KEY) || "0", 10) || 0;
   let summaryState = { kills: 0, bonus: 0 };
   let scores = loadScores();
+  let dailyMode = localStorage.getItem(DAILY_KEY) === "1";
+  let dailySeed = localStorage.getItem(DAILY_DATE_KEY) || "";
 
   function saveCampaign(){
     localStorage.setItem(CAMPAIGN_KEY, JSON.stringify({ stage: campaign.stage }));
@@ -287,6 +296,39 @@
     }
     if (ui.campaignHigh){
       ui.campaignHigh.textContent = `Highscore: ${highScore}`;
+    }
+  }
+
+  function getSlotId(){
+    return localStorage.getItem(SLOT_KEY) || "1";
+  }
+
+  function setSlotId(id){
+    localStorage.setItem(SLOT_KEY, id);
+  }
+
+  function slotKey(id){
+    return `${SAVE_KEY}.slot${id}`;
+  }
+
+  function populateSlots(){
+    if (!ui.slotSelect) return;
+    ui.slotSelect.innerHTML = "";
+    for (let i = 1; i <= SLOT_COUNT; i++){
+      const opt = document.createElement("option");
+      opt.value = String(i);
+      opt.textContent = `Slot ${i}`;
+      ui.slotSelect.appendChild(opt);
+    }
+    ui.slotSelect.value = getSlotId();
+  }
+
+  function ensureLegacyMigration(){
+    const legacy = localStorage.getItem(SAVE_KEY);
+    if (!legacy) return;
+    const key = slotKey("1");
+    if (!localStorage.getItem(key)){
+      localStorage.setItem(key, legacy);
     }
   }
 
@@ -501,6 +543,42 @@
     ui.branchB.disabled = game.money < cost;
   }
 
+  function hashSeed(str){
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++){
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  function makeRng(seed){
+    let state = seed >>> 0;
+    return () => {
+      state = Math.imul(1664525, state) + 1013904223;
+      return ((state >>> 0) % 10000) / 10000;
+    };
+  }
+
+  function getDailySeed(){
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, "0");
+    const d = String(now.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
+  function shuffleQueue(queue, wave){
+    if (!dailyMode) return queue.sort(() => Math.random() - 0.5);
+    const seed = hashSeed(`${dailySeed}:${wave}`);
+    const rng = makeRng(seed);
+    for (let i = queue.length - 1; i > 0; i--){
+      const j = Math.floor(rng() * (i + 1));
+      [queue[i], queue[j]] = [queue[j], queue[i]];
+    }
+    return queue;
+  }
+
   function startWave(){
     if (game.waveActive) return;
     game.wave += 1;
@@ -517,7 +595,28 @@
     Object.keys(stats).forEach((type) => {
       for (let i = 0; i < stats[type]; i++) queue.push(type);
     });
-    return queue.sort(() => Math.random() - 0.5);
+    return shuffleQueue(queue, wave);
+  }
+
+  function spawnEnemyAt(type, x, y, pathIndex){
+    const base = enemyTypes[type];
+    const enemy = {
+      type,
+      x,
+      y,
+      hp: base.hp,
+      maxHp: base.hp,
+      speed: base.speed,
+      reward: base.reward,
+      pathIndex,
+      slowTimer: 0,
+      slowFactor: 1,
+      burnTimer: 0,
+      burnDps: 0,
+      stunTimer: 0,
+      bossSpawnTimer: type === "boss" ? 3.8 : 0
+    };
+    game.enemies.push(enemy);
   }
 
   function spawnEnemy(type){
@@ -536,7 +635,8 @@
       slowFactor: 1,
       burnTimer: 0,
       burnDps: 0,
-      stunTimer: 0
+      stunTimer: 0,
+      bossSpawnTimer: type === "boss" ? 3.8 : 0
     };
     game.enemies.push(enemy);
     if (type === "boss"){
@@ -573,6 +673,13 @@
       if (enemy.hp <= 0){
         killEnemy(enemy);
         continue;
+      }
+      if (enemy.type === "boss"){
+        enemy.bossSpawnTimer -= dt;
+        if (enemy.bossSpawnTimer <= 0){
+          enemy.bossSpawnTimer = 4.2;
+          spawnEnemyAt("swarm", enemy.x, enemy.y, enemy.pathIndex);
+        }
       }
       if (enemy.slowTimer > 0){
         enemy.slowTimer -= dt;
@@ -1030,7 +1137,8 @@
   function saveGame(){
     try{
       const payload = serializeGame();
-      localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
+      const key = slotKey(getSlotId());
+      localStorage.setItem(key, JSON.stringify(payload));
     }catch (err){
       console.warn("save failed", err);
     }
@@ -1038,7 +1146,12 @@
 
   function loadGame(){
     try{
-      const raw = localStorage.getItem(SAVE_KEY);
+      const key = slotKey(getSlotId());
+      let raw = localStorage.getItem(key);
+      if (!raw){
+        ensureLegacyMigration();
+        raw = localStorage.getItem(key);
+      }
       if (!raw) return false;
       const data = JSON.parse(raw);
       return applySave(data);
@@ -1076,13 +1189,13 @@
 
   function quickSave(){
     saveGame();
-    flashStatus("Quick Save");
+    flashStatus(`Quick Save S${getSlotId()}`);
   }
 
   function quickLoad(){
     const ok = loadGame();
     if (ok) applyAutoResume();
-    flashStatus(ok ? "Quick Load" : "Kein Save");
+    flashStatus(ok ? `Quick Load S${getSlotId()}` : "Kein Save");
   }
 
   canvas.addEventListener("mousemove", (evt) => {
@@ -1160,7 +1273,8 @@
   }
   if (ui.reset){
     ui.reset.addEventListener("click", () => {
-      localStorage.removeItem(SAVE_KEY);
+      const key = slotKey(getSlotId());
+      localStorage.removeItem(key);
       resetGame();
     });
   }
@@ -1174,6 +1288,42 @@
       }
       if (nextMap === game.mapId) return;
       setMap(nextMap, { reset: true });
+      sfx.play("ui");
+    });
+  }
+
+  if (ui.slotSelect){
+    populateSlots();
+    ui.slotSelect.addEventListener("change", () => {
+      setSlotId(ui.slotSelect.value);
+      flashStatus(`Slot ${ui.slotSelect.value}`);
+    });
+  }
+  if (ui.slotLoad){
+    ui.slotLoad.addEventListener("click", () => {
+      const ok = loadGame();
+      if (ok) applyAutoResume();
+      flashStatus(ok ? `Slot ${getSlotId()} geladen` : "Slot leer");
+    });
+  }
+
+  function setDailyMode(on){
+    dailyMode = on;
+    localStorage.setItem(DAILY_KEY, on ? "1" : "0");
+    dailySeed = getDailySeed();
+    localStorage.setItem(DAILY_DATE_KEY, dailySeed);
+    if (ui.daily){
+      ui.daily.textContent = on ? "Daily: ON" : "Daily Run";
+      ui.daily.classList.toggle("sound-off", !on);
+    }
+    resetGame();
+    flashStatus(on ? "Daily Mode" : "Daily aus");
+  }
+
+  if (ui.daily){
+    setDailyMode(dailyMode);
+    ui.daily.addEventListener("click", () => {
+      setDailyMode(!dailyMode);
       sfx.play("ui");
     });
   }
@@ -1248,6 +1398,7 @@
       if (ui.summaryLives) ui.summaryLives.textContent = `Integritaet: ${lives}`;
       if (ui.summaryKills) ui.summaryKills.textContent = `Kills: ${kills}`;
       if (ui.summaryBonus) ui.summaryBonus.textContent = `Bonus: ${bonus}`;
+      if (t === 1) sfx.play("ui");
       if (t < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);

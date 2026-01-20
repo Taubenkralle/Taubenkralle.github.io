@@ -222,6 +222,10 @@
         <div class="training-group">
           <div class="training-title">Savegame</div>
           <div class="training-row">
+            <select class="training-select" id="training-slot"></select>
+            <button class="training-btn ghost" id="training-slot-load" type="button">Load</button>
+          </div>
+          <div class="training-row">
             <button class="training-btn ghost" id="training-export" type="button">Export</button>
             <label class="training-btn ghost training-import">
               Import
@@ -231,10 +235,18 @@
           <div class="training-row">
             <button class="training-btn ghost" id="training-reset" type="button">Reset Save</button>
           </div>
+          <div class="training-note">Autosave schreibt in den aktuellen Slot.</div>
           <label class="training-toggle">
             <input type="checkbox" id="training-autoresume">
             Auto Resume nach Seitenwechsel
           </label>
+        </div>
+        <div class="training-group">
+          <div class="training-title">Modes</div>
+          <div class="training-row">
+            <button class="training-btn ghost" id="training-daily" type="button">Daily Run</button>
+          </div>
+          <div class="training-note">Daily nutzt einen festen Seed pro Tag.</div>
         </div>
       </div>
     </section>
@@ -278,6 +290,8 @@
           <li><code>Shift+S</code> Quick Save</li>
           <li><code>Shift+L</code> Quick Load</li>
         </ul>
+        <p>Save-Slots: Auswahl oben im Savegame-Block, Autosave schreibt in den aktiven Slot.</p>
+        <p>Daily Run nutzt einen taeglichen Seed fuer gleiche Wellen.</p>
         <p>Sound kann im HUD mit dem Sound-Button stummgeschaltet werden.</p>
       </div>
       <div class="training-help-glow"></div>
