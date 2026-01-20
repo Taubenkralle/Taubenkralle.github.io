@@ -16,3 +16,4 @@ Hier entsteht mein Wiki mit meinem Uni-Stoff. Zurzeit schreibe ich das Skript St
 - Training jetzt mit 3 Maps, Wave-Preview, Anleitung-Overlay und visuellen Status-Effekten.
 - Tooltips fuer Tower/Gegner, Mini-Campaign mit Unlocks und Matrix-Style Anleitung.
 - Upgrade-Tree pro Tower, neue SFX (UI/Typewriter/Hit) und Boss-Glitch-Effekt.
+- Sound-Toggle im HUD, Campaign-Rewards und visuelle Tower-Skins pro Pfad.

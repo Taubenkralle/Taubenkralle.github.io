@@ -16,10 +16,12 @@
   const AUTO_RESUME_KEY = "matrix.training.autoResume";
   const MAP_KEY = "matrix.training.map";
   const CAMPAIGN_KEY = "matrix.training.campaign";
+  const SOUND_KEY = "matrix.training.sound";
 
   const sfx = {
     ctx: null,
     last: {},
+    muted: false,
     init(){
       if (this.ctx) return;
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -27,6 +29,7 @@
       this.ctx = new AudioCtx();
     },
     play(name){
+      if (this.muted) return;
       this.init();
       if (!this.ctx) return;
       if (this.ctx.state === "suspended") this.ctx.resume();
@@ -60,16 +63,16 @@
 
   const towerBranches = {
     pulse: [
-      { id: "inferno", name: "Inferno", desc: "Burn++", level2: { burnDps: 4, burnTime: 1.2 }, level3: { damage: 1.15 } },
-      { id: "focus", name: "Focus", desc: "Range+Damage", level2: { range: 1.2, damage: 1.15 }, level3: { range: 1.1, damage: 1.2 } }
+      { id: "inferno", name: "Inferno", desc: "Burn++", color: "#ffb347", level2: { burnDps: 4, burnTime: 1.2 }, level3: { damage: 1.15 } },
+      { id: "focus", name: "Focus", desc: "Range+Damage", color: "#8fd1ff", level2: { range: 1.2, damage: 1.15 }, level3: { range: 1.1, damage: 1.2 } }
     ],
     snare: [
-      { id: "glue", name: "Glue", desc: "Slow++", level2: { slow: 0.35, slowTime: 1.6, range: 1.1 }, level3: { range: 1.15 } },
-      { id: "decay", name: "Decay", desc: "DoT", level2: { burnDps: 4, burnTime: 2.2, damage: 1.2 }, level3: { damage: 1.25 } }
+      { id: "glue", name: "Glue", desc: "Slow++", color: "#7fffc2", level2: { slow: 0.35, slowTime: 1.6, range: 1.1 }, level3: { range: 1.15 } },
+      { id: "decay", name: "Decay", desc: "DoT", color: "#d0ff86", level2: { burnDps: 4, burnTime: 2.2, damage: 1.2 }, level3: { damage: 1.25 } }
     ],
     arc: [
-      { id: "relay", name: "Relay", desc: "More Chains", level2: { chain: 2, chainRange: 25 }, level3: { chain: 1, chainFalloff: 0.8 } },
-      { id: "surge", name: "Surge", desc: "EMP++", level2: { empTime: 0.25, damage: 1.15 }, level3: { damage: 1.25 } }
+      { id: "relay", name: "Relay", desc: "More Chains", color: "#7fb0ff", level2: { chain: 2, chainRange: 25 }, level3: { chain: 1, chainFalloff: 0.8 } },
+      { id: "surge", name: "Surge", desc: "EMP++", color: "#ff7fbf", level2: { empTime: 0.25, damage: 1.15 }, level3: { damage: 1.25 } }
     ]
   };
 
@@ -153,6 +156,7 @@
     branchBox: document.getElementById("training-branch"),
     branchA: document.getElementById("training-branch-a"),
     branchB: document.getElementById("training-branch-b"),
+    sound: document.getElementById("training-sound"),
     help: document.getElementById("training-help"),
     helpModal: document.getElementById("training-help-modal"),
     helpClose: document.getElementById("training-help-close"),
@@ -228,9 +232,9 @@
   };
 
   const campaignStages = [
-    { mapId: "core", targetWave: 3 },
-    { mapId: "splice", targetWave: 4 },
-    { mapId: "loop", targetWave: 5 }
+    { mapId: "core", targetWave: 3, rewardCredits: 60, rewardLives: 1 },
+    { mapId: "splice", targetWave: 4, rewardCredits: 80, rewardLives: 1 },
+    { mapId: "loop", targetWave: 5, rewardCredits: 110, rewardLives: 2 }
   ];
 
   function loadCampaign(){
@@ -255,6 +259,9 @@
     const stage = campaignStages[campaign.stage];
     if (ui.campaignStage) ui.campaignStage.textContent = `Stage ${campaign.stage + 1}`;
     if (ui.campaignTarget) ui.campaignTarget.textContent = `Ziel: Welle ${stage.targetWave}`;
+    if (ui.campaignTarget && stage.rewardCredits){
+      ui.campaignTarget.textContent += ` | Bonus: +${stage.rewardCredits}C`;
+    }
     if (ui.campaignProgress){
       const progress = Math.min(1, game.wave / stage.targetWave);
       ui.campaignProgress.style.width = `${Math.round(progress * 100)}%`;
@@ -404,6 +411,13 @@
     const branches = towerBranches[tower.type] || [];
     const branch = branches.find((b) => b.id === tower.path);
     return branch ? `[${branch.name}]` : "";
+  }
+
+  function getBranchStyle(tower){
+    if (!tower || !tower.path) return null;
+    const branches = towerBranches[tower.type] || [];
+    const branch = branches.find((b) => b.id === tower.path);
+    return branch ? { color: branch.color, name: branch.name } : null;
   }
 
   function updateBranchUI(){
@@ -689,13 +703,22 @@
       ctx.beginPath();
       ctx.arc(tower.x, tower.y, 14, 0, Math.PI * 2);
       ctx.fill();
+      const branch = getBranchStyle(tower);
+      if (branch && branch.color){
+        ctx.strokeStyle = branch.color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(tower.x, tower.y, 17, 0, Math.PI * 2);
+        ctx.stroke();
+      }
       ctx.strokeStyle = "rgba(0,0,0,0.4)";
       ctx.stroke();
       ctx.fillStyle = "#021008";
       ctx.font = "12px monospace";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(tower.level.toString(), tower.x, tower.y);
+      const label = branch ? branch.name[0] : tower.level.toString();
+      ctx.fillText(label, tower.x, tower.y);
     }
   }
 
@@ -1107,10 +1130,17 @@
     if (!stage) return;
     if (game.wave >= stage.targetWave && campaign.stage < campaignStages.length - 1){
       campaign.stage += 1;
+      if (stage.rewardCredits){
+        game.money += stage.rewardCredits;
+      }
+      if (stage.rewardLives){
+        game.lives += stage.rewardLives;
+      }
       saveCampaign();
       lockMaps();
       updateCampaignUI();
       flashStatus("Stage freigeschaltet");
+      sfx.play("ui");
     }else{
       updateCampaignUI();
     }
@@ -1203,6 +1233,27 @@
     sfx.init();
     if (sfx.ctx && sfx.ctx.state === "suspended") sfx.ctx.resume();
   }, { once: true });
+
+  function isSoundOn(){
+    return localStorage.getItem(SOUND_KEY) !== "0";
+  }
+
+  function setSound(on){
+    localStorage.setItem(SOUND_KEY, on ? "1" : "0");
+    sfx.muted = !on;
+    if (ui.sound){
+      ui.sound.classList.toggle("sound-off", !on);
+      ui.sound.textContent = on ? "Sound" : "Mute";
+    }
+  }
+
+  if (ui.sound){
+    setSound(isSoundOn());
+    ui.sound.addEventListener("click", () => {
+      setSound(!isSoundOn());
+      sfx.play("ui");
+    });
+  }
 
   let lastTime = null;
   let frameTime = 0;
