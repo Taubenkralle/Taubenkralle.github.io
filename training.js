@@ -28,6 +28,9 @@
   const DAILY_LAST_KEY = "matrix.training.dailyLastRun";
   const SLOT_COUNT = 3;
   const STREAK_BONUS = 25;
+  const MAX_ENEMIES = 120;
+  const LOGIC_DT = 1 / 30;
+  const MAX_SHOTS = 240;
 
   const sfx = {
     ctx: null,
@@ -259,7 +262,8 @@
     paused: false,
     mapId: maps[0].id,
     kills: 0,
-    summaryLock: false
+    summaryLock: false,
+    logicAccumulator: 0
   };
 
   const campaignStages = [
@@ -673,7 +677,7 @@
     Object.keys(stats).forEach((type) => {
       for (let i = 0; i < stats[type]; i++) queue.push(type);
     });
-    return shuffleQueue(queue, wave);
+    return shuffleQueue(queue, wave).slice(0, MAX_ENEMIES);
   }
 
   function spawnEnemyAt(type, x, y, pathIndex){
@@ -704,6 +708,7 @@
   }
 
   function spawnEnemy(type){
+    if (game.enemies.length >= MAX_ENEMIES) return;
     const base = enemyTypes[type];
     const start = pathPoints[0];
     const enemy = {
@@ -733,6 +738,10 @@
 
   function updateSpawner(dt){
     if (!game.spawner) return;
+    if (game.enemies.length >= MAX_ENEMIES){
+      game.spawner.timer = Math.max(game.spawner.timer, 0.25);
+      return;
+    }
     game.spawner.timer -= dt;
     if (game.spawner.timer > 0) return;
     if (game.spawner.index >= game.spawner.queue.length){
@@ -847,6 +856,7 @@
   }
 
   function addShot(x1, y1, x2, y2, color){
+    if (game.shots.length >= MAX_SHOTS) return;
     game.shots.push({ x1, y1, x2, y2, ttl: 0.12, color });
   }
 
@@ -1763,7 +1773,11 @@
     const dt = Math.min(0.05, (time - lastTime) / 1000);
     lastTime = time;
     frameTime = time;
-    updateGame(dt);
+    game.logicAccumulator += dt;
+    while (game.logicAccumulator >= LOGIC_DT){
+      updateGame(LOGIC_DT);
+      game.logicAccumulator -= LOGIC_DT;
+    }
     draw();
     requestAnimationFrame(loop);
   }
