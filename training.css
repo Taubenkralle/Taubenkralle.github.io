@@ -397,7 +397,12 @@
   place-items:center;
   background: rgba(2,8,4,0.78);
   backdrop-filter: blur(6px);
-  z-index:5;
+  z-index:8;
+  pointer-events:auto;
+}
+
+.training-help[hidden]{
+  display:none;
 }
 
 .training-help-card{
@@ -411,6 +416,7 @@
   border:1px solid rgba(0,255,153,0.35);
   box-shadow: 0 0 30px rgba(0,255,153,0.2);
   animation: trainingReveal 0.5s ease;
+  pointer-events:auto;
 }
 
 .training-help-card::before{

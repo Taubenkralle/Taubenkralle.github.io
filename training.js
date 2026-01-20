@@ -1653,7 +1653,8 @@
   }
   if (ui.helpModal){
     ui.helpModal.addEventListener("click", (e) => {
-      if (e.target === ui.helpModal) closeHelp();
+      const closeBtn = e.target.closest && e.target.closest("#training-help-close");
+      if (closeBtn || e.target === ui.helpModal) closeHelp();
     });
   }
 
