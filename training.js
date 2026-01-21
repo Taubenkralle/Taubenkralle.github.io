@@ -8,9 +8,12 @@
   const GRID_COLS = 12;
   const GRID_ROWS = 8;
   const CELL = BASE_WIDTH / GRID_COLS;
+  const SPRITE_SIZE = 48;
+  const SPRITE_BASE = 24;
 
   canvas.width = BASE_WIDTH;
   canvas.height = BASE_HEIGHT;
+  ctx.imageSmoothingEnabled = false;
 
   const SAVE_KEY = "matrix.training.save";
   const AUTO_RESUME_KEY = "matrix.training.autoResume";
@@ -862,7 +865,95 @@
 
   function addShot(x1, y1, x2, y2, color){
     if (game.shots.length >= MAX_SHOTS) return;
-    game.shots.push({ x1, y1, x2, y2, ttl: 0.12, color });
+    game.shots.push({ x1, y1, x2, y2, ttl: 0.12, color, style: "pulse" });
+  }
+
+  function addShotStyled(x1, y1, x2, y2, color, style){
+    if (game.shots.length >= MAX_SHOTS) return;
+    game.shots.push({ x1, y1, x2, y2, ttl: 0.12, color, style });
+  }
+
+  function getSprite(kind){
+    if (!getSprite.cache) getSprite.cache = {};
+    if (getSprite.cache[kind]) return getSprite.cache[kind];
+    const c = document.createElement("canvas");
+    c.width = SPRITE_BASE;
+    c.height = SPRITE_BASE;
+    const s = c.getContext("2d");
+    s.imageSmoothingEnabled = false;
+    const px = (x, y, color) => {
+      s.fillStyle = color;
+      s.fillRect(x, y, 1, 1);
+    };
+    const rect = (x, y, w, h, color) => {
+      s.fillStyle = color;
+      s.fillRect(x, y, w, h);
+    };
+    const stroke = (x, y, w, h, color) => {
+      s.strokeStyle = color;
+      s.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+    };
+    if (kind === "tower-dock"){
+      rect(5, 8, 14, 10, "#113323");
+      rect(7, 10, 10, 6, "#00ff99");
+      rect(9, 5, 6, 4, "#00cc55");
+      rect(10, 16, 4, 4, "#b6ffea");
+      stroke(4, 7, 16, 12, "#1b5a3b");
+    }else if (kind === "tower-emp"){
+      rect(6, 6, 12, 12, "#0b2b3a");
+      rect(8, 8, 8, 8, "#66ffcc");
+      rect(10, 2, 4, 4, "#8fd1ff");
+      rect(2, 10, 4, 4, "#8fd1ff");
+      rect(18, 10, 4, 4, "#8fd1ff");
+      stroke(5, 5, 14, 14, "#2a6d7c");
+    }else if (kind === "tower-rail"){
+      rect(4, 11, 16, 6, "#0f2a3a");
+      rect(6, 9, 12, 4, "#7fb0ff");
+      rect(10, 4, 4, 6, "#8fd1ff");
+      rect(10, 17, 4, 3, "#8fd1ff");
+      stroke(4, 10, 16, 7, "#375c86");
+    }else if (kind === "sentinel"){
+      rect(6, 8, 12, 8, "#123a2a");
+      rect(8, 6, 8, 4, "#00ff99");
+      rect(8, 16, 8, 4, "#00cc55");
+      px(7, 12, "#b6ffea");
+      px(17, 12, "#b6ffea");
+    }else if (kind === "sentinel-fast"){
+      rect(7, 9, 10, 6, "#114433");
+      rect(9, 7, 6, 3, "#66ffcc");
+      rect(9, 15, 6, 3, "#66ffcc");
+      px(6, 12, "#b6ffea");
+      px(17, 12, "#b6ffea");
+    }else if (kind === "sentinel-tank"){
+      rect(5, 7, 14, 10, "#0f3326");
+      rect(7, 9, 10, 6, "#00cc55");
+      rect(9, 4, 6, 3, "#00ff99");
+      rect(9, 17, 6, 3, "#00ff99");
+      stroke(4, 6, 16, 12, "#1f6a4c");
+    }else if (kind === "sentinel-shield"){
+      rect(6, 8, 12, 8, "#103b3a");
+      rect(8, 7, 8, 2, "#33ffcc");
+      rect(8, 15, 8, 2, "#33ffcc");
+      rect(10, 10, 4, 4, "#b6ffea");
+      stroke(5, 7, 14, 10, "#5ec2c2");
+    }else if (kind === "sentinel-swarm"){
+      rect(9, 10, 6, 4, "#0f3a30");
+      px(8, 12, "#00ffcc");
+      px(15, 12, "#00ffcc");
+    }else if (kind === "sentinel-regen"){
+      rect(6, 8, 12, 8, "#123b2e");
+      rect(8, 10, 8, 4, "#5bffb3");
+      rect(10, 6, 4, 4, "#b6ffea");
+      rect(10, 16, 4, 2, "#b6ffea");
+    }else if (kind === "sentinel-boss"){
+      rect(4, 6, 16, 12, "#0f2f2a");
+      rect(7, 9, 10, 6, "#b6ffea");
+      rect(10, 4, 4, 3, "#66ffcc");
+      rect(10, 18, 4, 2, "#66ffcc");
+      stroke(3, 5, 18, 14, "#7fb0ff");
+    }
+    getSprite.cache[kind] = c;
+    return c;
   }
 
   function killEnemy(enemy){
@@ -895,7 +986,8 @@
         target.stunTimer = Math.max(target.stunTimer, stats.empTime);
       }
       const shotColor = towerTypes[tower.type].color;
-      addShot(tower.x, tower.y, target.x, target.y, shotColor);
+      const style = tower.type === "snare" ? "emp" : tower.type === "arc" ? "rail" : "pulse";
+      addShotStyled(tower.x, tower.y, target.x, target.y, shotColor, style);
       const hitList = new Set([target]);
       if (stats.chain){
         let chained = 0;
@@ -912,7 +1004,7 @@
           const dy = enemy.y - target.y;
           if ((dx * dx + dy * dy) > chainRangeSq) continue;
           applyDamage(enemy, stats.damage * stats.chainFalloff, stats.armorPierce);
-          addShot(target.x, target.y, enemy.x, enemy.y, shotColor);
+          addShotStyled(target.x, target.y, enemy.x, enemy.y, shotColor, style);
           hitList.add(enemy);
           chained += 1;
         }
@@ -983,10 +1075,9 @@
 
   function drawTowers(){
     for (const tower of game.towers){
-      ctx.fillStyle = towerTypes[tower.type].color;
-      ctx.beginPath();
-      ctx.arc(tower.x, tower.y, 14, 0, Math.PI * 2);
-      ctx.fill();
+      const spriteKey = tower.type === "snare" ? "tower-emp" : tower.type === "arc" ? "tower-rail" : "tower-dock";
+      const sprite = getSprite(spriteKey);
+      ctx.drawImage(sprite, tower.x - SPRITE_SIZE / 2, tower.y - SPRITE_SIZE / 2, SPRITE_SIZE, SPRITE_SIZE);
       const branch = getBranchStyle(tower);
       if (branch && branch.color){
         ctx.strokeStyle = branch.color;
@@ -1008,11 +1099,21 @@
 
   function drawEnemies(){
     for (const enemy of game.enemies){
-      const base = enemyTypes[enemy.type];
-      ctx.fillStyle = base.color;
-      ctx.beginPath();
-      ctx.arc(enemy.x, enemy.y, 10, 0, Math.PI * 2);
-      ctx.fill();
+      const spriteKey = enemy.type === "fast"
+        ? "sentinel-fast"
+        : enemy.type === "tank"
+          ? "sentinel-tank"
+          : enemy.type === "shield"
+            ? "sentinel-shield"
+            : enemy.type === "swarm"
+              ? "sentinel-swarm"
+              : enemy.type === "regen"
+                ? "sentinel-regen"
+                : enemy.type === "boss"
+                  ? "sentinel-boss"
+                  : "sentinel";
+      const sprite = getSprite(spriteKey);
+      ctx.drawImage(sprite, enemy.x - SPRITE_SIZE / 2, enemy.y - SPRITE_SIZE / 2, SPRITE_SIZE, SPRITE_SIZE);
       if (enemy.shieldWarn > 0 && enemy.shieldTimer <= 0){
         const pulse = 0.5 + 0.5 * Math.sin(frameTime / 80);
         ctx.strokeStyle = `rgba(120,200,255,${0.2 + pulse * 0.5})`;
@@ -1059,12 +1160,40 @@
   function drawShots(){
     ctx.lineWidth = 2;
     for (const shot of game.shots){
-      ctx.strokeStyle = shot.color;
-      ctx.globalAlpha = Math.min(1, shot.ttl / 0.12);
-      ctx.beginPath();
-      ctx.moveTo(shot.x1, shot.y1);
-      ctx.lineTo(shot.x2, shot.y2);
-      ctx.stroke();
+      const alpha = Math.min(1, shot.ttl / 0.12);
+      ctx.globalAlpha = alpha;
+      if (shot.style === "emp"){
+        ctx.strokeStyle = "rgba(102,255,204,0.9)";
+        ctx.lineWidth = 3;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(shot.x1, shot.y1);
+        ctx.lineTo(shot.x2, shot.y2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }else if (shot.style === "rail"){
+        ctx.strokeStyle = "rgba(143,209,255,0.95)";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(shot.x1, shot.y1);
+        ctx.lineTo(shot.x2, shot.y2);
+        ctx.stroke();
+        ctx.strokeStyle = "rgba(127,176,255,0.6)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(shot.x1 + 1, shot.y1 - 1);
+        ctx.lineTo(shot.x2 + 1, shot.y2 - 1);
+        ctx.stroke();
+      }else{
+        ctx.strokeStyle = "rgba(0,255,153,0.9)";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([2, 3]);
+        ctx.beginPath();
+        ctx.moveTo(shot.x1, shot.y1);
+        ctx.lineTo(shot.x2, shot.y2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
     }
     ctx.globalAlpha = 1;
   }
