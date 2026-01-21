@@ -2,6 +2,7 @@
   const canvas = document.getElementById("training-canvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
+  const heroCanvas = document.getElementById("training-hero");
 
   const BASE_WIDTH = 720;
   const BASE_HEIGHT = 480;
@@ -14,6 +15,10 @@
   canvas.width = BASE_WIDTH;
   canvas.height = BASE_HEIGHT;
   ctx.imageSmoothingEnabled = false;
+  if (heroCanvas){
+    const heroCtx = heroCanvas.getContext("2d");
+    if (heroCtx) heroCtx.imageSmoothingEnabled = false;
+  }
 
   const SAVE_KEY = "matrix.training.save";
   const AUTO_RESUME_KEY = "matrix.training.autoResume";
@@ -917,47 +922,96 @@
       rect(10, 17, 4, 3, "#8fd1ff");
       stroke(4, 10, 16, 7, "#375c86");
     }else if (kind === "sentinel"){
-      rect(6, 8, 12, 8, "#123a2a");
-      rect(8, 6, 8, 4, "#00ff99");
-      rect(8, 16, 8, 4, "#00cc55");
-      px(7, 12, "#b6ffea");
-      px(17, 12, "#b6ffea");
-    }else if (kind === "sentinel-fast"){
-      rect(7, 9, 10, 6, "#114433");
-      rect(9, 7, 6, 3, "#66ffcc");
-      rect(9, 15, 6, 3, "#66ffcc");
+      rect(5, 7, 14, 10, "#0f2f24");
+      rect(7, 9, 10, 6, "#00ff99");
+      rect(9, 6, 6, 3, "#66ffcc");
+      rect(9, 15, 6, 3, "#00cc55");
       px(6, 12, "#b6ffea");
       px(17, 12, "#b6ffea");
+      stroke(4, 6, 16, 12, "#1c5b44");
+    }else if (kind === "sentinel-fast"){
+      rect(6, 8, 12, 8, "#113a2b");
+      rect(8, 9, 8, 4, "#66ffcc");
+      rect(9, 6, 6, 2, "#b6ffea");
+      rect(9, 16, 6, 2, "#b6ffea");
+      px(5, 12, "#66ffcc");
+      px(18, 12, "#66ffcc");
     }else if (kind === "sentinel-tank"){
-      rect(5, 7, 14, 10, "#0f3326");
+      rect(4, 6, 16, 12, "#0c2a20");
       rect(7, 9, 10, 6, "#00cc55");
-      rect(9, 4, 6, 3, "#00ff99");
-      rect(9, 17, 6, 3, "#00ff99");
-      stroke(4, 6, 16, 12, "#1f6a4c");
+      rect(8, 7, 8, 2, "#00ff99");
+      rect(8, 15, 8, 2, "#00ff99");
+      rect(9, 4, 6, 2, "#4cff9a");
+      stroke(3, 5, 18, 14, "#1f6a4c");
     }else if (kind === "sentinel-shield"){
-      rect(6, 8, 12, 8, "#103b3a");
-      rect(8, 7, 8, 2, "#33ffcc");
-      rect(8, 15, 8, 2, "#33ffcc");
-      rect(10, 10, 4, 4, "#b6ffea");
-      stroke(5, 7, 14, 10, "#5ec2c2");
+      rect(5, 7, 14, 10, "#0e2f2e");
+      rect(8, 8, 8, 6, "#33ffcc");
+      rect(9, 6, 6, 2, "#b6ffea");
+      rect(9, 16, 6, 2, "#b6ffea");
+      stroke(4, 6, 16, 12, "#5ec2c2");
     }else if (kind === "sentinel-swarm"){
       rect(9, 10, 6, 4, "#0f3a30");
-      px(8, 12, "#00ffcc");
-      px(15, 12, "#00ffcc");
+      rect(10, 9, 4, 2, "#00ffcc");
+      rect(10, 13, 4, 2, "#00ffcc");
+      px(8, 12, "#66ffcc");
+      px(15, 12, "#66ffcc");
     }else if (kind === "sentinel-regen"){
-      rect(6, 8, 12, 8, "#123b2e");
-      rect(8, 10, 8, 4, "#5bffb3");
-      rect(10, 6, 4, 4, "#b6ffea");
-      rect(10, 16, 4, 2, "#b6ffea");
+      rect(5, 7, 14, 10, "#113528");
+      rect(8, 9, 8, 4, "#5bffb3");
+      rect(9, 6, 6, 2, "#b6ffea");
+      rect(9, 16, 6, 2, "#b6ffea");
+      rect(10, 12, 4, 2, "#89ffcc");
     }else if (kind === "sentinel-boss"){
-      rect(4, 6, 16, 12, "#0f2f2a");
-      rect(7, 9, 10, 6, "#b6ffea");
-      rect(10, 4, 4, 3, "#66ffcc");
-      rect(10, 18, 4, 2, "#66ffcc");
-      stroke(3, 5, 18, 14, "#7fb0ff");
+      rect(3, 5, 18, 14, "#0a2621");
+      rect(6, 8, 12, 8, "#b6ffea");
+      rect(9, 6, 6, 2, "#7fb0ff");
+      rect(9, 17, 6, 2, "#7fb0ff");
+      rect(7, 4, 10, 2, "#66ffcc");
+      stroke(2, 4, 20, 16, "#7fb0ff");
     }
     getSprite.cache[kind] = c;
     return c;
+  }
+
+  function drawNeoHero(){
+    if (!heroCanvas) return;
+    const h = heroCanvas.getContext("2d");
+    if (!h) return;
+    h.imageSmoothingEnabled = false;
+    h.clearRect(0, 0, heroCanvas.width, heroCanvas.height);
+    const scale = 4;
+    const px = (x, y, color) => {
+      h.fillStyle = color;
+      h.fillRect(x * scale, y * scale, scale, scale);
+    };
+    const rect = (x, y, w, hgt, color) => {
+      h.fillStyle = color;
+      h.fillRect(x * scale, y * scale, w * scale, hgt * scale);
+    };
+    rect(4, 4, 16, 16, "#04160b");
+    rect(7, 6, 10, 9, "#3b2b24");
+    rect(8, 7, 8, 6, "#4a352c");
+    rect(7, 13, 10, 2, "#2b1f1a");
+    rect(6, 15, 12, 5, "#0b120f");
+    rect(5, 16, 14, 8, "#0b0f12");
+    rect(4, 20, 16, 6, "#070a0c");
+    rect(5, 8, 5, 2, "#0b0f12");
+    rect(13, 8, 5, 2, "#0b0f12");
+    rect(6, 9, 4, 1, "#1c2622");
+    rect(14, 9, 4, 1, "#1c2622");
+    rect(9, 11, 4, 1, "#1d2b25");
+    rect(8, 12, 6, 1, "#0f1f1a");
+    rect(6, 23, 12, 6, "#0b0f12");
+    rect(4, 29, 16, 3, "#050708");
+    rect(4, 32, 16, 8, "#040506");
+    rect(3, 30, 18, 2, "#0f1a16");
+    rect(3, 39, 18, 2, "#0f1a16");
+    rect(2, 34, 3, 6, "#0f1a16");
+    rect(19, 34, 3, 6, "#0f1a16");
+    px(9, 9, "#00ff99");
+    px(14, 9, "#00ff99");
+    px(10, 10, "#66ffcc");
+    px(13, 10, "#66ffcc");
   }
 
   function killEnemy(enemy){
@@ -1937,6 +1991,7 @@
   bindMixer();
   updateScoresUI();
   updateDailyScoresUI();
+  drawNeoHero();
   if (!game.waveActive && !game.enemies.length){
     updateHud("Bereit");
   }
