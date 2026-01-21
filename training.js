@@ -46,6 +46,9 @@
   const DIFF_SPIKE_WAVE = 23;
   const DIFF_SPIKE_HP_MULT = 1.45;
   const DIFF_SPIKE_SPEED_MULT = 1.25;
+  const DIFF_HARD_WAVE = 29;
+  const DIFF_HARD_HP_MULT = 2.0;
+  const DIFF_HARD_SPEED_MULT = 1.6;
 
   const sfx = {
     ctx: null,
@@ -700,14 +703,15 @@
     const base = enemyTypes[type];
     const late = game.wave >= 14 ? DIFF_LATE_HP_MULT : 1;
     const spike = game.wave >= DIFF_SPIKE_WAVE ? DIFF_SPIKE_HP_MULT : 1;
-    const hp = Math.round(base.hp * DIFF_HP_MULT * late * spike);
+    const hard = game.wave >= DIFF_HARD_WAVE ? DIFF_HARD_HP_MULT : 1;
+    const hp = Math.round(base.hp * DIFF_HP_MULT * late * spike * hard);
     const enemy = {
       type,
       x,
       y,
       hp,
       maxHp: hp,
-      speed: base.speed * DIFF_SPEED_MULT * (game.wave >= 14 ? DIFF_LATE_SPEED_MULT : 1) * (game.wave >= DIFF_SPIKE_WAVE ? DIFF_SPIKE_SPEED_MULT : 1),
+      speed: base.speed * DIFF_SPEED_MULT * (game.wave >= 14 ? DIFF_LATE_SPEED_MULT : 1) * (game.wave >= DIFF_SPIKE_WAVE ? DIFF_SPIKE_SPEED_MULT : 1) * (game.wave >= DIFF_HARD_WAVE ? DIFF_HARD_SPEED_MULT : 1),
       reward: base.reward,
       pathIndex,
       slowTimer: 0,
@@ -731,7 +735,8 @@
     const base = enemyTypes[type];
     const late = game.wave >= 14 ? DIFF_LATE_HP_MULT : 1;
     const spike = game.wave >= DIFF_SPIKE_WAVE ? DIFF_SPIKE_HP_MULT : 1;
-    const hp = Math.round(base.hp * DIFF_HP_MULT * late * spike);
+    const hard = game.wave >= DIFF_HARD_WAVE ? DIFF_HARD_HP_MULT : 1;
+    const hp = Math.round(base.hp * DIFF_HP_MULT * late * spike * hard);
     const start = pathPoints[0];
     const enemy = {
       type,
@@ -739,7 +744,7 @@
       y: start.y,
       hp,
       maxHp: hp,
-      speed: base.speed * DIFF_SPEED_MULT * (game.wave >= 14 ? DIFF_LATE_SPEED_MULT : 1) * (game.wave >= DIFF_SPIKE_WAVE ? DIFF_SPIKE_SPEED_MULT : 1),
+      speed: base.speed * DIFF_SPEED_MULT * (game.wave >= 14 ? DIFF_LATE_SPEED_MULT : 1) * (game.wave >= DIFF_SPIKE_WAVE ? DIFF_SPIKE_SPEED_MULT : 1) * (game.wave >= DIFF_HARD_WAVE ? DIFF_HARD_SPEED_MULT : 1),
       reward: base.reward,
       pathIndex: 1,
       slowTimer: 0,
