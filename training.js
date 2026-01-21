@@ -1005,6 +1005,7 @@
       h.fillStyle = color;
       h.fillRect(x * scale, y * scale, w * scale, hgt * scale);
     };
+    const outline = "#000000";
     const coat = "#07080a";
     const coat2 = "#0b0e12";
     const coat3 = "#0f1216";
@@ -1013,6 +1014,14 @@
     const hair = "#1d1917";
     const glass = "#0a0f14";
     const glow = "#00ff99";
+    const glyph = "#1cff9a";
+    const glyph2 = "#0b5c3a";
+    rect(2, 2, 28, 28, "#020c08");
+    for (let y = 3; y < 28; y += 4){
+      for (let x = 3; x < 28; x += 5){
+        px(x, y, (x + y) % 2 ? glyph : glyph2);
+      }
+    }
     rect(6, 2, 20, 26, "#03150b");
     rect(10, 5, 12, 10, skin);
     rect(11, 6, 10, 8, skin2);
@@ -1032,10 +1041,31 @@
     rect(9, 20, 14, 2, "#0c1418");
     rect(10, 32, 12, 2, "#0c1418");
     rect(11, 44, 10, 2, "#0c1418");
+    rect(7, 16, 2, 12, coat3);
+    rect(23, 16, 2, 12, coat3);
+    rect(7, 28, 2, 10, coat);
+    rect(23, 28, 2, 10, coat);
     px(9, 10, glow);
     px(21, 10, glow);
     px(12, 10, "#66ffcc");
     px(18, 10, "#66ffcc");
+    strokeHero(h, outline, scale);
+  }
+
+  function strokeHero(h, color, scale){
+    h.fillStyle = color;
+    for (let y = 2; y <= 54; y++){
+      pxHero(h, 2, y, scale);
+      pxHero(h, 29, y, scale);
+    }
+    for (let x = 2; x <= 29; x++){
+      pxHero(h, x, 2, scale);
+      pxHero(h, x, 54, scale);
+    }
+  }
+
+  function pxHero(ctx, x, y, scale){
+    ctx.fillRect(x * scale, y * scale, scale, scale);
   }
 
   function killEnemy(enemy){
