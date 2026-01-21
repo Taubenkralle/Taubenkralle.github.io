@@ -41,8 +41,8 @@
   const MAX_SHOTS = 240;
   const DIFF_HP_MULT = 1.7;
   const DIFF_SPEED_MULT = 1.32;
-  const DIFF_LATE_HP_MULT = 1.55;
-  const DIFF_LATE_SPEED_MULT = 1.26;
+  const DIFF_LATE_HP_MULT = 1.8;
+  const DIFF_LATE_SPEED_MULT = 1.38;
 
   const sfx = {
     ctx: null,
