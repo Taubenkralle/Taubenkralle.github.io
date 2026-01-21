@@ -44,8 +44,8 @@
   const DIFF_LATE_HP_MULT = 1.8;
   const DIFF_LATE_SPEED_MULT = 1.38;
   const DIFF_SPIKE_WAVE = 23;
-  const DIFF_SPIKE_HP_MULT = 1.35;
-  const DIFF_SPIKE_SPEED_MULT = 1.2;
+  const DIFF_SPIKE_HP_MULT = 1.45;
+  const DIFF_SPIKE_SPEED_MULT = 1.25;
 
   const sfx = {
     ctx: null,
