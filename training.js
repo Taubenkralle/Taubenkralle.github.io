@@ -36,6 +36,8 @@
   const MAX_SHOTS = 240;
   const DIFF_HP_MULT = 1.25;
   const DIFF_SPEED_MULT = 1.12;
+  const DIFF_LATE_HP_MULT = 1.2;
+  const DIFF_LATE_SPEED_MULT = 1.08;
 
   const sfx = {
     ctx: null,
@@ -688,14 +690,15 @@
 
   function spawnEnemyAt(type, x, y, pathIndex){
     const base = enemyTypes[type];
-    const hp = Math.round(base.hp * DIFF_HP_MULT);
+    const late = game.wave >= 14 ? DIFF_LATE_HP_MULT : 1;
+    const hp = Math.round(base.hp * DIFF_HP_MULT * late);
     const enemy = {
       type,
       x,
       y,
       hp,
       maxHp: hp,
-      speed: base.speed * DIFF_SPEED_MULT,
+      speed: base.speed * DIFF_SPEED_MULT * (game.wave >= 14 ? DIFF_LATE_SPEED_MULT : 1),
       reward: base.reward,
       pathIndex,
       slowTimer: 0,
@@ -717,7 +720,8 @@
   function spawnEnemy(type){
     if (game.enemies.length >= MAX_ENEMIES) return;
     const base = enemyTypes[type];
-    const hp = Math.round(base.hp * DIFF_HP_MULT);
+    const late = game.wave >= 14 ? DIFF_LATE_HP_MULT : 1;
+    const hp = Math.round(base.hp * DIFF_HP_MULT * late);
     const start = pathPoints[0];
     const enemy = {
       type,
@@ -725,7 +729,7 @@
       y: start.y,
       hp,
       maxHp: hp,
-      speed: base.speed * DIFF_SPEED_MULT,
+      speed: base.speed * DIFF_SPEED_MULT * (game.wave >= 14 ? DIFF_LATE_SPEED_MULT : 1),
       reward: base.reward,
       pathIndex: 1,
       slowTimer: 0,
