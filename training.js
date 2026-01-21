@@ -39,10 +39,10 @@
   const MAX_ENEMIES = 120;
   const LOGIC_DT = 1 / 30;
   const MAX_SHOTS = 240;
-  const DIFF_HP_MULT = 1.45;
-  const DIFF_SPEED_MULT = 1.22;
-  const DIFF_LATE_HP_MULT = 1.32;
-  const DIFF_LATE_SPEED_MULT = 1.16;
+  const DIFF_HP_MULT = 1.52;
+  const DIFF_SPEED_MULT = 1.25;
+  const DIFF_LATE_HP_MULT = 1.38;
+  const DIFF_LATE_SPEED_MULT = 1.18;
 
   const sfx = {
     ctx: null,
@@ -996,7 +996,7 @@
     if (!h) return;
     h.imageSmoothingEnabled = false;
     h.clearRect(0, 0, heroCanvas.width, heroCanvas.height);
-    const scale = 4;
+    const scale = 3;
     const px = (x, y, color) => {
       h.fillStyle = color;
       h.fillRect(x * scale, y * scale, scale, scale);
@@ -1005,30 +1005,37 @@
       h.fillStyle = color;
       h.fillRect(x * scale, y * scale, w * scale, hgt * scale);
     };
-    rect(4, 4, 16, 16, "#04160b");
-    rect(7, 6, 10, 9, "#3b2b24");
-    rect(8, 7, 8, 6, "#4a352c");
-    rect(7, 13, 10, 2, "#2b1f1a");
-    rect(6, 15, 12, 5, "#0b120f");
-    rect(5, 16, 14, 8, "#0b0f12");
-    rect(4, 20, 16, 6, "#070a0c");
-    rect(5, 8, 5, 2, "#0b0f12");
-    rect(13, 8, 5, 2, "#0b0f12");
-    rect(6, 9, 4, 1, "#1c2622");
-    rect(14, 9, 4, 1, "#1c2622");
-    rect(9, 11, 4, 1, "#1d2b25");
-    rect(8, 12, 6, 1, "#0f1f1a");
-    rect(6, 23, 12, 6, "#0b0f12");
-    rect(4, 29, 16, 3, "#050708");
-    rect(4, 32, 16, 8, "#040506");
-    rect(3, 30, 18, 2, "#0f1a16");
-    rect(3, 39, 18, 2, "#0f1a16");
-    rect(2, 34, 3, 6, "#0f1a16");
-    rect(19, 34, 3, 6, "#0f1a16");
-    px(9, 9, "#00ff99");
-    px(14, 9, "#00ff99");
-    px(10, 10, "#66ffcc");
-    px(13, 10, "#66ffcc");
+    const coat = "#07080a";
+    const coat2 = "#0b0e12";
+    const coat3 = "#0f1216";
+    const skin = "#4a3428";
+    const skin2 = "#5a4032";
+    const hair = "#1d1917";
+    const glass = "#0a0f14";
+    const glow = "#00ff99";
+    rect(6, 2, 20, 26, "#03150b");
+    rect(10, 5, 12, 10, skin);
+    rect(11, 6, 10, 8, skin2);
+    rect(10, 4, 12, 3, hair);
+    rect(8, 9, 6, 3, glass);
+    rect(18, 9, 6, 3, glass);
+    rect(14, 10, 4, 2, "#0c1116");
+    rect(11, 13, 10, 2, "#2b1f1a");
+    rect(9, 15, 14, 3, coat);
+    rect(8, 18, 16, 4, coat2);
+    rect(7, 22, 18, 8, coat3);
+    rect(6, 30, 20, 6, coat);
+    rect(5, 36, 22, 10, coat2);
+    rect(4, 46, 24, 6, coat3);
+    rect(6, 24, 4, 12, coat);
+    rect(22, 24, 4, 12, coat);
+    rect(9, 20, 14, 2, "#0c1418");
+    rect(10, 32, 12, 2, "#0c1418");
+    rect(11, 44, 10, 2, "#0c1418");
+    px(9, 10, glow);
+    px(21, 10, glow);
+    px(12, 10, "#66ffcc");
+    px(18, 10, "#66ffcc");
   }
 
   function killEnemy(enemy){
