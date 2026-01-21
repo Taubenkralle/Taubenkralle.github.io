@@ -1268,7 +1268,7 @@
   function drawSelection(){
     if (!selectedTower) return;
     const stats = getTowerStats(selectedTower);
-    ctx.strokeStyle = "rgba(0,255,153,0.35)";
+    ctx.strokeStyle = "rgba(140,255,210,0.6)";
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.arc(selectedTower.x, selectedTower.y, stats.range, 0, Math.PI * 2);
