@@ -39,10 +39,10 @@
   const MAX_ENEMIES = 120;
   const LOGIC_DT = 1 / 30;
   const MAX_SHOTS = 240;
-  const DIFF_HP_MULT = 1.25;
-  const DIFF_SPEED_MULT = 1.12;
-  const DIFF_LATE_HP_MULT = 1.2;
-  const DIFF_LATE_SPEED_MULT = 1.08;
+  const DIFF_HP_MULT = 1.35;
+  const DIFF_SPEED_MULT = 1.18;
+  const DIFF_LATE_HP_MULT = 1.25;
+  const DIFF_LATE_SPEED_MULT = 1.12;
 
   const sfx = {
     ctx: null,
