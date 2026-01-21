@@ -31,6 +31,8 @@
   const MAX_ENEMIES = 120;
   const LOGIC_DT = 1 / 30;
   const MAX_SHOTS = 240;
+  const DIFF_HP_MULT = 1.25;
+  const DIFF_SPEED_MULT = 1.12;
 
   const sfx = {
     ctx: null,
@@ -683,13 +685,14 @@
 
   function spawnEnemyAt(type, x, y, pathIndex){
     const base = enemyTypes[type];
+    const hp = Math.round(base.hp * DIFF_HP_MULT);
     const enemy = {
       type,
       x,
       y,
-      hp: base.hp,
-      maxHp: base.hp,
-      speed: base.speed,
+      hp,
+      maxHp: hp,
+      speed: base.speed * DIFF_SPEED_MULT,
       reward: base.reward,
       pathIndex,
       slowTimer: 0,
@@ -711,14 +714,15 @@
   function spawnEnemy(type){
     if (game.enemies.length >= MAX_ENEMIES) return;
     const base = enemyTypes[type];
+    const hp = Math.round(base.hp * DIFF_HP_MULT);
     const start = pathPoints[0];
     const enemy = {
       type,
       x: start.x,
       y: start.y,
-      hp: base.hp,
-      maxHp: base.hp,
-      speed: base.speed,
+      hp,
+      maxHp: hp,
+      speed: base.speed * DIFF_SPEED_MULT,
       reward: base.reward,
       pathIndex: 1,
       slowTimer: 0,
