@@ -179,11 +179,12 @@
   <link rel="stylesheet" href="../search.css">
   <link rel="stylesheet" href="../toc.css">
   <link rel="stylesheet" href="../music.css">
+  <link rel="stylesheet" href="../themes.css">
   <link rel="stylesheet" href="../matrix-effects.css">
   <link rel="stylesheet" href="../crt.css">
   <link rel="stylesheet" href="../neo.css">
 </head>
-<body>
+<body class="theme-matrix" data-default-theme="matrix">
   <canvas id="rain"></canvas>
   <nav class="home-only">
     <a href="../statistik.html" class="home">← Statistik</a>
@@ -562,6 +563,9 @@ von diesem Effekt betroffen).</p></li>
 </ul>
 
   </main>
+  <footer class="theme-toggle">
+    <button class="theme-button" type="button" data-theme-toggle>Theme: Matrix</button>
+  </footer>
 
   <script>
     let lastPos = null;
@@ -634,5 +638,6 @@ von diesem Effekt betroffen).</p></li>
   <script src="../view.js"></script>
   <script src="../crt.js"></script>
   <script src="../neo.js"></script>
+  <script src="../themes.js"></script>
 </body>
 </html>
