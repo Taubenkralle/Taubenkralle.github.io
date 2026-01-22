@@ -32,6 +32,7 @@ body{
   color: var(--sand);
   font-family: "IM Fell English", "Garamond", "Georgia", serif;
   display:block;
+  font-size: 18px;
 }
 
 body::before{
@@ -532,10 +533,10 @@ a:hover{
       <svg viewBox="0 0 120 70" role="img">
         <defs>
           <filter id="flagWave">
-            <feTurbulence type="fractalNoise" baseFrequency="0.012 0.04" numOctaves="2" seed="3" result="noise">
-              <animate attributeName="baseFrequency" dur="3.2s" values="0.012 0.04;0.02 0.05;0.012 0.04" repeatCount="indefinite"/>
+            <feTurbulence type="fractalNoise" baseFrequency="0.016 0.06" numOctaves="2" seed="3" result="noise">
+              <animate attributeName="baseFrequency" dur="2.6s" values="0.016 0.06;0.03 0.08;0.016 0.06" repeatCount="indefinite"/>
             </feTurbulence>
-            <feDisplacementMap in="SourceGraphic" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+            <feDisplacementMap in="SourceGraphic" scale="14" xChannelSelector="R" yChannelSelector="G"/>
           </filter>
         </defs>
         <rect x="2" y="6" width="6" height="56" rx="2" fill="#7a4c2a"/>
