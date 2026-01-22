@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Messtechnik</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+@import url("https://fonts.googleapis.com/css2?family=IM+Fell+English:ital,wght@0,400;0,700;1,400&family=IM+Fell+English+SC&display=swap");
+
+:root{
+  --sea:#0b1b2a;
+  --deep:#06111b;
+  --sand:#f3e2c4;
+  --ink:#2b1a0c;
+  --gold:#d2a654;
+  --rope:#a9824f;
+  --rust:#8a2b1d;
+  --shadow: rgba(19,10,5,0.45);
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(900px 540px at 50% 35%, rgba(253,233,197,0.65) 0%, rgba(217,185,130,0.3) 40%, rgba(12,28,43,0.25) 70%),
+    linear-gradient(180deg, #0a1724 0%, #0f2738 45%, #0a1b28 100%);
+  color: var(--sand);
+  font-family: "IM Fell English", "Garamond", "Georgia", serif;
+  display:block;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,233,199,0.05) 0px, rgba(255,233,199,0.05) 2px, transparent 2px, transparent 10px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.12) 0px, rgba(0,0,0,0.12) 1px, transparent 1px, transparent 14px);
+  opacity:0.5;
+  pointer-events:none;
+  mix-blend-mode:soft-light;
+}
+
+main{
+  max-width: 760px;
+  margin: 140px auto 90px auto;
+  line-height: 1.75;
+  padding: 0 18px;
+}
+
+h1, h2, h3{
+  font-family: "IM Fell English SC", "Garamond", "Georgia", serif;
+  letter-spacing:0.06em;
+  color: var(--sand);
+  text-shadow: 0 6px 16px var(--shadow);
+}
+
+h1{
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+a{
+  color: var(--gold);
+  text-decoration:none;
+}
+
+a:hover{
+  color: #f6d48a;
+  text-shadow: 0 0 12px rgba(255,215,140,0.3);
+}
+
+#rain{
+  opacity:0.18;
+  filter: hue-rotate(180deg) saturate(0.45);
+}
+
+/* Home-Button */
+.home-only{
+  position:fixed;
+  top:20px;
+  left:20px;
+}
+
+.home{
+  color: var(--sand);
+  font-size:18px;
+  opacity:.85;
+  font-family: "IM Fell English SC", "Garamond", "Georgia", serif;
+}
+.home:hover{ opacity:1; }
+
+/* TOC */
+.toc{
+  margin-top:18px;
+  text-align:center;
+  opacity:.95;
+}
+
+.toc-label{
+  font-size:12px;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color: var(--gold);
+  opacity:.9;
+}
+
+.toc ul{ list-style:none; padding:0; margin:10px 0 0 0; }
+.toc li{ margin:8px 0; }
+
+.toc a{
+  color: var(--gold);
+  font-size:14px;
+  opacity:.95;
+}
+.toc a:hover{
+  opacity:1;
+  text-shadow: 0 0 12px rgba(255,215,140,0.35);
+}
+
+/* One Piece inspired control chrome */
+.pirate .search-actions{
+  gap: 8px;
+}
+
+.pirate .home-mini,
+.pirate .search-toggle,
+.pirate .music-button,
+.pirate .view-toggle{
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: 2px solid var(--rope);
+  background: linear-gradient(180deg, #f6e5c8 0%, #dfbc83 100%);
+  color: var(--ink);
+  box-shadow: 0 6px 14px rgba(14,7,3,0.35), inset 0 0 12px rgba(255,244,224,0.6);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.pirate .home-mini:hover,
+.pirate .search-toggle:hover,
+.pirate .music-button:hover,
+.pirate .view-toggle:hover{
+  transform: translateY(-1px);
+  border-color: var(--gold);
+  box-shadow: 0 10px 20px rgba(14,7,3,0.4), inset 0 0 12px rgba(255,244,224,0.7);
+}
+
+.pirate .music-button.playing,
+.pirate .view-toggle.active{
+  border-color: var(--rust);
+  box-shadow: 0 0 0 2px rgba(138,43,29,0.35), 0 10px 20px rgba(14,7,3,0.4), inset 0 0 14px rgba(255,228,184,0.7);
+}
+
+.pirate .search-panel{
+  background: rgba(21,14,10,0.85);
+  border: 1px solid rgba(210,166,84,0.45);
+  box-shadow: 0 14px 30px rgba(8,4,2,0.55);
+}
+
+.pirate .search-panel::before{
+  background: linear-gradient(180deg, rgba(210,166,84,0) 0%, rgba(210,166,84,0.3) 50%, rgba(210,166,84,0) 100%);
+  opacity: 0.3;
+}
+
+.pirate .search-input{
+  background: rgba(244,226,196,0.1);
+  border: 1px solid rgba(210,166,84,0.45);
+  color: var(--sand);
+}
+
+.pirate .search-input::placeholder{
+  color: rgba(246,228,184,0.6);
+}
+
+.pirate .search-close{
+  border: 1px solid rgba(210,166,84,0.45);
+  color: var(--sand);
+}
+
+.pirate .search-results a{
+  border: 1px solid rgba(210,166,84,0.35);
+  background: rgba(24,14,10,0.65);
+  color: #f2d39b;
+}
+
+.pirate .search-results a:hover{
+  box-shadow: 0 0 14px rgba(210,166,84,0.35);
+}
+
+.pirate .search-title{
+  color: #f6d48a;
+  text-shadow: 0 0 10px rgba(210,166,84,0.25);
+}
+
+.pirate .search-meta{
+  color: rgba(243,226,196,0.7);
+}
+  </style>
+  <link rel="stylesheet" href="../bookmarks.css">
+  <link rel="stylesheet" href="../search.css">
+  <link rel="stylesheet" href="../toc.css">
+  <link rel="stylesheet" href="../music.css">
+  <link rel="stylesheet" href="../matrix-effects.css">
+  <link rel="stylesheet" href="../crt.css">
+  <link rel="stylesheet" href="../neo.css">
+</head>
+<body class="pirate">
+  <canvas id="rain"></canvas>
+  <nav class="home-only">
+  <a href="../index.html" class="home">Schreibtisch</a>
+</nav>
+
+  <div class="search-shell" data-index="../search-index.json">
+    <div class="search-actions">
+      <a class="home-mini" href="../index.html" aria-label="Home">
+        <svg class="home-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 4l8 7h-2v9h-5v-6H11v6H6v-9H4l8-7z"></path>
+        </svg>
+      </a>
+      <button class="search-toggle" type="button" aria-label="Suche">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"></circle>
+          <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2"></line>
+        </svg>
+      </button>
+      <div class="music-shell">
+        <button class="music-button" type="button" aria-label="Musik">
+          <svg class="music-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 3v12.5a3.5 3.5 0 1 1-2-3.16V6.6l-8 1.7v8.2a3.5 3.5 0 1 1-2-3.16V4.5L19 3z"></path>
+          </svg>
+        </button>
+        <button class="view-toggle" type="button" aria-label="Breiter Text" aria-pressed="false">
+          <svg class="view-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 6h10v2H7V6zm-2 4h14v2H5v-2zm2 4h10v2H7v-2z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="search-panel" hidden>
+      <div class="search-bar">
+        <input class="search-input" type="search" placeholder="Suche in der Matrix">
+        <button class="search-close" type="button">x</button>
+      </div>
+      <ul class="search-results"></ul>
+      <div class="search-empty">Keine Treffer.</div>
+    </div>
+  </div>
+
+  <main>
+  <h1>Messtechnik</h1>
+
+  <h2>Worum geht es</h2>
+  <p>
+    Messtechnik verbindet Sensorik, Signalaufbereitung und Auswertung, um
+    Werte erfahrbar zu machen und fair vergleichen zu koennen.
+  </p>
+
+  <h2>Kompass</h2>
+  <p>
+    Gute Messungen haben Aufloesung, Genauigkeit und Wiederholbarkeit im Griff
+    und bleiben transparent bei der Messunsicherheit.
+  </p>
+
+  <h3>Bausteine</h3>
+  <ul>
+    <li>Sensoren, Signale und Schnittstellen</li>
+    <li>Kalibrierung und Referenzen</li>
+    <li>Auswertung mit Augenmass</li>
+  </ul>
+
+  </main>
+  <iframe
+    id="soundcloud-player"
+    title="SoundCloud Player"
+    width="1"
+    height="1"
+    allow="autoplay"
+    style="position:absolute; left:-9999px; opacity:0; pointer-events:none;"
+    src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/mrjuggler/woonan-and-ganzo&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false">
+  </iframe>
+  <script src="../rain.js"></script>
+  <script src="../bookmarks.js"></script>
+  <script src="../search.js"></script>
+  <script src="../toc.js"></script>
+  <script src="../view.js"></script>
+  <script src="../crt.js"></script>
+  <script src="../neo.js"></script>
+  <script src="https://w.soundcloud.com/player/api.js"></script>
+  <script>
+(() => {
+  const shell = document.querySelector(".music-shell");
+  const btn = shell ? shell.querySelector(".music-button") : null;
+  const iframe = document.getElementById("soundcloud-player");
+  if (!btn || !iframe) return;
+
+  let widget = null;
+  let isReady = false;
+  let isPlaying = false;
+
+  function setPlaying(value){
+    isPlaying = value;
+    btn.classList.toggle("playing", value);
+  }
+
+  function ensureWidget(){
+    if (widget) return widget;
+    if (!window.SC || !SC.Widget) return null;
+    widget = SC.Widget(iframe);
+    widget.bind(SC.Widget.Events.READY, () => {
+      isReady = true;
+    });
+    widget.bind(SC.Widget.Events.PLAY, () => setPlaying(true));
+    widget.bind(SC.Widget.Events.PAUSE, () => setPlaying(false));
+    widget.bind(SC.Widget.Events.FINISH, () => setPlaying(false));
+    return widget;
+  }
+
+  function play(){
+    const sc = ensureWidget();
+    if (!sc) return;
+    if (!isReady){
+      sc.bind(SC.Widget.Events.READY, () => sc.play());
+      return;
+    }
+    sc.play();
+  }
+
+  function pause(){
+    const sc = ensureWidget();
+    if (!sc) return;
+    sc.pause();
+  }
+
+  function toggle(){
+    if (isPlaying){
+      pause();
+      return;
+    }
+    play();
+  }
+
+  btn.addEventListener("click", toggle);
+  document.addEventListener("keydown", (e) => {
+    const active = document.activeElement;
+    const isTyping = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable);
+    if (isTyping) return;
+    if (e.key === "4"){
+      e.preventDefault();
+      toggle();
+    }
+  });
+})();
+  </script>
+</body>
+</html>

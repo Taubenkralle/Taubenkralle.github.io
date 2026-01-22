@@ -33,13 +33,43 @@
     "title": "ahsome",
     "url": "/index.html",
     "meta": "Page",
-    "keywords": "ahsome schreibtisch x keine treffer. git get. statistik elektrotechnik training white rabbit"
+    "keywords": "ahsome schreibtisch x keine treffer. git get. statistik elektrotechnik messtechnik training white rabbit"
   },
   {
     "title": "git get.",
     "url": "/index.html#git-get",
     "meta": "ahsome",
     "keywords": "git get."
+  },
+  {
+    "title": "Messtechnik",
+    "url": "/messtechnik/messtechnik.html",
+    "meta": "Page",
+    "keywords": "messtechnik schreibtisch x keine treffer. messtechnik worum geht es messtechnik verbindet sensorik, signalaufbereitung und auswertung, um werte erfahrbar zu machen und fair vergleichen zu koennen. kompass gute messungen haben aufloesung, genauigkeit und wiederholbarkeit im griff und bleiben transparent bei der messunsicherheit. bausteine sensoren, signale und schnittstellen kalibrierung und referenzen auswertung mit augenmass (() => { const shell = document.queryselector(\".music-shell\"); const btn = shell ? shell.queryselector(\".music-button\") : null; const iframe = document.getelementbyid(\"soundcloud-player\"); if (!btn || !iframe) return; let widget = null; let isready = false; let isplaying = false; function setplaying(value){ isplaying = value; btn.classlist.toggle(\"playing\", value); } function ensurewidget(){ if (widget) return widget; if (!window.sc || !sc.widget) return null; widget = sc.widget(iframe); widget.bind(sc.widget.events.ready, () => { isready = true; }); widget.bind(sc.widget.events.play, () => setplaying(true)); widget.bind(sc.widget.events.pause, () => setplaying(false)); widget.bind(sc.widget.events.finish, () => setplaying(false)); return widget; } function play(){ const sc = ensurewidget(); if (!sc) return; if (!isready){ sc.bind(sc.widget.events.ready, () => sc.play()); return; } sc.play(); } function pause(){ const sc = ensurewidget(); if (!sc) return; sc.pause(); } function toggle(){ if (isplaying){ pause(); return; } play(); } btn.addeventlistener(\"click\", toggle); document.addeventlistener(\"keydown\", (e) => { const active = document.activeelement; const istyping = active && (active.tagname === \"input\" || active.tagname === \"textarea\" || active.iscontenteditable); if (istyping) return; if (e.key === \"4\"){ e.preventdefault(); toggle(); } }); })();"
+  },
+  {
+    "title": "Bausteine",
+    "url": "/messtechnik/messtechnik.html#bausteine",
+    "meta": "Messtechnik",
+    "keywords": "bausteine"
+  },
+  {
+    "title": "Kompass",
+    "url": "/messtechnik/messtechnik.html#kompass",
+    "meta": "Messtechnik",
+    "keywords": "kompass"
+  },
+  {
+    "title": "Messtechnik",
+    "url": "/messtechnik/messtechnik.html#messtechnik",
+    "meta": "Messtechnik",
+    "keywords": "messtechnik"
+  },
+  {
+    "title": "Worum geht es",
+    "url": "/messtechnik/messtechnik.html#worum-geht-es",
+    "meta": "Messtechnik",
+    "keywords": "worum geht es"
   },
   {
     "title": "Statistik",
@@ -207,7 +237,7 @@
     "title": "Training",
     "url": "/training.html",
     "meta": "Page",
-    "keywords": "training ← schreibtisch x keine treffer. training matrix-defense im gleichen layout. auto-save laeuft im hintergrund und kann als json exportiert/importiert werden. zion defense protocols // v14. credits 0 welle 0 integritaet 0 start wave pause anleitung sound bereit tower pulse snare arc wave preview warten... enemy intel d f t s w r b campaign stage 1 ziel: welle 3 highscore: 0 highscores daily leaderboard audio mixer ui hit boss type map apply wechsel nur ausserhalb einer welle. auswahl kein tower pfad waehlen upgrade sell savegame load slot leer daily streak: 0 export import reset save autosave schreibt in den aktuellen slot. auto resume nach seitenwechsel modes daily run daily nutzt einen festen seed pro tag. shortcuts: 9 oeffnet training von jeder seite, shift+s quick save, shift+l quick load. training // anleitung close link established... baue tower neben dem pfad, stoppe datenstroeme, schuetze den core. campaign: erreiche die zielwelle pro stage, um neue maps freizuschalten. basics start wave startet die naechste welle. credits = geld, integritaet = leben. upgrade verbessert reichweite, schaden, tempo. tower pulse: guter allrounder, setzt burn (dot). snare: verlangsamt gegner. arc: ketten-schaden + kurzer emp (stun). ab level 1 pfad waehlen: jeder tower hat zwei spezialisierungen. gegner shield/tank haben ruestung, nehmen weniger schaden. swarm ist schnell und zerbrechlich. regen heilt sich langsam selbst. boss aktiviert manchmal ein schild (weniger schaden). shortcuts 9 training oeffnen shift+s quick save shift+l quick load save-slots: auswahl oben im savegame-block, autosave schreibt in den aktiven slot. slot-preview zeigt welle, map, credits, lives, kills und datum. daily run nutzt einen taeglichen seed fuer gleiche wellen. daily leaderboard + streak sind lokal pro browser gespeichert; streak gibt bonus-credits. sound kann im hud mit dem sound-button stummgeschaltet werden. wave report welle 0 credits: 0 integritaet: 0 kills: 0 bonus: 0 weiter"
+    "keywords": "training ← schreibtisch x keine treffer. training . \"zion defense protocols //\"\"i know kung fu.\"\" credits 0 welle 0 integritaet 0 start wave pause anleitung sound bereit tower pulse snare arc wave preview warten... enemy intel d f t s w r b campaign stage 1 ziel: welle 3 highscore: 0 highscores daily leaderboard audio mixer ui hit boss type map apply wechsel nur ausserhalb einer welle. auswahl kein tower pfad waehlen upgrade sell savegame load slot leer daily streak: 0 export import reset save autosave schreibt in den aktuellen slot. auto resume nach seitenwechsel modes daily run daily nutzt einen festen seed pro tag. shortcuts: 9 oeffnet training von jeder seite, shift+s quick save, shift+l quick load. training // anleitung close link established... baue tower neben dem pfad, stoppe datenstroeme, schuetze den core. campaign: erreiche die zielwelle pro stage, um neue maps freizuschalten. basics start wave startet die naechste welle. credits = geld, integritaet = leben. upgrade verbessert reichweite, schaden, tempo. tower pulse: guter allrounder, setzt burn (dot). snare: verlangsamt gegner. arc: ketten-schaden + kurzer emp (stun). ab level 1 pfad waehlen: jeder tower hat zwei spezialisierungen. gegner shield/tank haben ruestung, nehmen weniger schaden. swarm ist schnell und zerbrechlich. regen heilt sich langsam selbst. boss aktiviert manchmal ein schild (weniger schaden). shortcuts 9 training oeffnen shift+s quick save shift+l quick load save-slots: auswahl oben im savegame-block, autosave schreibt in den aktiven slot. slot-preview zeigt welle, map, credits, lives, kills und datum. daily run nutzt einen taeglichen seed fuer gleiche wellen. daily leaderboard + streak sind lokal pro browser gespeichert; streak gibt bonus-credits. sound kann im hud mit dem sound-button stummgeschaltet werden. wave report welle 0 credits: 0 integritaet: 0 kills: 0 bonus: 0 weiter"
   },
   {
     "title": "Basics",
