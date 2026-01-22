@@ -722,7 +722,8 @@ a:hover{
     const sample = Math.min(total, Math.max(0, current + direction));
     const target = route.getPointAtLength(sample);
     const angle = Math.atan2(target.y - point.y, target.x - point.x) * 180 / Math.PI;
-    ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle})`);
+    const flip = direction === -1 ? -1 : 1;
+    ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle}) scale(${flip} 1)`);
   }
 
   updateShip();
