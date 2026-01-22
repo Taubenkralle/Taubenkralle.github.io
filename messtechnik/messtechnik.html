@@ -455,34 +455,21 @@ a:hover{
 </head>
 <body class="pirate">
   <div class="map-layer" aria-hidden="true">
-    <svg class="map-svg" viewBox="0 0 1000 800" preserveAspectRatio="xMidYMid slice">
+    <svg class="map-svg" viewBox="0 0 1080 540" preserveAspectRatio="xMidYMid slice">
       <defs>
-        <linearGradient id="mapWash" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#123248"/>
-          <stop offset="45%" stop-color="#0f283a"/>
-          <stop offset="100%" stop-color="#0b1b2a"/>
-        </linearGradient>
-        <pattern id="waves" width="120" height="120" patternUnits="userSpaceOnUse">
-          <path d="M0 70 C 20 50, 40 90, 60 70 C 80 50, 100 90, 120 70" fill="none" stroke="rgba(127,199,180,0.2)" stroke-width="2"/>
-        </pattern>
         <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="6" result="blur"/>
           <feColorMatrix in="blur" type="matrix"
-            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0" result="glow"/>
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.6 0" result="glow"/>
           <feMerge>
             <feMergeNode in="glow"/>
             <feMergeNode in="SourceGraphic"/>
           </feMerge>
         </filter>
       </defs>
-      <rect width="100%" height="100%" fill="url(#mapWash)"/>
-      <rect width="100%" height="100%" fill="url(#waves)" opacity="0.4"/>
-      <path d="M160 160 C 300 120, 380 180, 480 110 C 600 40, 720 140, 820 100 L 900 140 L 860 210 C 820 250, 760 270, 720 320 C 680 380, 630 420, 560 440 C 500 460, 420 520, 360 560 C 300 600, 220 640, 140 620 L 90 560 L 120 500 C 150 440, 120 360, 100 320 C 80 280, 90 220, 160 160 Z"
-        fill="rgba(11,27,42,0.35)" stroke="rgba(214,180,124,0.2)" stroke-width="2"/>
-      <path d="M280 250 C 340 220, 420 210, 520 240 C 600 260, 680 290, 740 340 C 820 400, 850 470, 830 560"
-        fill="none" stroke="rgba(214,180,124,0.35)" stroke-width="3" stroke-dasharray="6 8"/>
-      <path id="route-path" d="M140 540 C 230 500, 310 470, 380 420 C 460 360, 530 320, 620 300 C 700 280, 760 240, 820 200"
-        fill="none" stroke="var(--mapline)" stroke-width="3" stroke-dasharray="10 10" filter="url(#softGlow)"/>
+      <image href="assets/map.png" width="1080" height="540" />
+      <path id="route-path" d="M70 285 C 180 250, 320 250, 430 270 C 520 285, 610 310, 700 300 C 830 285, 950 265, 1030 250"
+        fill="none" stroke="var(--mapline)" stroke-width="4" stroke-dasharray="12 10" filter="url(#softGlow)"/>
       <image id="ship" class="map-ship" href="assets/ship.png" width="90" height="70" x="-45" y="-35" />
     </svg>
   </div>
