@@ -713,7 +713,7 @@ a:hover{
     const point = route.getPointAtLength(total * t);
     const next = route.getPointAtLength(Math.min(total, total * t + 1));
     const angle = Math.atan2(next.y - point.y, next.x - point.x) * 180 / Math.PI;
-    ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle + 180})`);
+    ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle})`);
   }
 
   updateShip();
