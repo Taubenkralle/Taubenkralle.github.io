@@ -97,7 +97,10 @@ body::before{
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background-image: url("/messtechnik/assets/map.png");
+  background-image: image-set(
+    url("/messtechnik/assets/map.webp") type("image/webp"),
+    url("/messtechnik/assets/map.png") type("image/png")
+  );
   background-size: contain;
   background-position: center top;
   background-repeat: no-repeat;
