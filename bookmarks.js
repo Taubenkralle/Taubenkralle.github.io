@@ -63,7 +63,7 @@
         <button class="bm-clear" type="button">Clear</button>
       </div>
       <ul class="bm-list"></ul>
-      <div class="bm-empty">No bookmarks yet.</div>
+      <div class="bm-empty">Noch keine Lesezeichen.</div>
     `;
 
     const tab = document.createElement("button");
