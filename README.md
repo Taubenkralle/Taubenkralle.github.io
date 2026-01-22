@@ -11,7 +11,7 @@ Hier entsteht mein Wiki mit meinem Uni-Stoff. Zurzeit schreibe ich das Skript St
 - Läuft im gleichen Layout wie die anderen Seiten.
 - Mini Tower Defense mit 3 Towern, Wellen, Credits, Upgrades, Boss-Wellen.
 - Savegame: Auto-Save in `localStorage` plus Export/Import als JSON.
-- Shortcut `9` startet Training von jeder Seite; `Shift+S` Quick Save und `Shift+L` Quick Load.
+- `Shift+S` Quick Save und `Shift+L` Quick Load.
 - Beim Seitenwechsel lädt der Save, Spiel läuft nicht weiter im Hintergrund.
 - Auto-Resume-Option für Training nach Seitenwechsel.
 - Wave-Preview-Panel, Map-Wechsel (2 Karten) und neue Gegner/Status-Effekte (Burn/EMP/Regen).

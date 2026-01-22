@@ -88,11 +88,12 @@
   <link rel="stylesheet" href="search.css">
   <link rel="stylesheet" href="toc.css">
   <link rel="stylesheet" href="music.css">
+  <link rel="stylesheet" href="themes.css">
   <link rel="stylesheet" href="matrix-effects.css">
   <link rel="stylesheet" href="crt.css">
   <link rel="stylesheet" href="neo.css">
 </head>
-<body class="white-rabbit" data-neo="knock">
+<body class="white-rabbit theme-matrix" data-neo="knock" data-default-theme="matrix">
   <canvas id="rain"></canvas>
 
   <nav class="home-only">
@@ -193,12 +194,14 @@
         <tr><th>Key</th><th>Aktion</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>9</code></td><td>Training oeffnen</td></tr>
         <tr><td><code>Shift+S</code></td><td>Quick Save (Training)</td></tr>
         <tr><td><code>Shift+L</code></td><td>Quick Load (Training)</td></tr>
       </tbody>
     </table>
   </main>
+  <footer class="theme-toggle">
+    <button class="theme-button" type="button" data-theme-toggle>Theme: Matrix</button>
+  </footer>
   </div>
 
   <script src="rain.js"></script>
@@ -210,5 +213,6 @@
   <script src="view.js"></script>
   <script src="crt.js"></script>
   <script src="neo.js"></script>
+  <script src="themes.js"></script>
 </body>
 </html>

@@ -82,10 +82,6 @@
         e.preventDefault();
         setRainHidden(!document.body.classList.contains("rain-hidden"));
       }
-      if (e.key === "9"){
-        e.preventDefault();
-        window.location.href = getTrainingUrl();
-      }
     });
   }
 
