@@ -375,12 +375,12 @@ a:hover{
 }
 
 .theme-onepiece .toc-tab::before{
-  left: 8px;
+  left: 4px;
   top: 6px;
 }
 
 .theme-onepiece .toc-tab::after{
-  right: 8px;
+  right: 4px;
   top: 6px;
 }
 
@@ -485,12 +485,12 @@ a:hover{
 }
 
 .theme-onepiece .bm-tab::before{
-  left: 8px;
+  left: 4px;
   top: 6px;
 }
 
 .theme-onepiece .bm-tab::after{
-  right: 8px;
+  right: 4px;
   top: 6px;
 }
 
@@ -721,7 +721,9 @@ a:hover{
     const point = route.getPointAtLength(current);
     const sample = Math.min(total, Math.max(0, current + direction));
     const target = route.getPointAtLength(sample);
-    const angle = Math.atan2(target.y - point.y, target.x - point.x) * 180 / Math.PI;
+    let angle = Math.atan2(target.y - point.y, target.x - point.x) * 180 / Math.PI;
+    if (angle > 90) angle -= 180;
+    if (angle < -90) angle += 180;
     const flip = direction === -1 ? -1 : 1;
     ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle}) scale(${flip} 1)`);
   }
