@@ -467,10 +467,10 @@ a:hover{
           </feMerge>
         </filter>
       </defs>
-      <image href="assets/map.png" width="1080" height="540" />
+      <image href="assets/map.png" xlink:href="assets/map.png" width="1080" height="540" />
       <path id="route-path" d="M1035 250 C 980 210, 900 215, 830 245 C 760 275, 720 310, 670 300 C 620 290, 580 260, 540 255 C 500 250, 470 265, 450 280 C 410 310, 360 330, 300 320 C 230 305, 170 285, 100 290"
         fill="none" stroke="#c4533c" stroke-width="4.5" stroke-dasharray="8 10" stroke-linecap="round" filter="url(#softGlow)"/>
-      <image id="ship" class="map-ship" href="assets/ship.png" width="90" height="70" x="-45" y="-35" />
+      <image id="ship" class="map-ship" href="assets/ship.png" xlink:href="assets/ship.png" width="90" height="70" x="-45" y="-35" />
     </svg>
   </div>
   <canvas id="rain"></canvas>
@@ -656,7 +656,7 @@ a:hover{
     const point = route.getPointAtLength(total * t);
     const next = route.getPointAtLength(Math.min(total, total * t + 1));
     const angle = Math.atan2(next.y - point.y, next.x - point.x) * 180 / Math.PI;
-    ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle})`);
+    ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle + 180})`);
   }
 
   updateShip();
