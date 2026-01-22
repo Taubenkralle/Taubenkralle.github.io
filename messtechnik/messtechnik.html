@@ -705,14 +705,23 @@ a:hover{
 
   const total = route.getTotalLength();
 
+  let lastScrollTop = 0;
+  let direction = 1;
+
   function updateShip(){
     const doc = document.documentElement;
     const scrollTop = doc.scrollTop || document.body.scrollTop || 0;
     const maxScroll = doc.scrollHeight - doc.clientHeight;
     const t = maxScroll > 0 ? scrollTop / maxScroll : 0;
-    const point = route.getPointAtLength(total * t);
-    const next = route.getPointAtLength(Math.min(total, total * t + 1));
-    const angle = Math.atan2(next.y - point.y, next.x - point.x) * 180 / Math.PI;
+    if (scrollTop !== lastScrollTop){
+      direction = scrollTop > lastScrollTop ? 1 : -1;
+      lastScrollTop = scrollTop;
+    }
+    const current = total * t;
+    const point = route.getPointAtLength(current);
+    const sample = Math.min(total, Math.max(0, current + direction));
+    const target = route.getPointAtLength(sample);
+    const angle = Math.atan2(target.y - point.y, target.x - point.x) * 180 / Math.PI;
     ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle})`);
   }
 
