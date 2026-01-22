@@ -18,6 +18,9 @@
   --seafoam:#7fc7b4;
   --mapline:#d6b47c;
   --shadow: rgba(19,10,5,0.45);
+  --paper:#f7e6c6;
+  --paper-dark:#dfc08c;
+  --wood:#5b3b1c;
 }
 
 body{
@@ -80,6 +83,44 @@ main{
   margin: 140px auto 90px auto;
   line-height: 1.75;
   padding: 0 18px;
+}
+
+h1::after{
+  content: none;
+}
+
+h1, h2{
+  animation: none;
+}
+
+h1 .flag{
+  display: inline-flex;
+  vertical-align: middle;
+  margin-left: 10px;
+  width: 66px;
+  height: 42px;
+}
+
+.flag svg{
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.flag-cloth{
+  transform-origin: 0 50%;
+  animation: flagWave 2.8s ease-in-out infinite;
+}
+
+@keyframes flagWave{
+  0% { transform: skewY(0deg) rotate(0deg); }
+  35% { transform: skewY(-3deg) rotate(1deg); }
+  70% { transform: skewY(3deg) rotate(-1deg); }
+  100% { transform: skewY(0deg) rotate(0deg); }
+}
+
+.pirate main::before{
+  content: none;
 }
 
 h1, h2, h3{
@@ -230,6 +271,129 @@ a:hover{
 .pirate .search-meta{
   color: rgba(243,226,196,0.7);
 }
+
+/* Pirate TOC + bookmarks */
+.pirate .toc-panel{
+  background:
+    linear-gradient(180deg, rgba(21,12,6,0.9) 0%, rgba(12,7,4,0.92) 60%),
+    repeating-linear-gradient(0deg, rgba(210,166,84,0.08) 0px, rgba(210,166,84,0.08) 1px, transparent 1px, transparent 4px);
+  border-right: 2px solid rgba(210,166,84,0.55);
+  color: var(--sand);
+  box-shadow: 10px 0 24px rgba(0, 0, 0, 0.4), inset 0 0 18px rgba(210,166,84,0.18);
+}
+
+.pirate .toc-panel::before{
+  content: none;
+}
+
+.pirate .toc-title{
+  color: var(--gold);
+  text-shadow: 0 0 10px rgba(210,166,84,0.35);
+}
+
+.pirate .toc-close{
+  border: 1px solid rgba(210,166,84,0.5);
+  color: var(--sand);
+}
+
+.pirate .toc-list a{
+  border: 1px solid rgba(210,166,84,0.35);
+  background: rgba(28,16,10,0.7);
+  color: #f3d8a1;
+}
+
+.pirate .toc-list a:hover{
+  box-shadow: 0 0 14px rgba(210,166,84,0.35);
+}
+
+.pirate .toc-list a.toc-active{
+  border-color: rgba(210,166,84,0.9);
+  box-shadow: 0 0 16px rgba(210,166,84,0.35), inset 0 0 10px rgba(210,166,84,0.2);
+  color: var(--sand);
+}
+
+.pirate .toc-tab{
+  background: rgba(19,10,6,0.8);
+  border: 2px solid rgba(210,166,84,0.55);
+  color: var(--sand);
+  box-shadow: 0 0 12px rgba(0,0,0,0.35);
+}
+
+.pirate .toc-tab:hover{
+  box-shadow: 0 0 16px rgba(210,166,84,0.35);
+}
+
+.pirate .bm-panel{
+  background:
+    linear-gradient(180deg, rgba(21,12,6,0.9) 0%, rgba(12,7,4,0.92) 60%),
+    repeating-linear-gradient(0deg, rgba(210,166,84,0.08) 0px, rgba(210,166,84,0.08) 1px, transparent 1px, transparent 4px);
+  border-left: 2px solid rgba(210,166,84,0.55);
+  color: var(--sand);
+  box-shadow: -10px 0 24px rgba(0, 0, 0, 0.4), inset 0 0 18px rgba(210,166,84,0.18);
+}
+
+.pirate .bm-panel::before{
+  content: none;
+}
+
+.pirate .bm-title{
+  color: var(--gold);
+  text-shadow: 0 0 10px rgba(210,166,84,0.35);
+}
+
+.pirate .bm-close{
+  border: 1px solid rgba(210,166,84,0.5);
+  color: var(--sand);
+}
+
+.pirate .bm-actions button{
+  background: rgba(28,16,10,0.7);
+  border: 1px solid rgba(210,166,84,0.5);
+  color: var(--sand);
+}
+
+.pirate .bm-jump{
+  background: rgba(28,16,10,0.7);
+  border: 1px solid rgba(210,166,84,0.4);
+  color: var(--sand);
+}
+
+.pirate .bm-jump:hover{
+  box-shadow: 0 0 14px rgba(210,166,84,0.35);
+  animation: none;
+}
+
+.pirate .bm-jump.bm-active{
+  border-color: rgba(210,166,84,0.9);
+  box-shadow: 0 0 16px rgba(210,166,84,0.35), inset 0 0 10px rgba(210,166,84,0.2);
+}
+
+.pirate .bm-matrix{
+  display: none;
+}
+
+.pirate .bm-label{
+  color: #f3d8a1;
+  text-shadow: 0 0 8px rgba(210,166,84,0.25);
+}
+
+.pirate .bm-edit,
+.pirate .bm-del{
+  background: rgba(28,16,10,0.7);
+  border: 1px solid rgba(210,166,84,0.5);
+  color: var(--sand);
+}
+
+.pirate .bm-tab{
+  background: rgba(19,10,6,0.8);
+  border: 2px solid rgba(210,166,84,0.55);
+  color: var(--sand);
+  box-shadow: 0 0 12px rgba(0,0,0,0.35);
+}
+
+.pirate .bm-tab:hover{
+  box-shadow: 0 0 16px rgba(210,166,84,0.35);
+}
   </style>
   <link rel="stylesheet" href="../bookmarks.css">
   <link rel="stylesheet" href="../search.css">
@@ -320,7 +484,35 @@ a:hover{
   </div>
 
   <main>
-  <h1>Messtechnik</h1>
+  <h1>Messtechnik
+    <span class="flag" aria-hidden="true">
+      <svg viewBox="0 0 110 70" role="img">
+        <defs>
+          <linearGradient id="flagCloth" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#0c0c0c"/>
+            <stop offset="100%" stop-color="#1b1b1b"/>
+          </linearGradient>
+        </defs>
+        <g class="flag-cloth">
+          <rect x="6" y="8" width="94" height="50" rx="6" fill="url(#flagCloth)" stroke="#2b2b2b" stroke-width="2"/>
+          <path d="M6 18 C 24 10, 40 26, 60 18 C 80 10, 94 22, 100 16" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3"/>
+          <g transform="translate(30 20) scale(0.9)">
+            <path d="M28 14 C 28 22, 20 28, 12 28 C 4 28, -4 22, -4 14 C -4 6, 4 0, 12 0 C 20 0, 28 6, 28 14 Z" fill="#f6f0e6" stroke="#22160d" stroke-width="2"/>
+            <path d="M-2 6 C 4 -4, 20 -4, 26 6" fill="#c9b08a" stroke="#22160d" stroke-width="2"/>
+            <rect x="4" y="3" width="16" height="7" rx="3" fill="#c43a2a" stroke="#22160d" stroke-width="2"/>
+            <circle cx="7" cy="13" r="3" fill="#22160d"/>
+            <circle cx="18" cy="13" r="3" fill="#22160d"/>
+            <path d="M2 30 L 22 30" stroke="#22160d" stroke-width="3"/>
+            <path d="M-10 36 L 8 18" stroke="#f6f0e6" stroke-width="6" stroke-linecap="round"/>
+            <path d="M34 36 L 16 18" stroke="#f6f0e6" stroke-width="6" stroke-linecap="round"/>
+            <path d="M-10 36 L 8 18" stroke="#22160d" stroke-width="2" stroke-linecap="round"/>
+            <path d="M34 36 L 16 18" stroke="#22160d" stroke-width="2" stroke-linecap="round"/>
+          </g>
+        </g>
+        <rect x="2" y="6" width="6" height="56" rx="2" fill="#7a4c2a"/>
+      </svg>
+    </span>
+  </h1>
 
   <h2>Namis Karte</h2>
   <p>
