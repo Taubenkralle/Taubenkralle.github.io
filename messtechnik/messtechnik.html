@@ -62,22 +62,6 @@ body::before{
   filter: drop-shadow(0 6px 6px rgba(12,6,3,0.45));
 }
 
-.map-ship .hull{
-  fill: var(--rust);
-}
-
-.map-ship .sail{
-  fill: var(--sand);
-  stroke: rgba(43,26,12,0.5);
-  stroke-width: 1;
-}
-
-.map-ship .mast{
-  stroke: #4b2d17;
-  stroke-width: 3;
-  stroke-linecap: round;
-}
-
 main{
   max-width: 760px;
   margin: 140px auto 90px auto;
@@ -98,26 +82,14 @@ h1 .flag{
   display: inline-flex;
   vertical-align: middle;
   margin-left: 10px;
-  width: 66px;
-  height: 42px;
+  width: 78px;
+  height: 46px;
 }
 
 .flag svg{
   width: 100%;
   height: 100%;
   overflow: visible;
-}
-
-.flag-cloth{
-  transform-origin: 0 50%;
-  animation: flagWave 2.8s ease-in-out infinite;
-}
-
-@keyframes flagWave{
-  0% { transform: skewY(0deg) rotate(0deg); }
-  35% { transform: skewY(-3deg) rotate(1deg); }
-  70% { transform: skewY(3deg) rotate(-1deg); }
-  100% { transform: skewY(0deg) rotate(0deg); }
 }
 
 .pirate main::before{
@@ -510,13 +482,7 @@ a:hover{
         fill="none" stroke="rgba(214,180,124,0.35)" stroke-width="3" stroke-dasharray="6 8"/>
       <path id="route-path" d="M140 540 C 230 500, 310 470, 380 420 C 460 360, 530 320, 620 300 C 700 280, 760 240, 820 200"
         fill="none" stroke="var(--mapline)" stroke-width="3" stroke-dasharray="10 10" filter="url(#softGlow)"/>
-      <g id="ship" class="map-ship">
-        <path class="hull" d="M-22 10 L 22 10 L 10 26 L -10 26 Z"/>
-        <path class="sail" d="M0 -28 L 0 10 L -26 2 Z"/>
-        <path class="sail" d="M0 -22 L 24 -12 L 0 -6 Z"/>
-        <line class="mast" x1="0" y1="-30" x2="0" y2="14"/>
-        <circle cx="6" cy="10" r="3" fill="#d2a654"/>
-      </g>
+      <image id="ship" class="map-ship" href="assets/ship.png" width="90" height="70" x="-45" y="-35" />
     </svg>
   </div>
   <canvas id="rain"></canvas>
@@ -563,30 +529,19 @@ a:hover{
   <main>
   <h1>Messtechnik
     <span class="flag" aria-hidden="true">
-      <svg viewBox="0 0 110 70" role="img">
+      <svg viewBox="0 0 120 70" role="img">
         <defs>
-          <linearGradient id="flagCloth" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stop-color="#0c0c0c"/>
-            <stop offset="100%" stop-color="#1b1b1b"/>
-          </linearGradient>
+          <filter id="flagWave">
+            <feTurbulence type="fractalNoise" baseFrequency="0.012 0.04" numOctaves="2" seed="3" result="noise">
+              <animate attributeName="baseFrequency" dur="3.2s" values="0.012 0.04;0.02 0.05;0.012 0.04" repeatCount="indefinite"/>
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
         </defs>
-        <g class="flag-cloth">
-          <rect x="6" y="8" width="94" height="50" rx="6" fill="url(#flagCloth)" stroke="#2b2b2b" stroke-width="2"/>
-          <path d="M6 18 C 24 10, 40 26, 60 18 C 80 10, 94 22, 100 16" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3"/>
-          <g transform="translate(30 20) scale(0.9)">
-            <path d="M28 14 C 28 22, 20 28, 12 28 C 4 28, -4 22, -4 14 C -4 6, 4 0, 12 0 C 20 0, 28 6, 28 14 Z" fill="#f6f0e6" stroke="#22160d" stroke-width="2"/>
-            <path d="M-2 6 C 4 -4, 20 -4, 26 6" fill="#c9b08a" stroke="#22160d" stroke-width="2"/>
-            <rect x="4" y="3" width="16" height="7" rx="3" fill="#c43a2a" stroke="#22160d" stroke-width="2"/>
-            <circle cx="7" cy="13" r="3" fill="#22160d"/>
-            <circle cx="18" cy="13" r="3" fill="#22160d"/>
-            <path d="M2 30 L 22 30" stroke="#22160d" stroke-width="3"/>
-            <path d="M-10 36 L 8 18" stroke="#f6f0e6" stroke-width="6" stroke-linecap="round"/>
-            <path d="M34 36 L 16 18" stroke="#f6f0e6" stroke-width="6" stroke-linecap="round"/>
-            <path d="M-10 36 L 8 18" stroke="#22160d" stroke-width="2" stroke-linecap="round"/>
-            <path d="M34 36 L 16 18" stroke="#22160d" stroke-width="2" stroke-linecap="round"/>
-          </g>
-        </g>
         <rect x="2" y="6" width="6" height="56" rx="2" fill="#7a4c2a"/>
+        <g filter="url(#flagWave)">
+          <image href="assets/flagge.png" x="10" y="8" width="100" height="54" />
+        </g>
       </svg>
     </span>
   </h1>
