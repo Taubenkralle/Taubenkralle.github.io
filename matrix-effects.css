@@ -172,3 +172,20 @@ a:hover{
   0%   { transform: translateY(0); }
   100% { transform: translateY(260px); }
 }
+
+/* Pill highlight helpers */
+.blue-pill{
+  background: #1e6bff;
+  color: #f2f7ff;
+  padding: 2px 6px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(30,107,255,0.45);
+}
+
+.red-pill{
+  background: #d12c2c;
+  color: #fff3f3;
+  padding: 2px 6px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(209,44,44,0.45);
+}
