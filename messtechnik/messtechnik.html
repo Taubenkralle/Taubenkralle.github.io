@@ -886,7 +886,7 @@ a:hover{
     const tangent = bezierTangent(seg, segT);
     const dx = tangent.x * direction;
     const dy = tangent.y * direction;
-    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI + 180;
     ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle})`);
   }
 
