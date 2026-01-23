@@ -884,7 +884,9 @@ a:hover{
     const seg = segments[segIndex];
     const point = bezierPoint(seg, segT);
     const tangent = bezierTangent(seg, segT);
-    const angle = Math.atan2(tangent.y, tangent.x) * 180 / Math.PI;
+    let angle = Math.atan2(tangent.y, tangent.x) * 180 / Math.PI;
+    if (angle > 90) angle -= 180;
+    if (angle < -90) angle += 180;
     const flip = direction === -1 ? -1 : 1;
     ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle}) scale(${flip} 1)`);
   }
