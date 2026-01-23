@@ -179,11 +179,12 @@
   <link rel="stylesheet" href="../search.css">
   <link rel="stylesheet" href="../toc.css">
   <link rel="stylesheet" href="../music.css">
+  <link rel="stylesheet" href="../themes.css">
   <link rel="stylesheet" href="../matrix-effects.css">
   <link rel="stylesheet" href="../crt.css">
   <link rel="stylesheet" href="../neo.css">
 </head>
-<body>
+<body class="theme-matrix" data-default-theme="matrix">
   <canvas id="rain"></canvas>
   <nav class="home-only">
     <a href="../statistik.html" class="home">← Statistik</a>
@@ -550,18 +551,56 @@ von diesem Effekt betroffen).</p></li>
 
 
 <strong>Legende:</strong>
-<dl>
+<dl>21
   <dt>O = Messung</dt>
   <dt>X = Intervention; Ereignis</dt>
   <dt>G = Gruppe</dt>
   <dt>R = Randomisierung</dt>
 </dl>
 
-    
-</p>
+    <li>
+      Systematische und unsystematische Variation der Abhängigen Variable
+      <li>
+        Viele statistische Verfahren beruhen auf der Idee der Schätzung von Anteilen systematischer und unsystematischer Variation (an der Gesamtvariation) einer abhängigen Variable (<i>Effektvariation vs. Fehlervariation</i>)
+      </li>
+      <li>
+        <h3>Unsystematische Variation</h3> (Rauschen) geht zurück auf Messfehler oder individuelle Unterschiede der Untersuchungseinheit
+      </li>
+      <li>
+        <h3>Systematische Variation</h3> (Signal) geht zurück auf die unabhängige Variable (<i>Treatment</i>) oder auf Störvariablen (<i>Confounder</i>*)
+      <br><small>Beispiel: Das Tragen von Masken oder hohe Außentemperaturen stellen alternative Erklärungen - neben social Distancing - für eine Verringerung der COVID-19-Infiziertenzahlen dar.</small>
+      </li>
+    </li>
+    </p>
 </ul>
 
+<h3><strong>Deduktion und Induktion</strong></h3>
+
+
+<p>
+  <ul>
+    <li>
+      Verfahren zur Gewinnung von wissenschaftlichen Erkenntnissen (<strong>Schlussweisen</strong>)
+    <br>Daten &rarr; <i><h3>Induktion</h3></i> &rarr; Theorie
+    <br><small>vom Besonderen zum Allgemeinen</small>
+    <br>
+      Daten &larr; <i><h3>Deduktion</h3></i> &larr; Theorie
+      <br><small>vom Allgemeinen zum Besonderen</small>
+      <br>
+      <dl>
+        <dt><strong>Induktion</strong>: Explorative Forschung (qualitativ)</dt>
+        <dt><strong>Deduktion</strong>: Konfirmatorische Forschung (quantitativ)</dt>
+      </dl>
+
+    </li>
+
+  </ul>
+
   </main>
+  <footer class="theme-toggle">
+    <button class="theme-button" type="button" data-theme-toggle>Theme: Matrix</button>
+  </footer>
+
   <script>
     let lastPos = null;
     let isDismissed = false;
@@ -633,5 +672,6 @@ von diesem Effekt betroffen).</p></li>
   <script src="../view.js"></script>
   <script src="../crt.js"></script>
   <script src="../neo.js"></script>
+  <script src="../themes.js"></script>
 </body>
 </html>
