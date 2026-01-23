@@ -584,7 +584,7 @@ a:hover{
         </g>
       </g>
       <path id="route-path" d="M1020 80 C 900 130, 760 190, 620 240 C 580 255, 560 265, 540 270 C 620 285, 720 285, 820 280 C 920 275, 1000 270, 1040 270"
-        fill="none" stroke="#c4533c" stroke-width="3.2" stroke-dasharray="8 10" stroke-linecap="round" filter="url(#softGlow)"/>
+        fill="none" stroke="#c4533c" stroke-width="2.4" stroke-linecap="round" filter="url(#softGlow)"/>
       <image id="ship" class="map-ship" href="/messtechnik/assets/ship.png" xlink:href="/messtechnik/assets/ship.png" width="90" height="70" x="-45" y="-35" />
     </svg>
   </div>
@@ -776,18 +776,19 @@ a:hover{
   const HOLD_FRACTION = 0.18;
 
   const routePoints = [
-    [52, 62],
+    [52, 64],
     [49, 62],
-    [50, 65],
+    [49, 67],
     [41, 55],
     [38, 51],
     [34, 50],
-    [26, 40],
-    [25, 50],
+    [30, 40],
+    [24, 54],
     [7, 20],
-    [10, 8],
-    [9, 13],
-    [-4, -6],
+    [10, 4],
+    [8, 14],
+    [-2, -6],
+    [-2, -6],
   ];
 
   function toSvg([x, y]){
@@ -811,6 +812,7 @@ a:hover{
     }
     return { start, ctrl, end };
   });
+  let pathLength = 0;
 
   function buildPath(){
     if (!svgPoints.length) return;
@@ -819,6 +821,9 @@ a:hover{
       d += ` Q ${seg.ctrl.x.toFixed(1)} ${seg.ctrl.y.toFixed(1)}, ${seg.end.x.toFixed(1)} ${seg.end.y.toFixed(1)}`;
     });
     route.setAttribute("d", d);
+    pathLength = route.getTotalLength();
+    route.style.strokeDasharray = `${pathLength}`;
+    route.style.strokeDashoffset = `${pathLength}`;
   }
 
   function bezierPoint(seg, t){
@@ -854,6 +859,7 @@ a:hover{
     }else{
       segT = (segT - HOLD_FRACTION) / (1 - HOLD_FRACTION);
     }
+    const progress = Math.max(0, Math.min(1, (segIndex + segT) / segCount));
     const seg = segments[segIndex];
     const point = bezierPoint(seg, segT);
     const tangent = bezierTangent(seg, segT);
@@ -862,6 +868,9 @@ a:hover{
     if (angle < -90) angle += 180;
     const flip = direction === -1 ? -1 : 1;
     ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle}) scale(${flip} 1)`);
+    if (pathLength){
+      route.style.strokeDashoffset = `${pathLength * (1 - progress)}`;
+    }
   }
 
   buildPath();
