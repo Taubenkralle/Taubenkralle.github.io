@@ -584,7 +584,7 @@ a:hover{
         </g>
       </g>
       <path id="route-path" d="M1020 80 C 900 130, 760 190, 620 240 C 580 255, 560 265, 540 270 C 620 285, 720 285, 820 280 C 920 275, 1000 270, 1040 270"
-        fill="none" stroke="#c4533c" stroke-width="4.5" stroke-dasharray="8 10" stroke-linecap="round" filter="url(#softGlow)"/>
+        fill="none" stroke="#c4533c" stroke-width="3.2" stroke-dasharray="8 10" stroke-linecap="round" filter="url(#softGlow)"/>
       <image id="ship" class="map-ship" href="/messtechnik/assets/ship.png" xlink:href="/messtechnik/assets/ship.png" width="90" height="70" x="-45" y="-35" />
     </svg>
   </div>
@@ -765,10 +765,74 @@ a:hover{
   const ship = document.getElementById("ship");
   if (!route || !ship) return;
 
-  const total = route.getTotalLength();
-
   let lastScrollTop = 0;
   let direction = 1;
+  const VIEW_W = 1080;
+  const VIEW_H = 540;
+  const CENTER_X = VIEW_W / 2;
+  const CENTER_Y = VIEW_H / 2;
+  const SCALE_X = VIEW_W / 200;
+  const SCALE_Y = VIEW_H / 200;
+  const HOLD_FRACTION = 0.18;
+
+  const routePoints = [
+    [52, 62],
+    [49, 62],
+    [50, 65],
+    [41, 55],
+    [38, 51],
+    [34, 50],
+    [26, 40],
+    [25, 50],
+    [7, 20],
+    [10, 8],
+    [9, 13],
+    [-4, -6],
+  ];
+
+  function toSvg([x, y]){
+    return {
+      x: CENTER_X + x * SCALE_X,
+      y: CENTER_Y - y * SCALE_Y,
+    };
+  }
+
+  const svgPoints = routePoints.map(toSvg);
+  const segments = svgPoints.slice(0, -1).map((start, i) => {
+    const end = svgPoints[i + 1];
+    let ctrl;
+    if (routePoints[i][0] === 25 && routePoints[i][1] === 50 && routePoints[i + 1][0] === 7 && routePoints[i + 1][1] === 20){
+      ctrl = toSvg([16, 5]);
+    }else{
+      ctrl = {
+        x: (start.x + end.x) / 2,
+        y: (start.y + end.y) / 2,
+      };
+    }
+    return { start, ctrl, end };
+  });
+
+  function buildPath(){
+    if (!svgPoints.length) return;
+    let d = `M ${svgPoints[0].x.toFixed(1)} ${svgPoints[0].y.toFixed(1)}`;
+    segments.forEach((seg) => {
+      d += ` Q ${seg.ctrl.x.toFixed(1)} ${seg.ctrl.y.toFixed(1)}, ${seg.end.x.toFixed(1)} ${seg.end.y.toFixed(1)}`;
+    });
+    route.setAttribute("d", d);
+  }
+
+  function bezierPoint(seg, t){
+    const inv = 1 - t;
+    const x = inv * inv * seg.start.x + 2 * inv * t * seg.ctrl.x + t * t * seg.end.x;
+    const y = inv * inv * seg.start.y + 2 * inv * t * seg.ctrl.y + t * t * seg.end.y;
+    return { x, y };
+  }
+
+  function bezierTangent(seg, t){
+    const x = 2 * (1 - t) * (seg.ctrl.x - seg.start.x) + 2 * t * (seg.end.x - seg.ctrl.x);
+    const y = 2 * (1 - t) * (seg.ctrl.y - seg.start.y) + 2 * t * (seg.end.y - seg.ctrl.y);
+    return { x, y };
+  }
 
   function updateShip(){
     const doc = document.documentElement;
@@ -779,17 +843,28 @@ a:hover{
       direction = scrollTop > lastScrollTop ? 1 : -1;
       lastScrollTop = scrollTop;
     }
-    const current = total * t;
-    const point = route.getPointAtLength(current);
-    const sample = Math.min(total, Math.max(0, current + direction));
-    const target = route.getPointAtLength(sample);
-    let angle = Math.atan2(target.y - point.y, target.x - point.x) * 180 / Math.PI;
+    const segCount = segments.length;
+    if (!segCount) return;
+    let segPos = t * segCount;
+    if (segPos >= segCount) segPos = segCount - 0.0001;
+    const segIndex = Math.max(0, Math.min(segCount - 1, Math.floor(segPos)));
+    let segT = segPos - segIndex;
+    if (segT < HOLD_FRACTION){
+      segT = 0;
+    }else{
+      segT = (segT - HOLD_FRACTION) / (1 - HOLD_FRACTION);
+    }
+    const seg = segments[segIndex];
+    const point = bezierPoint(seg, segT);
+    const tangent = bezierTangent(seg, segT);
+    let angle = Math.atan2(tangent.y, tangent.x) * 180 / Math.PI;
     if (angle > 90) angle -= 180;
     if (angle < -90) angle += 180;
     const flip = direction === -1 ? -1 : 1;
     ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle}) scale(${flip} 1)`);
   }
 
+  buildPath();
   updateShip();
   window.addEventListener("scroll", updateShip, { passive: true });
   window.addEventListener("resize", updateShip);
