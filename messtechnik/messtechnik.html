@@ -892,6 +892,9 @@ a:hover{
     if (angle > 90 && angle < 270){
       angle = (angle + 180) % 360;
     }
+    if (dx > 0){
+      angle = (angle + 180) % 360;
+    }
     ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle})`);
   }
 
