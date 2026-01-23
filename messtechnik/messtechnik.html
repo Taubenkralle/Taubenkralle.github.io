@@ -817,22 +817,6 @@ a:hover{
     [36, -15]
   ];
 
-  const flipTarget = [-2, -6];
-  let flipIndex = routePoints.findIndex(([x, y]) => x === flipTarget[0] && y === flipTarget[1]);
-  if (flipIndex === -1){
-    let best = 0;
-    let bestDist = Infinity;
-    routePoints.forEach(([x, y], idx) => {
-      const dx = x - flipTarget[0];
-      const dy = y - flipTarget[1];
-      const dist = dx * dx + dy * dy;
-      if (dist < bestDist){
-        bestDist = dist;
-        best = idx;
-      }
-    });
-    flipIndex = best;
-  }
 
   function toSvg([x, y]){
     return {
@@ -903,8 +887,7 @@ a:hover{
     const tangent = bezierTangent(seg, segT);
     const dx = tangent.x * direction;
     const dy = tangent.y * direction;
-    const flipOffset = segIndex >= flipIndex ? 180 : 0;
-    const angle = Math.atan2(dy, dx) * 180 / Math.PI + 180 + flipOffset;
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI + 180;
     ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle})`);
   }
 
