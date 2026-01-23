@@ -890,13 +890,11 @@ a:hover{
     let angle = Math.atan2(dy, dx) * 180 / Math.PI + 180;
     angle = ((angle % 360) + 360) % 360;
     const pivotIndex = routePoints.findIndex(([x, y]) => x === -2 && y === -6);
-    if (pivotIndex !== -1 && segIndex >= pivotIndex){
-      angle = (angle + 180) % 360;
-    }
+    const flipX = pivotIndex !== -1 && segIndex >= pivotIndex ? -1 : 1;
     if (angle > 90 && angle < 270){
       angle = (angle + 180) % 360;
     }
-    ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle})`);
+    ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle}) scale(${flipX} 1)`);
   }
 
   buildPath();
