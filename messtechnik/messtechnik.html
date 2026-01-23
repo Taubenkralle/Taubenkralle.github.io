@@ -889,10 +889,10 @@ a:hover{
     const dy = tangent.y * direction;
     let angle = Math.atan2(dy, dx) * 180 / Math.PI + 180;
     angle = ((angle % 360) + 360) % 360;
-    if (angle > 90 && angle < 270){
+    if (dx > 0){
       angle = (angle + 180) % 360;
     }
-    if (dx > 0){
+    if (angle > 90 && angle < 270){
       angle = (angle + 180) % 360;
     }
     ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle})`);
