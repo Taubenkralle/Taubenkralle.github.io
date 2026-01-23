@@ -584,7 +584,7 @@ a:hover{
         </g>
       </g>
       <path id="route-path" d="M1020 80 C 900 130, 760 190, 620 240 C 580 255, 560 265, 540 270 C 620 285, 720 285, 820 280 C 920 275, 1000 270, 1040 270"
-        fill="none" stroke="#c4533c" stroke-width="2.4" stroke-linecap="round" filter="url(#softGlow)"/>
+        fill="none" stroke="#c4533c" stroke-width="3.2" stroke-dasharray="8 10" stroke-linecap="round" filter="url(#softGlow)"/>
       <image id="ship" class="map-ship" href="/messtechnik/assets/ship.png" xlink:href="/messtechnik/assets/ship.png" width="90" height="70" x="-45" y="-35" />
     </svg>
   </div>
@@ -812,8 +812,6 @@ a:hover{
     }
     return { start, ctrl, end };
   });
-  let pathLength = 0;
-
   function buildPath(){
     if (!svgPoints.length) return;
     let d = `M ${svgPoints[0].x.toFixed(1)} ${svgPoints[0].y.toFixed(1)}`;
@@ -821,9 +819,6 @@ a:hover{
       d += ` Q ${seg.ctrl.x.toFixed(1)} ${seg.ctrl.y.toFixed(1)}, ${seg.end.x.toFixed(1)} ${seg.end.y.toFixed(1)}`;
     });
     route.setAttribute("d", d);
-    pathLength = route.getTotalLength();
-    route.style.strokeDasharray = `${pathLength}`;
-    route.style.strokeDashoffset = `${pathLength}`;
   }
 
   function bezierPoint(seg, t){
@@ -859,7 +854,6 @@ a:hover{
     }else{
       segT = (segT - HOLD_FRACTION) / (1 - HOLD_FRACTION);
     }
-    const progress = Math.max(0, Math.min(1, (segIndex + segT) / segCount));
     const seg = segments[segIndex];
     const point = bezierPoint(seg, segT);
     const tangent = bezierTangent(seg, segT);
@@ -868,9 +862,6 @@ a:hover{
     if (angle < -90) angle += 180;
     const flip = direction === -1 ? -1 : 1;
     ship.setAttribute("transform", `translate(${point.x} ${point.y}) rotate(${angle}) scale(${flip} 1)`);
-    if (pathLength){
-      route.style.strokeDashoffset = `${pathLength * (1 - progress)}`;
-    }
   }
 
   buildPath();
