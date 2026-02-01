@@ -91,62 +91,14 @@
     }
     .home:hover{ opacity:1; }
   </style>
-  <link rel="stylesheet" href="bookmarks.css">
-  <link rel="stylesheet" href="search.css">
-  <link rel="stylesheet" href="toc.css">
-  <link rel="stylesheet" href="music.css">
   <link rel="stylesheet" href="matrix-effects.css">
-  <link rel="stylesheet" href="crt.css">
-  <link rel="stylesheet" href="neo.css">
-  <link rel="preload" as="audio" href="/audio/matrix.wav">
 </head>
 <body class="candle-page">
   <canvas id="rain"></canvas>
 
-  <nav class="home-only">
-    <a href="index.html" class="home">← Schreibtisch</a>
-  </nav>
-
   <div class="content">
-  <div class="search-shell" data-index="search-index.json">
-    <div class="search-actions">
-      <a class="home-mini" href="index.html" aria-label="Home">
-        <svg class="home-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 4l8 7h-2v9h-5v-6H11v6H6v-9H4l8-7z"></path>
-        </svg>
-      </a>
-      <button class="search-toggle" type="button" aria-label="Suche">
-        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"></circle>
-          <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2"></line>
-        </svg>
-      </button>
-      <div class="music-shell" data-audio="/audio/matrix.wav">
-        <button class="music-button" type="button" aria-label="Musik">
-          <svg class="music-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M19 3v12.5a3.5 3.5 0 1 1-2-3.16V6.6l-8 1.7v8.2a3.5 3.5 0 1 1-2-3.16V4.5L19 3z"></path>
-          </svg>
-        </button>
-        <button class="view-toggle" type="button" aria-label="Breiter Text" aria-pressed="false">
-          <svg class="view-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M7 6h10v2H7V6zm-2 4h14v2H5v-2zm2 4h10v2H7v-2z"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-    <div class="search-panel" hidden>
-      <div class="search-bar">
-        <input class="search-input" type="search" placeholder="Suche in der Matrix">
-        <button class="search-close" type="button">x</button>
-      </div>
-      <ul class="search-results"></ul>
-      <div class="search-empty">Keine Treffer.</div>
-    </div>
-  </div>
-
   <main>
-    <h1>Candle</h1>
-    <h2>Privacy Policy</h2>
+    <h1>Privacy Policy</h1>
     <p>The app "Candle" does not collect, store, or process any personal data.</p>
     <p>No user accounts are created, no tracking tools are used<br>and no data is shared with third parties.</p>
     <p>The app works completely offline.<br>If an internet connection is used (e.g., for system functions),<br>this happens exclusively via the interfaces provided by the operating system.</p>
@@ -154,14 +106,6 @@
     <p>Last updated: January 2026</p>
   </main>
   </div>
-
   <script src="rain.js"></script>
-  <script src="bookmarks.js"></script>
-  <script src="search.js"></script>
-  <script src="toc.js"></script>
-  <script src="music.js"></script>
-  <script src="view.js"></script>
-  <script src="crt.js"></script>
-  <script src="neo.js"></script>
 </body>
 </html>
