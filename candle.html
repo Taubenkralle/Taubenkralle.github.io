@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>ahsome</title>
+  <title>Candle</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root{
@@ -18,6 +18,7 @@
       background: radial-gradient(1200px 800px at 50% 40%, #07140b 0%, var(--bg) 60%, #000 100%);
       color: var(--g1);
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      display:block;
     }
 
     /* Rain layer */
@@ -35,19 +36,37 @@
     .content{
       position:relative;
       z-index:1;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      gap:14px;
+    }
+
+    main{
+      max-width: 760px;
+      margin: 120px auto 80px auto;
+      line-height: 1.7;
+      padding: 0 18px;
     }
 
     h1{
-      margin:0;
       font-weight:600;
       letter-spacing:0.08em;
       text-shadow: 0 0 10px rgba(0,255,102,.35), 0 0 24px rgba(0,255,102,.18);
+      margin-top: 0;
+    }
+
+    h2{
+      margin-top: 28px;
+      font-size: 16px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--g2);
+    }
+
+    p{
+      margin: 0 0 14px 0;
+    }
+
+    .candle-list{
+      margin: 0;
+      padding-left: 18px;
     }
 
     a{
@@ -71,17 +90,6 @@
       opacity:.85;
     }
     .home:hover{ opacity:1; }
-
-    /* TOC */
-    .toc{
-      list-style:none;
-      padding:0;
-      margin:0;
-      text-align:center;
-    }
-    .toc li{ margin:8px 0; }
-    .toc a{ font-size:14px; opacity:.9; }
-    .toc a:hover{ opacity:1; }
   </style>
   <link rel="stylesheet" href="bookmarks.css">
   <link rel="stylesheet" href="search.css">
@@ -92,15 +100,14 @@
   <link rel="stylesheet" href="neo.css">
   <link rel="preload" as="audio" href="/audio/matrix.wav">
 </head>
-<body data-rain-fixed="1" data-neo="wake">
-
-  <!-- 1) Canvas muss in den BODY, nicht ins CSS -->
+<body class="candle-page" data-neo="ember">
   <canvas id="rain"></canvas>
 
   <nav class="home-only">
-    <a href="index.html" class="home">Schreibtisch</a>
+    <a href="index.html" class="home">← Schreibtisch</a>
   </nav>
 
+  <div class="content">
   <div class="search-shell" data-index="search-index.json">
     <div class="search-actions">
       <a class="home-mini" href="index.html" aria-label="Home">
@@ -137,20 +144,25 @@
     </div>
   </div>
 
-  <div class="content">
-    <h1>git get.</h1>
+  <main>
+    <h1>Candle</h1>
+    <p>Eine kleine Seite fuer einen ruhigen Loop: Licht, Fokus, Reset.</p>
 
-    <ul class="toc">
-      <li><a href="statistik.html">Statistik</a></li>
-      <li><a href="elektrotechnik/elektrotechnik.html">Elektrotechnik</a></li>
-      <li><a href="messtechnik/messtechnik.html">Messtechnik</a></li>
-      <li><a href="training.html">Training</a></li>
-      <li><a href="candle.html">Candle</a></li>
-      <li><a href="white-rabbit.html">White Rabbit</a></li>
+    <h2>Ritual</h2>
+    <p>Ein Satz, ein Atemzug, eine Flamme. Kurz, klar, wiederholbar.</p>
+
+    <h2>Logbuch</h2>
+    <ul class="candle-list">
+      <li>Start: Raum dunkel, Bildschirm leise.</li>
+      <li>Fokus: ein Task, ein Timer, keine Ablenkung.</li>
+      <li>Ende: Notiz, naechster Schritt, Reset.</li>
     </ul>
+
+    <h2>Notiz</h2>
+    <p>Wenn du willst, erweitere diese Seite spaeter um eigene Regeln oder Tagesmarker.</p>
+  </main>
   </div>
 
-  <!-- 2) Script am Ende, nachdem das Canvas existiert -->
   <script src="rain.js"></script>
   <script src="bookmarks.js"></script>
   <script src="search.js"></script>
