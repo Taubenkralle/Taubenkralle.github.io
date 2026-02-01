@@ -3,7 +3,7 @@
     "title": "Candle",
     "url": "/candle.html",
     "meta": "Page",
-    "keywords": "candle ← schreibtisch x keine treffer. candle eine kleine seite fuer einen ruhigen loop: licht, fokus, reset. ritual ein satz, ein atemzug, eine flamme. kurz, klar, wiederholbar. logbuch start: raum dunkel, bildschirm leise. fokus: ein task, ein timer, keine ablenkung. ende: notiz, naechster schritt, reset. notiz wenn du willst, erweitere diese seite spaeter um eigene regeln oder tagesmarker."
+    "keywords": "candle ← schreibtisch x keine treffer. candle datenschutzerklaerung die app „candle“ erhebt, speichert oder verarbeitet keine personenbezogenen daten. es werden keine nutzerkonten angelegt, keine tracking-tools eingesetzt und keine daten an dritte weitergegeben. die app funktioniert vollstaendig offline. falls eine internetverbindung genutzt wird (z. b. fuer systemfunktionen), erfolgt dies ausschliesslich ueber die vom betriebssystem bereitgestellten schnittstellen. verantwortlich: maximilian hannappel e-mail: maximilian.hannappel@e.mail.de stand: januar 2026"
   },
   {
     "title": "Candle",
@@ -12,22 +12,10 @@
     "keywords": "candle"
   },
   {
-    "title": "Logbuch",
-    "url": "/candle.html#logbuch",
+    "title": "Datenschutzerklaerung",
+    "url": "/candle.html#datenschutzerklaerung",
     "meta": "Candle",
-    "keywords": "logbuch"
-  },
-  {
-    "title": "Notiz",
-    "url": "/candle.html#notiz",
-    "meta": "Candle",
-    "keywords": "notiz"
-  },
-  {
-    "title": "Ritual",
-    "url": "/candle.html#ritual",
-    "meta": "Candle",
-    "keywords": "ritual"
+    "keywords": "datenschutzerklaerung"
   },
   {
     "title": "Elektrotechnik",
